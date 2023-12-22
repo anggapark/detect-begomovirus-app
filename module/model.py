@@ -30,11 +30,6 @@ def create_model(num_classes=2, size=320):
     model.transform.min_size = (size,)
     model.transform.max_size = size
 
-    return model
-
-
-if __name__ == "__main__":
-    model = create_model(2, 320)
     print(model)
 
     # total params and trainable params
@@ -45,3 +40,9 @@ if __name__ == "__main__":
         p.numel() for p in model.parameters() if p.requires_grad
     )
     print(f"{total_trainable_params:,} training parameters")
+
+    return model
+
+
+if __name__ == "__main__":
+    model = create_model(2, 320)
