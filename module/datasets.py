@@ -5,9 +5,9 @@ import os
 import glob as glob
 
 from xml.etree import ElementTree as ET
-from config import CLASSES, IMG_SIZE, TRAIN_DIR, BATCH_SIZE
 from torch.utils.data import Dataset, DataLoader
-from custom_utils import collate_fn, get_transform
+from .config import CLASSES, IMG_SIZE, TRAIN_DIR, BATCH_SIZE
+from .utils import collate_fn, get_transform
 
 
 # The dataset class.
