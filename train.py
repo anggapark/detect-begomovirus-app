@@ -217,16 +217,6 @@ if __name__ == "__main__":
     # initialize the model
     model = create_model(num_classes=NUM_CLASSES, size=IMG_SIZE)
     model = model.to(DEVICE)
-    print(model)
-
-    # total parameters and trainable parameters
-    total_params = sum(p.numel() for p in model.parameters())
-    print(f"P{total_params:,} total parameters")
-
-    total_trainable_params = sum(
-        p.numel() for p in model.parameters() if p.requires_grad
-    )
-    print(f"P{total_trainable_params:,} training parameters")
 
     params = [p for p in model.parameters() if p.requires_grad]
 
