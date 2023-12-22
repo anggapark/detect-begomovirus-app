@@ -9,7 +9,7 @@ from module.config import (
     VAL_DIR,
 )
 from module.model import create_model
-from module.custom_utils import (
+from module.utils import (
     Averager,
     SaveBestModel,
     save_model,
@@ -124,17 +124,17 @@ def validate_step(valid_loader, model):
             outputs = model(images, targets)
 
             ## mAP calculation using Torchmatrics
-        for i in range(len(images)):
-            true_dict = dict()
-            preds_dict = dict()
+            for i in range(len(images)):
+                true_dict = dict()
+                preds_dict = dict()
 
-            true_dict["boxes"] = targets[i]["boxes"].detach().cpu()
-            true_dict["labels"] = targets[i]["labels"].detach().cpu()
-            preds_dict["boxes"] = outputs[i]["boxes"].detach().cpu()
-            preds_dict["scores"] = outputs[i]["scores"].detach().cpu()
-            preds_dict["labels"] = outputs[i]["labels"].detach().cpu()
-            preds.append(preds_dict)
-            target.append(true_dict)
+                true_dict["boxes"] = targets[i]["boxes"].detach().cpu()
+                true_dict["labels"] = targets[i]["labels"].detach().cpu()
+                preds_dict["boxes"] = outputs[i]["boxes"].detach().cpu()
+                preds_dict["scores"] = outputs[i]["scores"].detach().cpu()
+                preds_dict["labels"] = outputs[i]["labels"].detach().cpu()
+                preds.append(preds_dict)
+                target.append(true_dict)
 
     metric = MeanAveragePrecision()
     metric.update(preds, target)
