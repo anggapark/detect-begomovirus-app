@@ -121,6 +121,14 @@ def save_loss_plot(
     print("Saving Plots Complete...")
 
 
+def save_precision(OUTPUT_DIR):
+    pass
+
+
+def save_recall(OUTPUT_DIR):
+    pass
+
+
 def save_mAP(OUTPUT_DIR, mAP_05, mAP_05_095):
     """
     save the mAP@0.5 and mAP@0.5:0.95 per epochs.

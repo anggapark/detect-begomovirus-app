@@ -24,15 +24,17 @@ from module.datasets import (
     create_valid_loader,
 )
 
-from torch.optim.lr_scheduler import StepLR
-from torchmetrics.detection.mean_ap import MeanAveragePrecision
-from torchmetrics.functional import precision_recall
-
 import os
 import time
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+from torch.optim.lr_scheduler import StepLR
+
+from torchmetrics import Precision, Recall
+from torchmetrics.classification import BinaryPrecision, BinaryRecall
+from torchmetrics.detection.mean_ap import MeanAveragePrecision
+
 
 plt.style.use("ggplot")
 
@@ -51,8 +53,8 @@ def train_step(train_loader, model, train_loss_hist):
     pass, loss calculation, optimizer step).
 
     Args:
-        train_loader (_type_): _description_
-        model (_type_): _description_
+        train_loader (torch.utils.data.DataLoader): _description_
+        model (torch.nn.Module): _description_
 
     Returns:
         _type_: _description_
@@ -96,14 +98,18 @@ def train_step(train_loader, model, train_loss_hist):
 
 # running validation iterations
 def validate_step(valid_loader, model):
-    """_summary_
+    """
+    Validate pytorch model for a single epoch
+
+    Turns a target PyTorch model to "eval" mode and
+    then performs a forward pass on a validating dataset.
 
     Args:
-        valid_loader (_type_): _description_
-        model (_type_): _description_
+        valid_loader (Dataloader): A valid dataloader instance for the model to be validate on
+        model (Module): A pytorch model to be validate
 
     Returns:
-        _type_: _description_
+        Dict: A dictionary of metric summary consist of prediction results and ground truth
     """
     print("Validating!")
     model.eval()
@@ -145,13 +151,19 @@ def validate_step(valid_loader, model):
 
 def train(model, train_loader, val_loader, optimizer):
     """
+    Train and test a PyTorch model
 
+    Passed a target model through train_step and validation_stap
+    functions for the number of epochs, training and validating
+    the model in the same loop.
+
+    Calculated
 
     Args:
-        model (_type_): _description_
-        train_loader (_type_): _description_
-        val_loader (_type_): _description_
-        optimizer (_type_): _description_
+        model (Module): _description_
+        train_loader (Dataloader): _description_
+        val_loader (Dataloader): _description_
+        optimizer (Optimizer): _description_
     """
     # monitor training loss
     train_loss_hist = Averager()
@@ -160,6 +172,9 @@ def train(model, train_loader, val_loader, optimizer):
     train_loss_list = []
     map_50_list = []
     map_list = []
+
+    # initiate precision and recall
+    precision = Precision(num_class=NUM_CLASSES)
 
     # name the model
     MODEL_NAME = "model"
