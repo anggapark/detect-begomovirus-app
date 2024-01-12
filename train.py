@@ -130,15 +130,17 @@ def validate_step(valid_loader, model, device):
     return metric_summary
 
 
-def train(model, 
-          train_loader, 
-          valid_loader, 
-          optimizer, 
-          epochs, 
-          scheduler, 
-          output_dir,
-          device,
-          k=None):
+def train(
+    model,
+    train_loader,
+    valid_loader,
+    optimizer,
+    epochs,
+    scheduler,
+    output_dir,
+    device,
+    k=None,
+):
     """
     Train and test a PyTorch model
 
@@ -179,8 +181,7 @@ def train(model,
         metric_summary = validate_step(valid_loader, model, device)
 
         print(
-            f"Epoch #{epoch+1}\n
-            train loss: {train_loss_hist.value:.3f} | mAP: {metric_summary['map']}"
+            f"Epoch #{epoch+1}\ntrain loss: {train_loss_hist.value:.3f} | mAP: {metric_summary['map']}"
         )
 
         # end timer and show training duration
@@ -210,112 +211,105 @@ def train(model,
             save_mAP(output_dir, map_50_list, map_list)
 
         scheduler.step()
-        
+
+
 def parse_params():
     # Construct the argument parser.
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--train-input',
-        help='path to train input image directory',
+        "--input",
+        "-i",
+        help="path to train and valid input image directory",
     )
     parser.add_argument(
-        '--valid-input',
-        help='path to validation input image directory',
-    )
-    parser.add_argument(
-        '--output-dir', '--output',
-        help='path to validation input image directory',
-    )
-    parser.add_argument(
-        '--imgsz', '--img', '--img-size',
+        "--imgsz",
+        "--img-size",
         default=None,
         type=int,
-        help='train, valid image resize shape'
+        help="train, valid image resize shape",
     )
     parser.add_argument(
-        '--optimizer', '--optim', 
-        default='sgd',
-        help='training optimizer (SGD, adam, etc)'
+        "--optimizer",
+        default="sgd",
+        help="training optimizer (SGD, adam, etc)",
+    )
+    parser.add_argument("--epochs", default=50, type=int, help="total training epochs")
+    parser.add_argument(
+        "--device", default="cpu", help="cuda device, i.e. 0 or 0,1,2,3 or cpu"
     )
     parser.add_argument(
-        '--epochs', 
-        default=50,
-        type=int,
-        help='total training epochs'
-    )
-    parser.add_argument(
-        '--device',
-        default='',
-        help='cuda device, i.e. 0 or 0,1,2,3 or cpu'
-    )
-    parser.add_argument(
-        '--batch-size', '--batch',
+        "--batch_size",
         default=32,
         type=int,
-        help='total batch size for all GPUs'
+        help="total batch size for all GPUs",
     )
     parser.add_argument(
-        '--num-workers', '--workers',
+        "--workers",
         default=1,
         type=int,
-        help='defines how many subprocesses will be created to load data'
+        help="defines how many subprocesses will be created to load data",
     )
-    
+
     args = vars(parser.parse_args())
-    
+
     return args
 
 
 def main(opt):
     # config device
-    if opt['device'] == 'gpu' or opt['device'] == 'GPU':
+    if opt["device"] == "gpu" or opt["device"] == "GPU":
         if torch.cuda.is_available():
-            DEVICE = torch.device("cuda") 
-    elif opt['device'] == 'cpu' or opt['device'] == 'CPU': 
+            DEVICE = torch.device("cuda")
+    elif opt["device"] == "cpu" or opt["device"] == "CPU":
         DEVICE = torch.device("cpu")
-    
-    os.makedirs(opt['output-dir'], exist_ok=True)
 
-    train_dataset = create_train_dataset(opt['train-input'], 
-                                         width=opt['imgsz'], 
-                                         height=opt['imgsz'], 
-                                         classes=CLASSES)
-    val_dataset = create_valid_dataset(opt['valid-input'], 
-                                       width=opt['imgsz'], 
-                                       height=opt['imgsz'], 
-                                       classes=CLASSES)
-    train_loader = create_train_loader(train_dataset, opt['num-workers'],
-                                       batch_size=opt['batch-size'],
-                                       num_workers=opt['num-workers'])
-    val_loader = create_valid_loader(val_dataset, 
-                                     batch_size=opt['batch-size'],
-                                     num_workers=opt['num-workers'])
+    os.makedirs("outputs", exist_ok=True)
+    TRAIN_DIR = os.path.join(opt["input"], "train")
+    VALID_DIR = os.path.join(opt["input"], "valid")
+
+    train_dataset = create_train_dataset(
+        TRAIN_DIR, width=opt["imgsz"], height=opt["imgsz"], classes=CLASSES
+    )
+    val_dataset = create_valid_dataset(
+        VALID_DIR, width=opt["imgsz"], height=opt["imgsz"], classes=CLASSES
+    )
+    train_loader = create_train_loader(
+        train_dataset,
+        batch_size=opt["batch_size"],
+        num_workers=opt["workers"],
+    )
+    val_loader = create_valid_loader(
+        val_dataset, batch_size=opt["batch_size"], num_workers=opt["workers"]
+    )
 
     print(f"Number of training samples: {len(train_dataset)}")
     print(f"Number of validation samples: {len(val_dataset)}")
 
     # initialize the model
-    model = create_model(num_classes=NUM_CLASSES, size=opt['imgsz'])
+    model = create_model(num_classes=NUM_CLASSES, size=opt["imgsz"])
     model = model.to(DEVICE)
 
     params = [p for p in model.parameters() if p.requires_grad]
 
-    if opt['optimizer'] == 'adam':
+    if opt["optimizer"] == "adam":
         OPTIMIZER = torch.optim.Adam(params, lr=1e-3)
-    elif opt['optimizer'] == 'sgd':
+    elif opt["optimizer"] == "sgd":
         OPTIMIZER = torch.optim.SGD(params, lr=0.001, momentum=0.9, nesterov=True)
-    
+
     SCHEDULER = StepLR(optimizer=OPTIMIZER, step_size=10, gamma=0.1, verbose=True)
 
     # train model
-    train(model, 
-          train_loader, 
-          val_loader,
-          optimizer=OPTIMIZER, 
-          epochs=opt['epochs'],
-          scheduler=SCHEDULER, 
-          output_dir=opt['output-dir'],
-          device=DEVICE)
+    train(
+        model,
+        train_loader,
+        val_loader,
+        optimizer=OPTIMIZER,
+        epochs=opt["epochs"],
+        scheduler=SCHEDULER,
+        output_dir="outputs",
+        device=DEVICE,
+    )
+
 
 if __name__ == "__main__":
     opt = parse_params()
