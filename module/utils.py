@@ -6,8 +6,6 @@ import torch
 
 from albumentations.pytorch import ToTensorV2
 
-# from config import DEVICE, CLASSES
-
 plt.style.use("ggplot")
 
 
@@ -71,6 +69,11 @@ def collate_fn(batch):
 
 
 def get_transform():
+    """Apply
+
+    Returns:
+        _type_: _description_
+    """
     return A.Compose(
         [
             ToTensorV2(p=1.0),
@@ -114,6 +117,7 @@ def save_loss_plot(
     """
     fig_1 = plt.figure(figsize=(10, 7), num=1, clear=True)
     train_ax = fig_1.add_subplot()
+
     train_ax.plot(train_loss_list, color="tab:blue")
     train_ax.set_xlabel(x_label)
     train_ax.set_ylabel(y_label)

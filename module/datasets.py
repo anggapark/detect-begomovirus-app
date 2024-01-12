@@ -6,7 +6,7 @@ import glob as glob
 
 from xml.etree import ElementTree as ET
 from torch.utils.data import Dataset, DataLoader
-from .config import CLASSES, IMG_SIZE, TRAIN_DIR, BATCH_SIZE
+from .config import CLASSES, IMG_SIZE, TRAIN_DIR
 from .utils import collate_fn, get_transform
 
 
@@ -132,22 +132,22 @@ class CustomDataset(Dataset):
 
 
 # prepare the final datasets and data loaders
-def create_train_dataset(DIR):
-    train_dataset = CustomDataset(DIR, IMG_SIZE, IMG_SIZE, CLASSES, get_transform())
+def create_train_dataset(dir, width, height, classes):
+    train_dataset = CustomDataset(dir, width, height, classes, get_transform())
 
     return train_dataset
 
 
-def create_valid_dataset(DIR):
-    valid_dataset = CustomDataset(DIR, IMG_SIZE, IMG_SIZE, CLASSES, get_transform())
+def create_valid_dataset(dir, width, height, classes):
+    valid_dataset = CustomDataset(dir, width, height, classes, get_transform())
 
     return valid_dataset
 
 
-def create_train_loader(train_dataset, num_workers=0):
+def create_train_loader(train_dataset, batch_size, num_workers=0):
     train_loader = DataLoader(
         train_dataset,
-        batch_size=BATCH_SIZE,
+        batch_size=batch_size,
         shuffle=True,
         num_workers=num_workers,
         collate_fn=collate_fn,
@@ -157,10 +157,10 @@ def create_train_loader(train_dataset, num_workers=0):
     return train_loader
 
 
-def create_valid_loader(valid_dataset, num_workers=0):
+def create_valid_loader(valid_dataset, batch_size, num_workers=0):
     valid_loader = DataLoader(
         valid_dataset,
-        batch_size=BATCH_SIZE,
+        batch_size=batch_size,
         shuffle=False,
         num_workers=num_workers,
         collate_fn=collate_fn,
@@ -174,7 +174,9 @@ def create_valid_loader(valid_dataset, num_workers=0):
 # USE: python dataset.py
 if __name__ == "__main__":
     # sanity check of the dataset pipeline with sample visualization
-    dataset = CustomDataset(TRAIN_DIR, IMG_SIZE, IMG_SIZE, CLASSES)
+    dataset = CustomDataset(
+        dir_path=TRAIN_DIR, width=IMG_SIZE, height=IMG_SIZE, classes=CLASSES
+    )
     print(f"Number of training images: {len(dataset)}")
 
     # visualize sample image
