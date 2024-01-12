@@ -1,12 +1,6 @@
 from module.config import (
-    DEVICE,
+    CLASSES,
     NUM_CLASSES,
-    NUM_EPOCHS,
-    OUTPUT_DIR,
-    NUM_WORKERS,
-    IMG_SIZE,
-    TRAIN_DIR,
-    VAL_DIR,
 )
 from module.model import create_model
 from module.utils import (
@@ -143,6 +137,7 @@ def train(model,
           epochs, 
           scheduler, 
           output_dir,
+          device,
           k=None):
     """
     Train and test a PyTorch model
@@ -180,8 +175,8 @@ def train(model,
 
         # start timer and carry out training and validation
         start = time.time()
-        train_loss = train_step(train_loader, model, train_loss_hist, optimizer)
-        metric_summary = validate_step(valid_loader, model)
+        train_loss = train_step(train_loader, model, train_loss_hist, optimizer, device)
+        metric_summary = validate_step(valid_loader, model, device)
 
         print(
             f"Epoch #{epoch+1}\n
@@ -220,11 +215,11 @@ def parse_params():
     # Construct the argument parser.
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--train-input'
+        '--train-input',
         help='path to train input image directory',
     )
     parser.add_argument(
-        '--valid-input'
+        '--valid-input',
         help='path to validation input image directory',
     )
     parser.add_argument(
@@ -232,10 +227,15 @@ def parse_params():
         help='path to validation input image directory',
     )
     parser.add_argument(
-        '--imgsz', '--img', '--img-size'
+        '--imgsz', '--img', '--img-size',
         default=None,
         type=int,
         help='train, valid image resize shape'
+    )
+    parser.add_argument(
+        '--optimizer', '--optim', 
+        default='sgd',
+        help='training optimizer (SGD, adam, etc)'
     )
     parser.add_argument(
         '--epochs', 
@@ -249,13 +249,13 @@ def parse_params():
         help='cuda device, i.e. 0 or 0,1,2,3 or cpu'
     )
     parser.add_argument(
-        '--batch-size', '--batch'
+        '--batch-size', '--batch',
         default=32,
         type=int,
         help='total batch size for all GPUs'
     )
     parser.add_argument(
-        '--num-workers', '--workers'
+        '--num-workers', '--workers',
         default=1,
         type=int,
         help='defines how many subprocesses will be created to load data'
@@ -265,26 +265,46 @@ def parse_params():
     
     return args
 
-OUTPUT_DIR,
 
-if __name__ == "__main__":
-    os.makedirs("outputs", exist_ok=True)
+def main(opt):
+    # config device
+    if opt['device'] == 'gpu' or opt['device'] == 'GPU':
+        if torch.cuda.is_available():
+            DEVICE = torch.device("cuda") 
+    elif opt['device'] == 'cpu' or opt['device'] == 'CPU': 
+        DEVICE = torch.device("cpu")
+    
+    os.makedirs(opt['output-dir'], exist_ok=True)
 
-    train_dataset = create_train_dataset(TRAIN_DIR)
-    val_dataset = create_valid_dataset(VAL_DIR)
-    train_loader = create_train_loader(train_dataset, NUM_WORKERS)
-    val_loader = create_valid_loader(val_dataset, NUM_WORKERS)
+    train_dataset = create_train_dataset(opt['train-input'], 
+                                         width=opt['imgsz'], 
+                                         height=opt['imgsz'], 
+                                         classes=CLASSES)
+    val_dataset = create_valid_dataset(opt['valid-input'], 
+                                       width=opt['imgsz'], 
+                                       height=opt['imgsz'], 
+                                       classes=CLASSES)
+    train_loader = create_train_loader(train_dataset, opt['num-workers'],
+                                       batch_size=opt['batch-size'],
+                                       num_workers=opt['num-workers'])
+    val_loader = create_valid_loader(val_dataset, 
+                                     batch_size=opt['batch-size'],
+                                     num_workers=opt['num-workers'])
 
     print(f"Number of training samples: {len(train_dataset)}")
     print(f"Number of validation samples: {len(val_dataset)}")
 
     # initialize the model
-    model = create_model(num_classes=NUM_CLASSES, size=IMG_SIZE)
+    model = create_model(num_classes=NUM_CLASSES, size=opt['imgsz'])
     model = model.to(DEVICE)
 
     params = [p for p in model.parameters() if p.requires_grad]
 
-    OPTIMIZER = torch.optim.Adam(params, lr=1e-3)
+    if opt['optimizer'] == 'adam':
+        OPTIMIZER = torch.optim.Adam(params, lr=1e-3)
+    elif opt['optimizer'] == 'sgd':
+        OPTIMIZER = torch.optim.SGD(params, lr=0.001, momentum=0.9, nesterov=True)
+    
     SCHEDULER = StepLR(optimizer=OPTIMIZER, step_size=10, gamma=0.1, verbose=True)
 
     # train model
@@ -292,6 +312,11 @@ if __name__ == "__main__":
           train_loader, 
           val_loader,
           optimizer=OPTIMIZER, 
-          epochs=NUM_EPOCHS,
+          epochs=opt['epochs'],
           scheduler=SCHEDULER, 
-          output_dir=OUTPUT_DIR)
+          output_dir=opt['output-dir'],
+          device=DEVICE)
+
+if __name__ == "__main__":
+    opt = parse_params()
+    main(opt)
