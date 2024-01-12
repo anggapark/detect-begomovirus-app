@@ -26,6 +26,7 @@ from module.datasets import (
 
 import os
 import time
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
@@ -214,7 +215,57 @@ def train(model,
             save_mAP(output_dir, map_50_list, map_list)
 
         scheduler.step()
+        
+def parse_params():
+    # Construct the argument parser.
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--train-input'
+        help='path to train input image directory',
+    )
+    parser.add_argument(
+        '--valid-input'
+        help='path to validation input image directory',
+    )
+    parser.add_argument(
+        '--output-dir', '--output',
+        help='path to validation input image directory',
+    )
+    parser.add_argument(
+        '--imgsz', '--img', '--img-size'
+        default=None,
+        type=int,
+        help='train, valid image resize shape'
+    )
+    parser.add_argument(
+        '--epochs', 
+        default=50,
+        type=int,
+        help='total training epochs'
+    )
+    parser.add_argument(
+        '--device',
+        default='',
+        help='cuda device, i.e. 0 or 0,1,2,3 or cpu'
+    )
+    parser.add_argument(
+        '--batch-size', '--batch'
+        default=32,
+        type=int,
+        help='total batch size for all GPUs'
+    )
+    parser.add_argument(
+        '--num-workers', '--workers'
+        default=1,
+        type=int,
+        help='defines how many subprocesses will be created to load data'
+    )
+    
+    args = vars(parser.parse_args())
+    
+    return args
 
+OUTPUT_DIR,
 
 if __name__ == "__main__":
     os.makedirs("outputs", exist_ok=True)
@@ -243,4 +294,4 @@ if __name__ == "__main__":
           optimizer=OPTIMIZER, 
           epochs=NUM_EPOCHS,
           scheduler=SCHEDULER, 
-          output_dir='outputs')
+          output_dir=OUTPUT_DIR)
