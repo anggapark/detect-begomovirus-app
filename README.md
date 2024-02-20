@@ -1,2 +1,3 @@
-# detect-begomovirus
-Final project for my undergraduate thesis to detect yellow leaf disease caused by begomovirus using single shot multibox detector (SSD)
+# machine-learning-detect-begomovirus
+
+Final project for undergraduate thesis to create machine learning model that detect yellow leaf disease caused by begomovirus
