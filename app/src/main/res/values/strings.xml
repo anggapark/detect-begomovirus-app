@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">SIMPT</string>
+    <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
+    <string name="title_scan">Scan</string>
+    <string name="title_library">Library</string>
+    <string name="title_profile">Profile</string>
+
+    <string name="desc_name">Name</string>
+    <string name="desc_profile">Profile Picture</string>
+    <string name="desc_nim">NIM/NIP</string>
+
+    <string name="home_add">Tambahkan Data</string>
+    <string name="home_detection">Deteksi Penyakit</string>
+    <string name="home_data">Data Saya</string>
+    <string name="home_submission">Cek Pengajuan</string>
+
+    <string name="menu_filter">Filter</string>
+    <string name="menu_layout">Layout</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_ascending">Ascending</string>
+    <string name="menu_descending">Descending</string>
+
+    <string name="tab_tanaman">Tanaman</string>
+    <string name="tab_penyakit">Penyakit</string>
+    <string name="tab_pathogen">Pathogen</string>
+
+    <string name="personal_info">Personal Info</string>
+    <string name="contact_info">Contact Info</string>
+    <string name="user_info">User Information</string>
+
+    <string name="info_name">Your Name</string>
+    <string name="info_nim">NIM</string>
+    <string name="info_about">About Me</string>
+
+    <string name="hint_name">Enter your name</string>
+    <string name="hint_nim">Enter NIM</string>
+    <string name="hint_about">Enter description</string>
+    <string name="hint_phone">Enter phone number</string>
+    <string name="hint_email">Enter email address</string>
+
+    <string name="bt_edit">Edit</string>
+    <string name="info_phone">Phone Number</string>
+    <string name="info_email">Email</string>
+    <string name="scan_desc">Scan penyakit kuning untuk tanaman:</string>
+
+    <string name="title_cabai">Cabai</string>
+    <string name="title_terung">Terung</string>
+    <string name="title_kacang_panjang">Kacang Panjang</string>
+    <string name="title_kelompok_pathogen">Kelompok Pathogen</string>
+    <string name="title_dataset">Dataset Acuan</string>
+    <string name="title_deskripsi">Deskripsi</string>
+    <string name="title_sort">Sort</string>
+    <string name="title_kategori">Kategori</string>
+    <string name="title_keterangan">Keterangan</string>
+
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada porta felis. Nunc semper efficitur euismod. Sed ut quam urna. Suspendisse egestas quis nisl id aliquam. Cras scelerisque orci aliquam, convallis dolor eget, pellentesque urna. Etiam vel justo ut velit tristique tempor. Morbi sit amet finibus tellus, sed fringilla massa. Pellentesque lacinia pulvinar eros malesuada commodo. Nulla vel mattis eros. Donec ornare volutpat diam nec blandit.</string>
+
+    <string name="hint_tanaman">Masukkan Nama Tanaman</string>
+    <string name="hint_penyakit">Masukkan Nama Penyakit</string>
+    <string name="hint_pathogen">Masukkan Nama Pathogen</string>
+    <string name="hint_kelompok_pathogen">Masukkan Kelompok Pathogen</string>
+    <string name="hint_dataset">Masukkan Dataset Acuan</string>
+    <string name="hint_deskripsi">Masukkan Deskripsi</string>
+    <string name="hint_gambar">Tambahkan Gambar</string>
+    <string name="hint_kategori">Masukkan Nama Kategori</string>
+    <string name="hint_keterangan">Masukkan Keterangan</string>
+    <string name="hint_nama">Masukkan Nama</string>
+
+    <string name="btn_apply">Apply</string>
+    <string name="btn_submit">Submit</string>
+    <string name="btn_kategori">Tambahkan Kategori</string>
+    <string name="btn_camera">Open Camera</string>
+    <string name="btn_gallery">Choose from Gallery</string>
+
+</resources>
