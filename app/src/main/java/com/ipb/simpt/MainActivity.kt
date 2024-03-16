@@ -161,7 +161,3 @@ class MainActivity : AppCompatActivity() {
     private var currentLayout: Layout = Layout.GRID // Initial layout is grid
 
 }
-
-//TODO 1 = Layout Pengajuan dan Login Register
-//TODO 2 = Mulai implementasi Firebase
-//TODO 3 = Bikin Logic
