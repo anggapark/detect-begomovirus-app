@@ -1,5 +1,6 @@
 package com.ipb.simpt
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
@@ -11,20 +12,35 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.ipb.simpt.databinding.ActivityMainBinding
+import com.ipb.simpt.ui.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Authentication
+        auth = Firebase.auth
+        val firebaseUser = auth.currentUser
+
+        if (firebaseUser == null) {
+            // Not signed in, launch the Login activity
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
+        //Navbar
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -42,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_home, R.id.navigation_scan, R.id.navigation_profile -> supportActionBar?.hide()
+                R.id.navigation_home, R.id.navigation_scan -> supportActionBar?.hide()
                 else -> supportActionBar?.show()
             }
             invalidateOptionsMenu()
@@ -64,11 +80,16 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_search -> {
                 menuInflater.inflate(R.menu.menu_search, menu)
             }
+
+            R.id.navigation_profile -> {
+                menuInflater.inflate(R.menu.menu_profile, menu)
+            }
+
             // Add more cases for other fragments if needed
-//            else -> {
-//                // Default menu
-//                menuInflater.inflate(R.menu.default_menu, menu)
-//            }
+            else -> {
+                // Default menu
+                menuInflater.inflate(R.menu.default_menu, menu)
+            }
         }
         return super.onPrepareOptionsMenu(menu)
     }
@@ -95,11 +116,29 @@ class MainActivity : AppCompatActivity() {
                 // Handle filtering action in the Search fragment
                 true
             }
+
+            R.id.action_back -> {
+                // Navigate back when back button is clicked
+                navController.navigateUp()
+                true
+            }
+
+            R.id.action_logout -> {
+                signOut()
+                true
+            }
+
             // Add more cases for other menu items if needed
             else -> {
                 super.onOptionsItemSelected(item)
             }
         }
+    }
+
+    private fun signOut() {
+        auth.signOut()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 
     private fun getLayoutIcon(): Drawable? {
@@ -122,3 +161,7 @@ class MainActivity : AppCompatActivity() {
     private var currentLayout: Layout = Layout.GRID // Initial layout is grid
 
 }
+
+//TODO 1 = Layout Pengajuan dan Login Register
+//TODO 2 = Mulai implementasi Firebase
+//TODO 3 = Bikin Logic

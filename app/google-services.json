@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "259948721412",
+    "project_id": "simpt-44df4",
+    "storage_bucket": "simpt-44df4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:259948721412:android:82e9a4e74d6ff7bb3e0c51",
+        "android_client_info": {
+          "package_name": "com.ipb.simpt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "259948721412-6f3gc909qoeu98neq10jt3kq743fqrd2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ipb.simpt",
+            "certificate_hash": "f83d3969d5fe3a856c01842a042a71619a989152"
+          }
+        },
+        {
+          "client_id": "259948721412-oh7ukin244qs6s32pmc7uamvociq6moh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhcnOWA-gxUYWsoVVMllD2aJrR2o-IC9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "259948721412-oh7ukin244qs6s32pmc7uamvociq6moh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
