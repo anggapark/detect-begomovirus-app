@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.ipb.simpt.databinding.FragmentHomeBinding
 import com.ipb.simpt.ui.add.AddActivity
 import com.ipb.simpt.ui.mydata.MyDataActivity
-import com.ipb.simpt.ui.scan.ScanFragment
 
 class HomeFragment : Fragment() {
 
@@ -26,9 +25,6 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root

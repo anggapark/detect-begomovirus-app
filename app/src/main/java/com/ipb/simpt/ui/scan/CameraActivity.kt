@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.ipb.simpt.ui.scan
 
 import android.Manifest
@@ -40,10 +42,11 @@ class CameraActivity : AppCompatActivity() {
     lateinit var textureView: TextureView
     lateinit var imageView: ImageView
     lateinit var model: Ssd
-    lateinit var labels:List<String>
+    lateinit var labels: List<String>
     var colors = listOf<Int>(
         Color.BLUE, Color.GREEN, Color.RED, Color.CYAN, Color.GRAY, Color.BLACK,
-        Color.DKGRAY, Color.MAGENTA, Color.YELLOW, Color.RED)
+        Color.DKGRAY, Color.MAGENTA, Color.YELLOW, Color.RED
+    )
     val paint = Paint()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +58,8 @@ class CameraActivity : AppCompatActivity() {
 
         labels = FileUtil.loadLabels(this, "labels.txt")
         model = Ssd.newInstance(this)
-        imageProcessor = ImageProcessor.Builder().add(ResizeOp(300, 300, ResizeOp.ResizeMethod.BILINEAR)).build()
+        imageProcessor =
+            ImageProcessor.Builder().add(ResizeOp(300, 300, ResizeOp.ResizeMethod.BILINEAR)).build()
         val handlerThread = HandlerThread("videoThread")
         handlerThread.start()
         handler = Handler(handlerThread.looper)
@@ -97,23 +101,37 @@ class CameraActivity : AppCompatActivity() {
                 val scores = outputs.scoresAsTensorBuffer.floatArray
                 val numberOfDetections = outputs.numberOfDetectionsAsTensorBuffer.floatArray
 
-                var mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+                val mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
                 val canvas = Canvas(mutable)
 
                 val h = mutable.height
                 val w = mutable.width
-                paint.textSize = h/15f
-                paint.strokeWidth = h/85f
+                paint.textSize = h / 15f
+                paint.strokeWidth = h / 85f
                 var x = 0
                 scores.forEachIndexed { index, fl ->
                     x = index
                     x *= 4
-                    if(fl > 0.5){
+                    if (fl > 0.5) {
                         paint.setColor(colors.get(index))
                         paint.style = Paint.Style.STROKE
-                        canvas.drawRect(RectF(locations.get(x+1)*w, locations.get(x)*h, locations.get(x+3)*w, locations.get(x+2)*h), paint)
+                        canvas.drawRect(
+                            RectF(
+                                locations.get(x + 1) * w,
+                                locations.get(x) * h,
+                                locations.get(x + 3) * w,
+                                locations.get(x + 2) * h
+                            ), paint
+                        )
                         paint.style = Paint.Style.FILL
-                        canvas.drawText(labels.get(classes.get(index).toInt())+" "+fl.toString(), locations.get(x+1)*w, locations.get(x)*h, paint)
+                        canvas.drawText(
+                            labels.get(
+                                classes.get(index).toInt()
+                            ) + " " + fl.toString(),
+                            locations.get(x + 1) * w,
+                            locations.get(x) * h,
+                            paint
+                        )
                     }
                 }
 
@@ -140,10 +158,10 @@ class CameraActivity : AppCompatActivity() {
                 override fun onOpened(p0: CameraDevice) {
                     cameraDevice = p0
 
-                    var surfaceTexture = textureView.surfaceTexture
-                    var surface = Surface(surfaceTexture)
+                    val surfaceTexture = textureView.surfaceTexture
+                    val surface = Surface(surfaceTexture)
 
-                    var captureRequest =
+                    val captureRequest =
                         cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
                     captureRequest.addTarget(surface)
 

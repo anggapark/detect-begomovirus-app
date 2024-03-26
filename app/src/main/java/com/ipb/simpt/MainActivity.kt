@@ -13,7 +13,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -69,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_scan -> {
                     toolbar.visibility = View.GONE
                 }
+
                 else -> {
                     toolbar.visibility = View.VISIBLE
                 }
