@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.ipb.simpt.databinding.FragmentHomeBinding
 import com.ipb.simpt.ui.add.AddActivity
 import com.ipb.simpt.ui.mydata.MyDataActivity
