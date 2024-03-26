@@ -5,11 +5,14 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.Firebase
@@ -26,8 +29,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
         //Authentication
         auth = Firebase.auth
@@ -53,18 +60,22 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_profile
             )
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
+        // Navbar Visibility
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_home, R.id.navigation_scan -> supportActionBar?.hide()
-                else -> supportActionBar?.show()
+                R.id.navigation_home, R.id.navigation_scan -> {
+                    toolbar.visibility = View.GONE
+                }
+                else -> {
+                    toolbar.visibility = View.VISIBLE
+                }
             }
             invalidateOptionsMenu()
         }
     }
-
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.clear()
@@ -85,9 +96,7 @@ class MainActivity : AppCompatActivity() {
                 menuInflater.inflate(R.menu.menu_profile, menu)
             }
 
-            // Add more cases for other fragments if needed
             else -> {
-                // Default menu
                 menuInflater.inflate(R.menu.default_menu, menu)
             }
         }
@@ -161,3 +170,8 @@ class MainActivity : AppCompatActivity() {
     private var currentLayout: Layout = Layout.GRID // Initial layout is grid
 
 }
+
+//TODO 1 = Layout Pengajuan
+//TODO 2 = Welcome/Splash Page
+//TODO 3 = Scan Page
+//TODO 4 = Firebase

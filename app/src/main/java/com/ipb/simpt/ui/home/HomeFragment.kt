@@ -1,12 +1,17 @@
 package com.ipb.simpt.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import com.ipb.simpt.R
+import androidx.lifecycle.ViewModelProvider
 import com.ipb.simpt.databinding.FragmentHomeBinding
+import com.ipb.simpt.ui.add.AddActivity
+import com.ipb.simpt.ui.mydata.MyDataActivity
+import com.ipb.simpt.ui.scan.ScanFragment
 
 class HomeFragment : Fragment() {
 
@@ -22,19 +27,25 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-//        val homeViewModel =
-//            ViewModelProvider(this).get(HomeViewModel::class.java)
-//
-//        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-//        val root: View = binding.root
-//
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
-//        return root
+        val homeViewModel =
+            ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+        // Launch ActivityAdd
+        val cvAdd: CardView = binding.cvAdd
+        cvAdd.setOnClickListener {
+            startActivity(Intent(requireContext(), AddActivity::class.java))
+        }
+
+        // Launch ActivityMyData
+        val cvData: CardView = binding.cvData
+        cvData.setOnClickListener {
+            startActivity(Intent(requireContext(), MyDataActivity::class.java))
+        }
+
+        return root
     }
 
     override fun onDestroyView() {
