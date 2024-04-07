@@ -14,17 +14,16 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.ipb.simpt.databinding.ActivityMainBinding
 import com.ipb.simpt.ui.login.LoginActivity
+import com.ipb.simpt.ui.splash.WelcomeActivity
+import com.ipb.simpt.utils.Extensions.toast
+import com.ipb.simpt.utils.FirebaseUtils.firebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +35,9 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         //Authentication
-        auth = Firebase.auth
-        val firebaseUser = auth.currentUser
-
-        if (firebaseUser == null) {
-            // Not signed in, launch the Login activity
-            startActivity(Intent(this, LoginActivity::class.java))
+        if (firebaseAuth.currentUser == null) {
+            // Not signed in, launch the Welcome activity
+            startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
             return
         }
@@ -145,8 +141,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        auth.signOut()
-        startActivity(Intent(this, LoginActivity::class.java))
+        firebaseAuth.signOut()
+        startActivity(Intent(this, WelcomeActivity::class.java))
+        toast("signed out")
         finish()
     }
 

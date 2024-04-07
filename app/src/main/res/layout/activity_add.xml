@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/button_background"
+                android:background="@drawable/bg_button"
                 android:drawableLeft="@drawable/ic_add"
                 android:text="@string/hint_gambar"
                 android:textColor="@color/black"

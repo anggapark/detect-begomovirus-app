@@ -1,34 +1,23 @@
 package com.ipb.simpt.ui.login
 
-import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
-import com.google.firebase.Firebase
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FirebaseAuth
+import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.ipb.simpt.MainActivity
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityLoginBinding
+import com.ipb.simpt.utils.Extensions.toast
+import com.ipb.simpt.utils.FirebaseUtils
+import com.ipb.simpt.utils.FirebaseUtils.firebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var auth: FirebaseAuth
+    lateinit var signInEmail: String
+    lateinit var signInPassword: String
+    lateinit var signInInputsArray: Array<EditText>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,78 +26,46 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configure Google Sign In
-        val gso = GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        // Initialize Firebase Auth
-        auth = Firebase.auth
-
-        binding.signInButton.setOnClickListener {
+        signInInputsArray = arrayOf(binding.edLoginEmail, binding.edLoginPassword)
+        binding.btnLogin.setOnClickListener {
             signIn()
         }
     }
 
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        resultLauncher.launch(signInIntent)
-    }
-
-    private var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account: GoogleSignInAccount = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
-            }
-        }
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
-                    val user: FirebaseUser? = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    updateUI(null)
-                }
-            }
-    }
-
-    private fun updateUI(currentUser: FirebaseUser?) {
-        if (currentUser != null){
-            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-            finish()
-        }
-    }
-
+    /* check if there's a signed-in user*/
     override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
+        val user: FirebaseUser? = FirebaseUtils.firebaseAuth.currentUser
+        user?.let {
+            startActivity(Intent(this, MainActivity::class.java))
+            toast("Welcome Back")
+        }
     }
 
-    companion object {
-        private const val TAG = "LoginActivity"
-    }
+    private fun notEmpty(): Boolean = signInEmail.isNotEmpty() && signInPassword.isNotEmpty()
 
+    private fun signIn() {
+        signInEmail = binding.edLoginEmail.text.toString().trim()
+        signInPassword = binding.edLoginPassword.text.toString().trim()
+
+
+        if (notEmpty()) {
+            firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
+                .addOnCompleteListener { signIn ->
+                    if (signIn.isSuccessful) {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        toast("signed in successfully")
+                        finish()
+                    } else {
+                        toast("sign in failed")
+                    }
+                }
+        } else {
+            signInInputsArray.forEach { input ->
+                if (input.text.toString().trim().isEmpty()) {
+                    input.error = "${input.hint} is required"
+                }
+            }
+        }
+    }
 }

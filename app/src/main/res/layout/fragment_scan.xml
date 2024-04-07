@@ -45,7 +45,7 @@
                     android:background="@drawable/purple_circle"
                     android:contentDescription="@string/title_cabai"
                     android:padding="10dp"
-                    android:src="@drawable/chili_icon" />
+                    android:src="@drawable/icon_chili" />
 
                 <TextView
                     android:id="@+id/cabe_text"
@@ -70,7 +70,7 @@
                     android:background="@drawable/purple_circle"
                     android:contentDescription="@string/title_terung"
                     android:padding="10dp"
-                    android:src="@drawable/eggplant_icon" />
+                    android:src="@drawable/icon_eggplant" />
 
                 <TextView
                     android:id="@+id/terung_text"
@@ -95,7 +95,7 @@
                     android:background="@drawable/purple_circle"
                     android:contentDescription="@string/title_kacang_panjang"
                     android:padding="10dp"
-                    android:src="@drawable/bean_icon" />
+                    android:src="@drawable/icon_bean" />
 
                 <TextView
                     android:id="@+id/kacang_panjang_text"

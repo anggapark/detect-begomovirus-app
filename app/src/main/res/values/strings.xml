@@ -76,4 +76,32 @@
     <string name="menu_back">Back</string>
     <string name="menu_logout">Log out</string>
 
+    <!--  Ntar benerin, nitip doang  -->
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="message_welcome_page">Want to share stories about your learning and amazing experiences in Dicoding? Start here!</string>
+    <string name="title_welcome_page">Welcome to Sistem Informasi Manajemen Proteksi Tanaman!</string>
+    <string name="title_signup_page">Complete your personal details below</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password">Password</string>
+    <string name="message_login_page">Fill your details first</string>
+    <string name="title_login_page">Ready to share your amazing story?</string>
+    <string name="name">Name</string>
+    <string name="logout">Logout</string>
+    <string name="username">Username</string>
+    <string name="description">Description</string>
+    <string name="add_story">Add Story</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="upload">Upload</string>
+    <string name="password_warning">Password should be at least 8 characters long</string>
+    <string name="story_maps">Story Maps</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satellite</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
+    <string name="retry">Try Again</string>
+
 </resources>

@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/box_background"
+            android:background="@drawable/bg_box"
             android:button="@null"
             android:padding="10dp"
             android:text="@string/menu_ascending" />
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:background="@drawable/box_background"
+            android:background="@drawable/bg_box"
             android:button="@null"
             android:padding="10dp"
             android:text="@string/menu_descending" />

@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -17,26 +18,37 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SIMPT"
         tools:targetApi="31">
+
         <activity
             android:name=".ui.scan.CameraActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.mydata.MyDataActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.add.AddCategoryActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.detail.UserDetailActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.add.AddActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.detail.DetailActivity"
             android:exported="false" />
+
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.splash.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,9 +56,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".MainActivity"
-            android:exported="true" />
+            android:name=".ui.register.RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
