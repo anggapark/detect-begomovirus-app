@@ -5,31 +5,37 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.MainActivity
 import com.ipb.simpt.databinding.ActivityRegisterBinding
 import com.ipb.simpt.utils.Extensions.toast
-import com.ipb.simpt.utils.FirebaseUtils.firebaseAuth
 import com.ipb.simpt.utils.FirebaseUtils.firebaseUser
 
 class RegisterActivity : AppCompatActivity() {
 
-    // TODO 1: save user data such as name and nim
-    // TODO 2: apply loading state
-
-    lateinit var userName: String
-    lateinit var userNim: String
-    lateinit var userEmail: String
-    lateinit var userPassword: String
+    // view binding
     private lateinit var binding: ActivityRegisterBinding
-    lateinit var createAccountInputsArray: Array<EditText>
+
+    // firebase auth
+    private lateinit var firebaseAuth: FirebaseAuth
+
+    private lateinit var userName: String
+    private lateinit var userNim: String
+    private lateinit var userEmail: String
+    private lateinit var userPassword: String
+    private lateinit var createAccountInputsArray: Array<EditText>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // init firebase auth
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        // input hint error for empty box
         createAccountInputsArray = arrayOf(
             binding.edRegisterName,
             binding.edRegisterNim,
@@ -38,10 +44,12 @@ class RegisterActivity : AppCompatActivity() {
             binding.edRegisterConfirmPassword
         )
 
-        setupAction()
+        binding.btnRegister.setOnClickListener {
+            setupAction()
+        }
     }
 
-    /* check if there's a signed-in user*/
+    // check if there's a signed-in user
     override fun onStart() {
         super.onStart()
         val user: FirebaseUser? = firebaseAuth.currentUser
@@ -51,19 +59,20 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    // check if there's empty box
     private fun notEmpty(): Boolean = binding.edRegisterName.text.toString().trim().isNotEmpty() &&
             binding.edRegisterNim.text.toString().trim().isNotEmpty() &&
             binding.edRegisterEmail.text.toString().trim().isNotEmpty() &&
             binding.edRegisterPassword.text.toString().trim().isNotEmpty() &&
             binding.edRegisterConfirmPassword.text.toString().trim().isNotEmpty()
 
-    private fun identicalPassword(): Boolean {
-        var identical = false
+    private fun validateData(): Boolean {
+        var valid = false
         if (notEmpty() &&
             binding.edRegisterPassword.text.toString()
                 .trim() == binding.edRegisterConfirmPassword.text.toString().trim()
         ) {
-            identical = true
+            valid = true
         } else if (!notEmpty()) {
             createAccountInputsArray.forEach { input ->
                 if (input.text.toString().trim().isEmpty()) {
@@ -71,36 +80,77 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
         } else {
-            toast("passwords are not matching !")
+            toast("Passwords are not matching !")
         }
-        return identical
+        return valid
     }
 
     private fun setupAction() {
-        binding.btnRegister.setOnClickListener {
-            if (identicalPassword()) {
-                // identicalPassword() returns true only  when inputs are not empty and passwords are identical
+        // validateData() returns true only  when inputs are not empty and passwords are identical
+        if (validateData()) {
 
-                userName = binding.edRegisterName.text.toString().trim()
-                userNim = binding.edRegisterNim.text.toString().trim()
-                userEmail = binding.edRegisterEmail.text.toString().trim()
-                userPassword = binding.edRegisterPassword.text.toString().trim()
+            // input data
+            userName = binding.edRegisterName.text.toString().trim()
+            userNim = binding.edRegisterNim.text.toString().trim()
+            userEmail = binding.edRegisterEmail.text.toString().trim()
+            userPassword = binding.edRegisterPassword.text.toString().trim()
 
-                /*create a user*/
-                firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            toast("created account successfully !")
-                            // TODO : Implement email verification
-                            //sendEmailVerification()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
-                        } else {
-                            toast("failed to Authenticate !")
-                        }
-                    }
-            }
+            // Show loading progress bar
+            showLoading(true)
+
+            // create account - firebase auth
+            firebaseAuth.createUserWithEmailAndPassword(userEmail, userPassword)
+                .addOnSuccessListener {
+                    // account created, add user info to db
+                    updateUserInfo()
+                }
+                .addOnFailureListener { e ->
+                    // failed creating account
+                    toast("Failed creating account due to ${e.message}")
+                    // Hide loading progress bar
+                    showLoading(false)
+                }
+
         }
+
+    }
+
+    // Save user info - firebase firestore
+    private fun updateUserInfo() {
+        // timestamp
+        val timestamp = System.currentTimeMillis()
+
+        // get current user uid
+        val uid = firebaseAuth.uid
+
+        // setup data to add in db
+        val hashMap: HashMap<String, Any?> = HashMap()
+        hashMap["uid"] = uid
+        hashMap["email"] = userEmail
+        hashMap["userName"] = userName
+        hashMap["userNim"] = userNim
+        hashMap["profileImage"] = "" // empty. will do in profile edit
+        hashMap["userType"] =
+            "user" // possible value are user/dosen/admin. Will change value manually on firebase db
+        hashMap["timestamp"] = timestamp
+
+        //set data to db
+        val db = FirebaseFirestore.getInstance()
+        db.collection("Users")
+            .document(uid!!)
+            .set(hashMap)
+            .addOnSuccessListener {
+                // user info saved, open user main activity
+                showLoading(false)
+                toast("Account created successfully !")
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+            .addOnFailureListener { e ->
+                // failed adding data to db
+                showLoading(false)
+                toast("Failed saving user info due to ${e.message}")
+            }
     }
 
     /* send verification email to the new user. This will only

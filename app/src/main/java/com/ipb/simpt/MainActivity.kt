@@ -14,33 +14,31 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.ipb.simpt.databinding.ActivityMainBinding
-import com.ipb.simpt.ui.login.LoginActivity
 import com.ipb.simpt.ui.splash.WelcomeActivity
 import com.ipb.simpt.utils.Extensions.toast
-import com.ipb.simpt.utils.FirebaseUtils.firebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
+    // view binding & nav controller
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
+    // firebase auth
+    private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        //Authentication
-        if (firebaseAuth.currentUser == null) {
-            // Not signed in, launch the Welcome activity
-            startActivity(Intent(this, WelcomeActivity::class.java))
-            finish()
-            return
-        }
+        // init firebase auth
+        firebaseAuth = FirebaseAuth.getInstance()
+        checkUser()
 
         //Navbar
         navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -71,6 +69,25 @@ class MainActivity : AppCompatActivity() {
             }
             invalidateOptionsMenu()
         }
+    }
+
+    // TODO : Lanjutkan bagian show user info ke home fragment
+    //Authentication
+    private fun checkUser() {
+        val firebaseUser = firebaseAuth.currentUser
+        if (firebaseUser == null) {
+            // Not signed in, launch the Welcome activity
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+        }
+//        else {
+//            // Logged in, get and show user info
+//            val userName = firebaseUser.displayName
+//            val profile = firebaseUser.photoUrl
+//
+//            // Set to textview of user info
+//
+//        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {

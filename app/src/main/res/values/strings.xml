@@ -12,6 +12,7 @@
     <string name="desc_nim">NIM/NIP</string>
 
     <string name="home_add">Tambahkan Data</string>
+    <string name="home_category">Tambahkan Kategori</string>
     <string name="home_detection">Deteksi Penyakit</string>
     <string name="home_data">Data Saya</string>
     <string name="home_submission">Cek Pengajuan</string>
@@ -77,6 +78,7 @@
     <string name="menu_logout">Log out</string>
 
     <!--  Ntar benerin, nitip doang  -->
+    <string name="skip">Continue Without Login</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="message_welcome_page">Want to share stories about your learning and amazing experiences in Dicoding? Start here!</string>
@@ -103,5 +105,7 @@
     <string name="terrain_type">Terrain</string>
     <string name="hybrid_type">Hybrid</string>
     <string name="retry">Try Again</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="home_show">Tampilkan Kategori</string>
 
 </resources>

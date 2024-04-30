@@ -62,6 +62,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("androidx.activity:activity:1.8.0")
     implementation("com.google.firebase:firebase-database:20.3.1")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
 
     testImplementation("junit:junit:4.13.2")
 
