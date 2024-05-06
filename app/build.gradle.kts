@@ -58,11 +58,12 @@ dependencies {
     implementation ("org.tensorflow:tensorflow-lite-metadata:0.1.0")
 
     // Firebase Auth
-    implementation("com.google.firebase:firebase-auth:22.3.1")
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
-    implementation("androidx.activity:activity:1.8.0")
-    implementation("com.google.firebase:firebase-database:20.3.1")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
+    implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.android.gms:play-services-auth:21.1.1")
+    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("com.google.firebase:firebase-database:21.0.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
+    implementation("com.google.firebase:firebase-storage-ktx:21.0.0")
 
     testImplementation("junit:junit:4.13.2")
 

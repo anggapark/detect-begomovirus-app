@@ -52,7 +52,6 @@ class DosenShowActivity : AppCompatActivity() {
 
         // init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
-        checkUser()
 
         // Load the categories
         loadCategories()
@@ -101,16 +100,6 @@ class DosenShowActivity : AppCompatActivity() {
             }
     }
 
-
-    //Authentication
-    private fun checkUser() {
-        val firebaseUser = firebaseAuth.currentUser
-        if (firebaseUser == null) {
-            // Not signed in, launch the Welcome activity
-            startActivity(Intent(this, WelcomeActivity::class.java))
-            finish()
-        }
-    }
 
     // enable toolbar as actionbar
     private fun toolbar() {

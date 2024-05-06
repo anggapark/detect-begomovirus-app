@@ -19,6 +19,9 @@
         android:theme="@style/Theme.SIMPT"
         tools:targetApi="31">
         <activity
+            android:name=".ui.add.AddDataActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.library.DosenShowActivity"
             android:exported="false" />
         <activity

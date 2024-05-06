@@ -75,6 +75,7 @@ class AddCategoryActivity : AppCompatActivity() {
             hashMap["timestamp"] = timestamp
             hashMap["uid"] = "${firebaseAuth.uid}"
 
+            // TODO: After uploading, intent to Dosen Show
             // add to firestore db: Database Root > Categories > Category name > Data
             val db = FirebaseFirestore.getInstance()
             db.collection("Categories")

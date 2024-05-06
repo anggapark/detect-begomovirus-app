@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ipb.simpt.databinding.FragmentHomeBinding
 import com.ipb.simpt.ui.add.AddActivity
+import com.ipb.simpt.ui.add.AddDataActivity
 import com.ipb.simpt.ui.mydata.MyDataActivity
 
 class HomeFragment : Fragment() {
@@ -32,7 +33,7 @@ class HomeFragment : Fragment() {
         // Launch ActivityAdd
         val cvAdd: CardView = binding.cvAdd
         cvAdd.setOnClickListener {
-            startActivity(Intent(requireContext(), AddActivity::class.java))
+            startActivity(Intent(requireContext(), AddDataActivity::class.java))
         }
 
         // Launch ActivityMyData
