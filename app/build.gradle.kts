@@ -53,6 +53,9 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
 
+    // Glide
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+
     // TFlite
     implementation ("org.tensorflow:tensorflow-lite-support:0.1.0")
     implementation ("org.tensorflow:tensorflow-lite-metadata:0.1.0")
@@ -64,6 +67,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-firestore-ktx:25.0.0")
     implementation("com.google.firebase:firebase-storage-ktx:21.0.0")
+    implementation("androidx.activity:activity:1.8.0")
 
     testImplementation("junit:junit:4.13.2")
 

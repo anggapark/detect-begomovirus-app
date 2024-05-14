@@ -62,12 +62,15 @@ class WelcomeActivity : AppCompatActivity() {
                         val userType = document.getString("userType")
                         if (userType == "user") {
                             startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
+                            finish()
 
                         } else if (userType == "dosen") {
                             startActivity(Intent(this@WelcomeActivity, DosenHomeActivity::class.java))
+                            finish()
 
                         } else if (userType == "admin") {
                             startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
+                            finish()
 
                         }
                     } else {

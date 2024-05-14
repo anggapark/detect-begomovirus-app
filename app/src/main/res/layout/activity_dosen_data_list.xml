@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/back01"
-    tools:context=".ui.library.DosenShowActivity">
+    tools:context=".ui.library.DosenDataListActivity">
 
-    <!-- toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -40,16 +39,18 @@
         android:drawableStart="@drawable/ic_search"
         android:hint="@string/title_search"
         android:padding="10dp"
-        android:textColorHint="@color/gray1"/>
+        android:textColorHint="@color/gray2"
+        android:textColor="@color/black"/>
 
     <!-- Categories -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_categories"
+        android:id="@+id/rv_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/et_search"
         android:layout_margin="10dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/category_list"/>
+        tools:listitem="@layout/item_list"/>
+
 
 </RelativeLayout>

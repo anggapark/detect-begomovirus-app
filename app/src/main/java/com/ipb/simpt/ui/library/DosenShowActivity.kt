@@ -53,6 +53,7 @@ class DosenShowActivity : AppCompatActivity() {
         // init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
 
+
         // Load the categories
         loadCategories()
 

@@ -2,6 +2,7 @@ package com.ipb.simpt.ui.adapter
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.data.model.CategoryModel
 import com.ipb.simpt.databinding.CategoryListBinding
+import com.ipb.simpt.ui.library.DosenDataListActivity
 
 
 class CategoryAdapter(
@@ -34,8 +36,6 @@ class CategoryAdapter(
     override fun getItemCount(): Int = categoryArrayList.size // number of items in list
 
     override fun onBindViewHolder(holder: HolderCategory, position: Int) {
-        // get data, set data, handle click, etc
-
         // get data
         val model = categoryArrayList[position]
 
@@ -56,6 +56,14 @@ class CategoryAdapter(
                     dialog.dismiss()
                 }
             }.show()
+        }
+
+        // handle click, start data list activity, also pass data id, title
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, DosenDataListActivity::class.java)
+            intent.putExtra("categoryId", model.id)
+            intent.putExtra("category", model.category)
+            context.startActivity(intent)
         }
     }
 

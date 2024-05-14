@@ -3,6 +3,7 @@ package com.ipb.simpt
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.databinding.ActivityMainBinding
 import com.ipb.simpt.ui.splash.WelcomeActivity
 import com.ipb.simpt.utils.Extensions.toast
@@ -27,6 +29,9 @@ class MainActivity : AppCompatActivity() {
 
     // firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
+
+    //TAG
+    private val TAG = "USER_SHOW_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,15 +84,35 @@ class MainActivity : AppCompatActivity() {
             // Not signed in, launch the Welcome activity
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
+        } else {
+            // logged in, get user info from Firestore
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Users")
+                .document(firebaseUser.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        // get user info
+                        val name = document.getString("userName")
+                        val nim = document.getString("userNim")
+
+                        // Create a bundle to pass the data
+                        val bundle = Bundle().apply {
+                            putString("userName", name)
+                            putString("userNim", nim)
+                        }
+
+                        // Pass the bundle to the HomeFragment
+                        navController.setGraph(navController.graph, bundle)
+                    } else {
+                        Log.d(TAG, "No such document")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "get failed with ", exception)
+                }
         }
-//        else {
-//            // Logged in, get and show user info
-//            val userName = firebaseUser.displayName
-//            val profile = firebaseUser.photoUrl
-//
-//            // Set to textview of user info
-//
-//        }
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -187,5 +212,3 @@ class MainActivity : AppCompatActivity() {
 
 //TODO 1 = Layout Pengajuan
 //TODO 2 = Welcome/Splash Page
-//TODO 3 = Scan Page
-//TODO 4 = Firebase

@@ -115,12 +115,15 @@ class LoginActivity : AppCompatActivity() {
                     val userType = document.getString("userType")
                     if (userType == "user") {
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
 
                     } else if (userType == "dosen") {
                         startActivity(Intent(this@LoginActivity, DosenHomeActivity::class.java))
+                        finish()
 
                     } else if (userType == "admin") {
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
 
                     }
                 } else {

@@ -30,6 +30,15 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // TODO: Show name and NIM didn't work
+        // Get the data from the bundle
+        val userName = arguments?.getString("userName")
+        val userNim = arguments?.getString("userNim")
+
+        // Set the data to the TextViews
+        binding.tvName.text = userName
+        binding.tvNim.text = userNim
+
         // Launch ActivityAdd
         val cvAdd: CardView = binding.cvAdd
         cvAdd.setOnClickListener {

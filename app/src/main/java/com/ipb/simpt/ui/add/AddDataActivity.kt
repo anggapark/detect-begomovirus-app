@@ -79,20 +79,25 @@ class AddDataActivity : AppCompatActivity() {
         }
     }
 
+    private var title = ""
     private var description = ""
     private var category = ""
 
+    // TODO: EditText added is not a TextInputEditText. Please switch to using that class instead.
     private fun addData() {
         // validate data
         Log.d(TAG, "addData: validating data")
 
         //get data
         category = binding.tvCategory.text.toString().trim()
+        title = binding.edAddName.text.toString().trim()
         description = binding.edAddDescription.text.toString().trim()
 
         // validate data
         if (category.isEmpty()) {
             toast("Pick Category")
+        } else if (title.isEmpty()) {
+            toast("Enter Name")
         } else if (description.isEmpty()) {
             toast("Enter Description")
         } else if (imgUri == null) {
@@ -146,7 +151,8 @@ class AddDataActivity : AppCompatActivity() {
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["uid"] = "$uid"
         hashMap["id"] = "$timestamp"
-        hashMap["category"] = selectedCategoryId
+        hashMap["categoryId"] = selectedCategoryId
+        hashMap["title"] = title
         hashMap["description"] = description
         hashMap["url"] = uploadedImgUrl
         hashMap["timestamp"] = timestamp

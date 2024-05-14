@@ -2,12 +2,14 @@ package com.ipb.simpt.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityDosenHomeBinding
 import com.ipb.simpt.ui.add.AddCategoryActivity
@@ -25,6 +27,9 @@ class DosenHomeActivity : AppCompatActivity() {
 
     // firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
+
+    // TAG
+    private val TAG = "USER_SHOW_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +58,30 @@ class DosenHomeActivity : AppCompatActivity() {
             // Not signed in, launch the Welcome activity
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
+        }
+        else {
+            // logged in, get and show user profile
+            val db = FirebaseFirestore.getInstance()
+            db.collection("Users")
+                .document(firebaseUser.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        // get user info
+                        val name = document.getString("userName")
+                        val nim = document.getString("userNim")
+
+                        // set to textview
+                        binding.tvName.text = name
+                        binding.tvNim.text = nim
+                    } else {
+                        Log.d(TAG, "No such document")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "get failed with ", exception)
+                }
+
         }
     }
 

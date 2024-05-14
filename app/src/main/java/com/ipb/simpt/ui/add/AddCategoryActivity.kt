@@ -25,7 +25,7 @@ class AddCategoryActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var category: String
-    private lateinit var cName: String
+    private lateinit var name: String
     private lateinit var categoryInputsArray: Array<EditText>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +57,7 @@ class AddCategoryActivity : AppCompatActivity() {
     private fun setupAction() {
         // get data
         category = binding.etKategori.text.toString().trim()
-        cName = binding.etNama.text.toString().trim()
+        name = binding.etNama.text.toString().trim()
 
 
         // Show loading progress bar
@@ -71,7 +71,7 @@ class AddCategoryActivity : AppCompatActivity() {
             val hashMap = HashMap<String, Any>()
             hashMap["id"] = "$timestamp"
             hashMap["category"] = category
-            hashMap["cName"] = cName
+            hashMap["name"] = name
             hashMap["timestamp"] = timestamp
             hashMap["uid"] = "${firebaseAuth.uid}"
 
@@ -120,7 +120,6 @@ class AddCategoryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    // TODO: Troublshoot progress bar  not on the middle of screen
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
