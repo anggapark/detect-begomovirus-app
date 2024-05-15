@@ -83,16 +83,7 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
-    // TODO: Clean check user code
-    // check if there's a signed-in user
-//    override fun onStart() {
-//        super.onStart()
-//        val user: FirebaseUser? = FirebaseUtils.firebaseAuth.currentUser
-//        user?.let {
-//            startActivity(Intent(this, MainActivity::class.java))
-//            toast("Welcome Back")
-//        }
-//    }
+    // TODO: Waktu authentikasi berapa lama sebelum otomatis logout
 
     private fun setupAction() {
         binding.loginButton.setOnClickListener {

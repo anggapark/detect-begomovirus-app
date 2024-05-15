@@ -22,6 +22,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -31,21 +32,22 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Category Input -->
+
+            <!-- Komoditas Input -->
             <TextView
-                android:id="@+id/tv_category_title"
+                android:id="@+id/tv_komoditas_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Category"
+                android:text="@string/title_komoditas"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_category"
+                android:id="@+id/tv_komoditas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_category_title"
+                android:layout_below="@id/tv_komoditas_title"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="16dp"
@@ -53,41 +55,165 @@
                 android:drawableEnd="@drawable/ic_down_gray"
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
-                android:hint="Masukkan Kategori"
+                android:hint="@string/hint_komoditas"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
                 android:textSize="16sp" />
 
-            <!-- Nama Input -->
+
+            <!-- Penyakit Input -->
             <TextView
-                android:id="@+id/tv_nama_title"
+                android:id="@+id/tv_penyakit_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_category"
+                android:layout_below="@id/tv_komoditas"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/desc_name"
+                android:text="@string/title_penyakit"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_penyakit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_penyakit_title"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/shape_edittext"
+                android:drawableEnd="@drawable/ic_down_gray"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:hint="@string/hint_penyakit"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray1"
+                android:textSize="16sp" />
+
+
+            <!-- Kategori Pathogen Input -->
+            <TextView
+                android:id="@+id/tv_kategori_pathogen_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_penyakit"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_kategori_pathogen"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_kategori_pathogen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_kategori_pathogen_title"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/shape_edittext"
+                android:drawableEnd="@drawable/ic_down_gray"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:hint="@string/hint_kategori_pathogen"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray1"
+                android:textSize="16sp" />
+
+
+            <!-- Pathogen Input -->
+            <TextView
+                android:id="@+id/tv_pathogen_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_kategori_pathogen"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_pathogen"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_pathogen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_pathogen_title"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/shape_edittext"
+                android:drawableEnd="@drawable/ic_down_gray"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:hint="@string/hint_pathogen"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray1"
+                android:textSize="16sp" />
+
+
+            <!-- Gejala Input -->
+            <TextView
+                android:id="@+id/tv_gejala_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_pathogen"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_gejala"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_gejala"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_gejala_title"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/shape_edittext"
+                android:drawableEnd="@drawable/ic_down_gray"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:hint="@string/hint_gejala"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray1"
+                android:textSize="16sp" />
+
+            <!-- Dataset Acuan Input -->
+            <TextView
+                android:id="@+id/tv_dataset_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_gejala"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_dataset"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_name"
+                android:id="@+id/til_dataset"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_nama_title"
+                android:layout_below="@id/tv_dataset_title"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="16dp"
                 app:hintEnabled="false">
 
                 <EditText
-                    android:id="@+id/ed_add_name"
+                    android:id="@+id/ed_add_dataset"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/shape_edittext"
-                    android:hint="@string/hint_nama"
+                    android:hint="@string/hint_dataset"
                     android:inputType="text"
                     android:textColor="@color/black"
                     android:textColorHint="@color/gray1"
@@ -100,7 +226,7 @@
                 android:id="@+id/tv_desc_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/til_name"
+                android:layout_below="@id/til_dataset"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/title_deskripsi"
@@ -139,7 +265,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/til_desc"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="21dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_button"
                 android:drawableLeft="@drawable/ic_add"
@@ -185,19 +311,19 @@
                 android:layout_below="@id/cv_preview"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="21dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/btn_submit" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="200dp"
-                android:visibility="gone"
-                tools:visibility="visible" />
         </RelativeLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

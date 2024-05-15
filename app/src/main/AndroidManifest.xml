@@ -43,9 +43,6 @@
             android:name=".ui.detail.UserDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.add.AddActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.detail.DetailActivity"
             android:exported="false" />
         <activity

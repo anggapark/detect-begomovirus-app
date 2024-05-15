@@ -1,6 +1,5 @@
 package com.ipb.simpt.ui.add
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -21,6 +20,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.ipb.simpt.R
 import com.ipb.simpt.data.model.CategoryModel
 import com.ipb.simpt.databinding.ActivityAddDataBinding
+import com.ipb.simpt.utils.CategoryHandler
 import com.ipb.simpt.utils.Extensions.toast
 import com.ipb.simpt.utils.FileHelper
 
@@ -44,6 +44,9 @@ class AddDataActivity : AppCompatActivity() {
     //TAG
     private val TAG = "DATA_ADD_TAG"
 
+    // CategoryHandler
+    private val categoryHandler = CategoryHandler(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddDataBinding.inflate(layoutInflater)
@@ -55,17 +58,60 @@ class AddDataActivity : AppCompatActivity() {
         // init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // Load the categories
-        loadDataCategories()
-
         // handle click
         setupAction()
     }
 
+    private var selectedKomoditasId: String? = null
+    private var selectedPenyakitId: String? = null
+    private var selectedPathogenId: String? = null
+    private var selectedGejalaId: String? = null
+
     private fun setupAction() {
-        // show category pick dialog
-        binding.tvCategory.setOnClickListener {
-            categoryPickDialog()
+        // show komoditas category pick dialog
+        binding.tvKomoditas.setOnClickListener {
+            categoryHandler.showKomoditasDialog { selectedId, selectedKomoditas ->
+                selectedKomoditasId = selectedId
+                binding.tvKomoditas.text = selectedKomoditas
+            }
+        }
+
+        // show penyakit category pick dialog
+        binding.tvPenyakit.setOnClickListener {
+            categoryHandler.showPenyakitDialog { selectedId, selectedPenyakit ->
+                selectedPenyakitId = selectedId
+                binding.tvPenyakit.text = selectedPenyakit
+            }
+        }
+
+        // show kategori pathogen category pick dialog
+        binding.tvKategoriPathogen.setOnClickListener {
+            categoryHandler.showKategoriPathogenDialog { selectedKategoriPathogen ->
+                binding.tvKategoriPathogen.text = selectedKategoriPathogen
+                binding.tvPathogen.text = "" // Reset the Pathogen field
+                selectedPathogenId = null // Clear the selected Pathogen ID
+            }
+        }
+
+        // show pathogen category pick dialog
+        binding.tvPathogen.setOnClickListener {
+            val selectedKategoriPathogen = binding.tvKategoriPathogen.text.toString()
+            if (selectedKategoriPathogen.isNotEmpty()) {
+                categoryHandler.showPathogenDialog(selectedKategoriPathogen) { selectedId, selectedPathogen ->
+                    selectedPathogenId = selectedId
+                    binding.tvPathogen.text = selectedPathogen
+                }
+            } else {
+                toast("Please select a Kategori Pathogen first")
+            }
+        }
+
+        // show gejala category pick dialog
+        binding.tvGejala.setOnClickListener {
+            categoryHandler.showGejalaDialog { selectedId, selectedGejala ->
+                selectedGejalaId = selectedId
+                binding.tvGejala.text = selectedGejala
+            }
         }
 
         // pick image intent
@@ -73,42 +119,83 @@ class AddDataActivity : AppCompatActivity() {
             imagePickIntent()
         }
 
-        // start uploading data
         binding.btnSubmit.setOnClickListener {
-            addData()
+            binding.btnSubmit.isEnabled = false // disable the button when clicked
+            if (selectedKomoditasId == null || selectedPenyakitId == null || selectedPathogenId == null || selectedGejalaId == null) {
+                toast("Please select all categories")
+                binding.btnSubmit.isEnabled = true // enable the button if data is not valid
+            } else {
+                addData(
+                    selectedKomoditasId!!,
+                    selectedPenyakitId!!,
+                    selectedPathogenId!!,
+                    selectedGejalaId!!
+                )
+            }
         }
     }
-
-    private var title = ""
-    private var description = ""
-    private var category = ""
 
     // TODO: EditText added is not a TextInputEditText. Please switch to using that class instead.
-    private fun addData() {
-        // validate data
+    private fun addData(
+        komoditasId: String,
+        penyakitId: String,
+        pathogenId: String,
+        gejalaId: String
+    ) {
         Log.d(TAG, "addData: validating data")
 
-        //get data
-        category = binding.tvCategory.text.toString().trim()
-        title = binding.edAddName.text.toString().trim()
-        description = binding.edAddDescription.text.toString().trim()
+        val kategoriPathogen = binding.tvKategoriPathogen.text.toString().trim()
+        val dataset = binding.edAddDataset.text.toString().trim()
+        val deskripsi = binding.edAddDescription.text.toString().trim()
 
         // validate data
-        if (category.isEmpty()) {
-            toast("Pick Category")
-        } else if (title.isEmpty()) {
-            toast("Enter Name")
-        } else if (description.isEmpty()) {
+        if (komoditasId.isEmpty()) {
+            toast("Pick Komoditas")
+            binding.btnSubmit.isEnabled = true
+        } else if (penyakitId.isEmpty()) {
+            toast("Pick Penyakit")
+            binding.btnSubmit.isEnabled = true
+        } else if (kategoriPathogen.isEmpty()) {
+            toast("Pick Kategori Pathogen")
+            binding.btnSubmit.isEnabled = true
+        } else if (pathogenId.isEmpty()) {
+            toast("Pick Pathogen")
+            binding.btnSubmit.isEnabled = true
+        } else if (gejalaId.isEmpty()) {
+            toast("Pick Gejala Penyakit")
+            binding.btnSubmit.isEnabled = true
+        } else if (dataset.isEmpty()) {
+            toast("Enter Dataset")
+            binding.btnSubmit.isEnabled = true
+        } else if (deskripsi.isEmpty()) {
             toast("Enter Description")
+            binding.btnSubmit.isEnabled = true
         } else if (imgUri == null) {
-            toast("Pick Image")
+            toast("Upload Image")
+            binding.btnSubmit.isEnabled = true
         } else {
             // data validated, begin upload
-            uploadImgToStorage()
+            uploadImgToStorage(
+                komoditasId,
+                penyakitId,
+                kategoriPathogen,
+                pathogenId,
+                gejalaId,
+                dataset,
+                deskripsi
+            )
         }
     }
 
-    private fun uploadImgToStorage() {
+    private fun uploadImgToStorage(
+        komoditasId: String,
+        penyakitId: String,
+        kategoriPathogen: String,
+        pathogenId: String,
+        gejalaId: String,
+        dataset: String,
+        deskripsi: String
+    ) {
         // Upload image to firebase storage
         Log.d(TAG, "uploadImgToStorage: uploading to storage")
 
@@ -118,7 +205,7 @@ class AddDataActivity : AppCompatActivity() {
         val timestamp = System.currentTimeMillis()
 
         // path of img in firebase storage
-        val filePathAndName = "Categories/$timestamp"
+        val filePathAndName = "Images/$timestamp"
 
         // storage reference
         val storageReference = FirebaseStorage.getInstance().getReference(filePathAndName)
@@ -131,34 +218,62 @@ class AddDataActivity : AppCompatActivity() {
                 while (!uriTask.isSuccessful);
                 val uploadedImgUrl = "${uriTask.result}"
 
-                uploadImgInfoToDb(uploadedImgUrl, timestamp)
+                uploadDataInfoToDb(
+                    uploadedImgUrl,
+                    timestamp,
+                    komoditasId,
+                    penyakitId,
+                    kategoriPathogen,
+                    pathogenId,
+                    gejalaId,
+                    dataset,
+                    deskripsi
+                )
             }
             .addOnFailureListener { e ->
                 Log.d(TAG, "uploadImgToStorage: failed to upload due to ${e.message}")
                 showLoading(false)
                 toast("Failed to upload due to ${e.message}")
+                binding.btnSubmit.isEnabled = true // enable the button if upload fails
             }
     }
 
-    private fun uploadImgInfoToDb(uploadedImgUrl: String, timestamp: Long) {
-        //Upload image to firebase db
-        Log.d(TAG, "uploadImgInfoToDb: uploading to db")
+    private fun uploadDataInfoToDb(
+        uploadedImgUrl: String,
+        timestamp: Long,
+        komoditasId: String,
+        penyakitId: String,
+        kategoriPathogen: String,
+        pathogenId: String,
+        gejalaId: String,
+        dataset: String,
+        deskripsi: String
+    ) {
+        //Upload data ingfo to firestore
+        Log.d(TAG, "uploadDataInfoToDb: uploading to db")
 
         // uid of current user
         val uid = firebaseAuth.uid
+
+        // status of approval
+        val status = "Pending"
 
         // setup data to upload
         val hashMap: HashMap<String, Any> = HashMap()
         hashMap["uid"] = "$uid"
         hashMap["id"] = "$timestamp"
-        hashMap["categoryId"] = selectedCategoryId
-        hashMap["title"] = title
-        hashMap["description"] = description
+        hashMap["komoditasId"] = komoditasId
+        hashMap["penyakitId"] = penyakitId
+        hashMap["kategoriPathogen"] = kategoriPathogen
+        hashMap["pathogenId"] = pathogenId
+        hashMap["gejalaId"] = gejalaId
+        hashMap["dataset"] = dataset
+        hashMap["deskripsi"] = deskripsi
         hashMap["url"] = uploadedImgUrl
         hashMap["timestamp"] = timestamp
+        hashMap["status"] = status
 
-        // db reference DB > Categories > CategoryId > (Data Info)
-        // TODO: Rework this reference later
+
         // TODO: After uploading, intent to Cek Pengajuan
 
         val db = FirebaseFirestore.getInstance()
@@ -170,68 +285,16 @@ class AddDataActivity : AppCompatActivity() {
                 showLoading(false)
                 toast("Uploaded")
                 imgUri = null
+                binding.ivPreview.setImageURI(null) // reset the preview image
+                binding.ivDefault.visibility = View.VISIBLE // show the default image
+                binding.btnSubmit.isEnabled = true // enable the button after data is uploaded
             }
             .addOnFailureListener { e ->
                 Log.d(TAG, "uploadImgInfoToDb: failed to upload due to ${e.message}")
                 showLoading(false)
                 toast("Failed to upload due to ${e.message}")
+                binding.btnSubmit.isEnabled = true // enable the button if upload fails
             }
-    }
-
-    private fun loadDataCategories() {
-        Log.d(TAG, "loadDataCategories: Loading Data")
-
-        // init arraylist
-        categoryArrayList = ArrayList()
-
-        // db reference to load data
-        val db = FirebaseFirestore.getInstance()
-        db.collection("Categories")
-            .get()
-            .addOnSuccessListener { documents ->
-                // clear list before adding data
-                categoryArrayList.clear()
-                for (document in documents) {
-                    // get data as model
-                    val model = document.toObject(CategoryModel::class.java)
-
-                    // add to arraylist
-                    categoryArrayList.add(model)
-                    Log.d(TAG, "onDataChange: ${model.category}")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-            }
-    }
-
-    private var selectedCategoryId = ""
-    private var selectedCategoryTitle = ""
-    private fun categoryPickDialog() {
-        Log.d(TAG, "dataPickDialog: Showing data category pick dialog")
-
-        // het string array of data from arraylist
-        val dataArray = arrayOfNulls<String>(categoryArrayList.size)
-        for (i in categoryArrayList.indices) {
-            dataArray[i] = categoryArrayList[i].category
-        }
-
-        // alert dialog
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Pick Category")
-            .setItems(dataArray) { dialog, which ->
-                // handle item click
-                // get clicked item
-                selectedCategoryId = categoryArrayList[which].id
-                selectedCategoryTitle = categoryArrayList[which].category
-
-                // set category to text view
-                binding.tvCategory.text = selectedCategoryTitle
-
-                Log.d(TAG, "categoryPickDialog: Selected Category ID: ${selectedCategoryId}")
-                Log.d(TAG, "categoryPickDialog: Selected Category Title: ${selectedCategoryTitle}")
-            }
-            .show()
     }
 
     private fun imagePickIntent() {

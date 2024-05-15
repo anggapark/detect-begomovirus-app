@@ -70,7 +70,7 @@ class DataAdminAdapter(
         val tvTitle = binding.tvTitle
         val tvDescription = binding.tvDescription
         val tvUser = binding.tvUser
-        val ivMore = binding.ivMore
+        // val ivMore = binding.ivMore
     }
 
 }

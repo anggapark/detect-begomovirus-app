@@ -33,6 +33,13 @@ class MainActivity : AppCompatActivity() {
     //TAG
     private val TAG = "USER_SHOW_TAG"
 
+    //TODO: REWORKING ON LAYOUT (
+    // ALL FRAGMENT;
+    // WELCOME AND LOGIN REGISTER;
+    // CAMERA;
+    // MY DATA
+    // APPROVAL)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

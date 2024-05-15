@@ -22,6 +22,8 @@
     <string name="menu_sort">Sort</string>
     <string name="menu_ascending">Ascending</string>
     <string name="menu_descending">Descending</string>
+    <string name="menu_back">Back</string>
+    <string name="menu_logout">Log out</string>
 
     <string name="tab_tanaman">Tanaman</string>
     <string name="tab_penyakit">Penyakit</string>
@@ -41,41 +43,63 @@
     <string name="hint_phone">Enter phone number</string>
     <string name="hint_email">Enter email address</string>
 
-    <string name="bt_edit">Edit</string>
+
     <string name="info_phone">Phone Number</string>
     <string name="info_email">Email</string>
     <string name="scan_desc">Scan penyakit kuning untuk tanaman:</string>
 
+
     <string name="title_cabai">Cabai</string>
     <string name="title_terung">Terung</string>
     <string name="title_kacang_panjang">Kacang Panjang</string>
-    <string name="title_kelompok_pathogen">Kelompok Pathogen</string>
-    <string name="title_dataset">Dataset Acuan</string>
+
+
+    <string name="title_komoditas">Komoditas</string>
+    <string name="hint_komoditas">Pilih Komoditas</string>
+
+    <string name="title_penyakit">Penyakit</string>
+    <string name="hint_penyakit">Pilih Penyakit</string>
+
+    <string name="title_kategori_pathogen">Kategori Pathogen</string>
+    <string name="hint_kategori_pathogen">Pilih Kategori Pathogen</string>
+
+    <string name="title_pathogen">Pathogen</string>
+    <string name="hint_pathogen">Pilih Pathogen</string>
+
+    <string name="title_gejala">Gejala Penyakit</string>
+    <string name="hint_gejala">Pilih Gejala Penyakit</string>
+
     <string name="title_deskripsi">Deskripsi</string>
+    <string name="hint_deskripsi">Masukkan Deskripsi</string>
+
+    <string name="title_dataset">Dataset Acuan</string>
+    <string name="hint_dataset">Masukkan Dataset Acuan</string>
+
+
     <string name="title_sort">Sort</string>
     <string name="title_kategori">Kategori</string>
     <string name="title_keterangan">Keterangan</string>
 
-    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada porta felis. Nunc semper efficitur euismod. Sed ut quam urna. Suspendisse egestas quis nisl id aliquam. Cras scelerisque orci aliquam, convallis dolor eget, pellentesque urna. Etiam vel justo ut velit tristique tempor. Morbi sit amet finibus tellus, sed fringilla massa. Pellentesque lacinia pulvinar eros malesuada commodo. Nulla vel mattis eros. Donec ornare volutpat diam nec blandit.</string>
 
-    <string name="hint_tanaman">Masukkan Nama Tanaman</string>
-    <string name="hint_penyakit">Masukkan Nama Penyakit</string>
-    <string name="hint_pathogen">Masukkan Nama Pathogen</string>
-    <string name="hint_kelompok_pathogen">Masukkan Kelompok Pathogen</string>
-    <string name="hint_dataset">Masukkan Dataset Acuan</string>
-    <string name="hint_deskripsi">Masukkan Deskripsi</string>
     <string name="hint_gambar">Tambahkan Gambar</string>
-    <string name="hint_kategori">Masukkan Nama Kategori</string>
+    <string name="hint_kategori">Masukkan Kategori</string>
+    <string name="hint_nama_kategori">Masukkan Nama Kategori</string>
     <string name="hint_keterangan">Masukkan Keterangan</string>
     <string name="hint_nama">Masukkan Nama</string>
+
+
+
 
     <string name="btn_apply">Apply</string>
     <string name="btn_submit">Submit</string>
     <string name="btn_kategori">Tambahkan Kategori</string>
     <string name="btn_camera">Open Camera</string>
     <string name="btn_gallery">Choose from Gallery</string>
-    <string name="menu_back">Back</string>
-    <string name="menu_logout">Log out</string>
+    <string name="btn_edit">Edit</string>
+
+
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada porta felis. Nunc semper efficitur euismod. Sed ut quam urna. Suspendisse egestas quis nisl id aliquam. Cras scelerisque orci aliquam, convallis dolor eget, pellentesque urna. Etiam vel justo ut velit tristique tempor. Morbi sit amet finibus tellus, sed fringilla massa. Pellentesque lacinia pulvinar eros malesuada commodo. Nulla vel mattis eros. Donec ornare volutpat diam nec blandit.</string>
+
 
     <!--  Ntar benerin, nitip doang  -->
     <string name="skip">Continue Without Login</string>
@@ -107,5 +131,7 @@
     <string name="retry">Try Again</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="home_show">Tampilkan Kategori</string>
+
+
 
 </resources>

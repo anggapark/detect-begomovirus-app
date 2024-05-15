@@ -1,9 +1,10 @@
 package com.ipb.simpt.ui.add
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -25,8 +26,11 @@ class AddCategoryActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var category: String
+    private lateinit var pathogen: String
     private lateinit var name: String
-    private lateinit var categoryInputsArray: Array<EditText>
+
+    //TAG
+    private val TAG = "CATEGORY_ADD_TAG"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,47 +42,102 @@ class AddCategoryActivity : AppCompatActivity() {
         // init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // input hint error for empty box
-        categoryInputsArray = arrayOf(
-            binding.etKategori,
-            binding.etNama,
-        )
+        // handle click
+        setupAction()
+    }
 
-        binding.submitButton.setOnClickListener {
-            setupAction()
+    private fun setupAction() {
+        // set up category selection dialog
+        binding.tvCategory.setOnClickListener {
+            showCategoryDialog()
+        }
+
+        binding.tvPathogen.setOnClickListener {
+            showPathogenDialog()
+        }
+
+        binding.btnSubmit.setOnClickListener {
+            addCategory()
         }
     }
 
-    // check if there's empty box
-    private fun notEmpty(): Boolean = binding.etKategori.text.toString().trim().isNotEmpty() &&
-            binding.etNama.text.toString().trim().isNotEmpty()
+    private fun showCategoryDialog() {
+        // create and show a dialog for category selection
+        // when a category is selected, update the TextViews based on the selected category
+        // if the selected category is "Kategori Pathogen", show the prerequisite category and name TextViews
+        // otherwise, hide them
+        val categories = arrayOf("Komoditas", "Penyakit", "Gejala Penyakit", "Kategori Pathogen")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose a category")
+        builder.setItems(categories) { dialog, which ->
+            binding.tvCategory.text = categories[which]
+            if (categories[which] == "Kategori Pathogen") {
+                binding.tvPathogenTitle.visibility = View.VISIBLE
+                binding.tvPathogen.visibility = View.VISIBLE
+            } else {
+                binding.tvPathogenTitle.visibility = View.GONE
+                binding.tvPathogen.visibility = View.GONE
+            }
+        }
+        builder.show()
+    }
 
+    private fun showPathogenDialog() {
+        // create and show a dialog for pathogen selection
+        val pathogens = arrayOf("Virus", "Bakteri", "Cendawan", "Nematoda", "Fitoplasma")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose a pathogen")
+        builder.setItems(pathogens) { dialog, which ->
+            binding.tvPathogen.text = pathogens[which]
+        }
+        builder.show()
+    }
 
-    private fun setupAction() {
+    private fun addCategory() {
+        // validate data
+        Log.d(TAG, "addCategory: validating data")
+
         // get data
-        category = binding.etKategori.text.toString().trim()
-        name = binding.etNama.text.toString().trim()
+        category = binding.tvCategory.text.toString().trim()
+        pathogen = binding.tvPathogen.text.toString().trim()
+        name = binding.edAddName.text.toString().trim()
 
+        // validate data
+        if (category.isEmpty()) {
+            toast("Pick Category")
+        } else if (category == "Kategori Pathogen" && pathogen.isEmpty()) {
+            toast("Pick Pathogen")
+        } else if (name.isEmpty()) {
+            toast("Enter Name")
+        } else {
+            // data validated, begin upload
+            uploadCategory()
+        }
+    }
+
+    private fun uploadCategory() {
+        Log.d(TAG, "uploadCategory: uploading category to db")
 
         // Show loading progress bar
         showLoading(true)
 
-        if (notEmpty()) {
-            // get timestamp
-            val timestamp = System.currentTimeMillis()
+        // get timestamp
+        val timestamp = System.currentTimeMillis()
 
-            // setup data to add in firebase db
-            val hashMap = HashMap<String, Any>()
-            hashMap["id"] = "$timestamp"
-            hashMap["category"] = category
-            hashMap["name"] = name
-            hashMap["timestamp"] = timestamp
-            hashMap["uid"] = "${firebaseAuth.uid}"
+        // setup data to add in firebase db
+        val hashMap = HashMap<String, Any>()
+        hashMap["id"] = "$timestamp"
+        hashMap["name"] = name
+        hashMap["timestamp"] = timestamp
+        hashMap["uid"] = "${firebaseAuth.uid}"
 
-            // TODO: After uploading, intent to Dosen Show
-            // add to firestore db: Database Root > Categories > Category name > Data
-            val db = FirebaseFirestore.getInstance()
+
+        // TODO: After uploading, intent to Dosen Show
+        val db = FirebaseFirestore.getInstance()
+        if (category == "Kategori Pathogen") {
             db.collection("Categories")
+                .document(category)
+                .collection(pathogen)
                 .document("$timestamp")
                 .set(hashMap)
                 .addOnSuccessListener {
@@ -93,12 +152,22 @@ class AddCategoryActivity : AppCompatActivity() {
                     toast("Failed saving user info due to ${e.message}")
                 }
         } else {
-            showLoading(false)
-            categoryInputsArray.forEach { input ->
-                if (input.text.toString().trim().isEmpty()) {
-                    input.error = "${input.hint} is required"
+            db.collection("Categories")
+                .document(category)
+                .collection("Items")
+                .document("$timestamp")
+                .set(hashMap)
+                .addOnSuccessListener {
+                    // added successfully
+                    showLoading(false)
+                    toast("Added successfully !")
+
                 }
-            }
+                .addOnFailureListener { e ->
+                    // failed to add
+                    showLoading(false)
+                    toast("Failed saving user info due to ${e.message}")
+                }
         }
     }
 

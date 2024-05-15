@@ -33,7 +33,6 @@
                 style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/iv_more"
                 android:ellipsize="end"
                 android:maxLines="1"
                 tools:text="Tanaman Cabai" />
@@ -58,14 +57,14 @@
                 android:layout_alignParentBottom="true"
                 tools:text="Consectetur Adipiscing Elit" />
 
-            <ImageView
-                android:id="@+id/iv_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:background="@android:color/transparent"
-                android:padding="5dp"
-                android:src="@drawable/ic_more" />
+<!--            <ImageView-->
+<!--                android:id="@+id/iv_more"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:padding="5dp"-->
+<!--                android:src="@drawable/ic_more" />-->
 
 
             <!--            <TextView-->

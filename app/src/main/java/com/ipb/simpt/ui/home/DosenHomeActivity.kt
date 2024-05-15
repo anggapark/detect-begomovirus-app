@@ -13,7 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityDosenHomeBinding
 import com.ipb.simpt.ui.add.AddCategoryActivity
-import com.ipb.simpt.ui.library.DosenShowActivity
 import com.ipb.simpt.ui.splash.WelcomeActivity
 import com.ipb.simpt.utils.Extensions.toast
 
@@ -47,7 +46,7 @@ class DosenHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, AddCategoryActivity::class.java))
         }
         binding.cvShow.setOnClickListener {
-            startActivity(Intent(this, DosenShowActivity::class.java))
+//            startActivity(Intent(this, DosenShowActivity::class.java))
         }
     }
 
