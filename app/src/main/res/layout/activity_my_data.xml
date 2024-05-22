@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.library.LibraryFragment">
+    tools:context=".ui.mahasiswa.library.LibraryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -41,7 +41,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tab_tanaman" />
+                android:text="@string/tab_komoditas" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
             android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:spanCount="2"
-            tools:listitem="@layout/item_list" />
+            tools:listitem="@layout/item_approval_list" />
 
     </LinearLayout>
 

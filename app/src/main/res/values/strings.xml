@@ -16,16 +16,19 @@
     <string name="home_detection">Deteksi Penyakit</string>
     <string name="home_data">Data Saya</string>
     <string name="home_submission">Cek Pengajuan</string>
+    <string name="home_approval">Cek Pengajuan</string>
+    <string name="home_show">Tampilkan Kategori</string>
 
     <string name="menu_filter">Filter</string>
     <string name="menu_layout">Layout</string>
     <string name="menu_sort">Sort</string>
+    <string name="menu_search">Search</string>
     <string name="menu_ascending">Ascending</string>
     <string name="menu_descending">Descending</string>
     <string name="menu_back">Back</string>
     <string name="menu_logout">Log out</string>
 
-    <string name="tab_tanaman">Tanaman</string>
+    <string name="tab_komoditas">Komoditas</string>
     <string name="tab_penyakit">Penyakit</string>
     <string name="tab_pathogen">Pathogen</string>
 
@@ -88,8 +91,6 @@
     <string name="hint_nama">Masukkan Nama</string>
 
 
-
-
     <string name="btn_apply">Apply</string>
     <string name="btn_submit">Submit</string>
     <string name="btn_kategori">Tambahkan Kategori</string>
@@ -130,8 +131,9 @@
     <string name="hybrid_type">Hybrid</string>
     <string name="retry">Try Again</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="home_show">Tampilkan Kategori</string>
-
+    <string name="hint_reject">Reject Submission</string>
+    <string name="hint_approve">Approve Submission</string>
+    <string name="all_categories">All Categories</string>
 
 
 </resources>

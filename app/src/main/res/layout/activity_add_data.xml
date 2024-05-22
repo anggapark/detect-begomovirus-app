@@ -56,7 +56,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:hint="@string/hint_komoditas"
-                android:padding="10dp"
+                android:padding="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
                 android:textSize="16sp" />
@@ -87,7 +87,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:hint="@string/hint_penyakit"
-                android:padding="10dp"
+                android:padding="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
                 android:textSize="16sp" />
@@ -118,7 +118,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:hint="@string/hint_kategori_pathogen"
-                android:padding="10dp"
+                android:padding="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
                 android:textSize="16sp" />
@@ -149,7 +149,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:hint="@string/hint_pathogen"
-                android:padding="10dp"
+                android:padding="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
                 android:textSize="16sp" />
@@ -180,7 +180,7 @@
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:hint="@string/hint_gejala"
-                android:padding="10dp"
+                android:padding="16dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
                 android:textSize="16sp" />

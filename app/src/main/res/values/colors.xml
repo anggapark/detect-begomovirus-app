@@ -18,5 +18,8 @@
     <color name="gray2">#777777</color>
     <color name="gray3">#EDEDED</color>
 
+    <color name="pending_fill">#f4a762</color>
+    <color name="approved_fill">#7bc47e</color>
+    <color name="rejected_fill">#ca5872</color>
 
 </resources>

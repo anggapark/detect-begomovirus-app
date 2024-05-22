@@ -90,7 +90,7 @@
 //    }
 //
 //
-//    // viewHolder class to hold/init UI views for item_list.xml
+//    // viewHolder class to hold/init UI views for item_approval_list.xml
 //    inner class HolderCategory(itemView: View) : RecyclerView.ViewHolder(itemView) {
 //        // init ui views
 //        var categoryTv: TextView = binding.tvCategory

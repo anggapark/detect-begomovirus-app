@@ -18,7 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.databinding.ActivityMainBinding
-import com.ipb.simpt.ui.splash.WelcomeActivity
+import com.ipb.simpt.ui.auth.splash.WelcomeActivity
 import com.ipb.simpt.utils.Extensions.toast
 
 class MainActivity : AppCompatActivity() {
@@ -31,7 +31,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
     //TAG
-    private val TAG = "USER_SHOW_TAG"
+    companion object {
+        private const val TAG = "USER_SHOW_TAG"
+    }
 
     //TODO: REWORKING ON LAYOUT (
     // ALL FRAGMENT;

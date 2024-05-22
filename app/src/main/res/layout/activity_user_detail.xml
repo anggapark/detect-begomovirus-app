@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.detail.UserDetailActivity">
+    tools:context=".ui.mahasiswa.detail.UserDetailActivity">
 
     <LinearLayout
         android:id="@+id/profile"
