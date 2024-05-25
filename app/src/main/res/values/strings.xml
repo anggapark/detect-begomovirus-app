@@ -98,6 +98,9 @@
     <string name="btn_gallery">Choose from Gallery</string>
     <string name="btn_edit">Edit</string>
 
+    <string name="status_rejected">Rejected</string>
+    <string name="status_approved">Approved</string>
+    <string name="status_pending">Pending</string>
 
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada porta felis. Nunc semper efficitur euismod. Sed ut quam urna. Suspendisse egestas quis nisl id aliquam. Cras scelerisque orci aliquam, convallis dolor eget, pellentesque urna. Etiam vel justo ut velit tristique tempor. Morbi sit amet finibus tellus, sed fringilla massa. Pellentesque lacinia pulvinar eros malesuada commodo. Nulla vel mattis eros. Donec ornare volutpat diam nec blandit.</string>
 
