@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +33,13 @@ class ApprovalActivity : AppCompatActivity() {
     private lateinit var dataArrayList: ArrayList<DataModel>
     private lateinit var viewModel: ApprovalViewModel
     private lateinit var adapter: ApprovalAdapter
+
+    // Maintain the layout type state
+    private var isGridLayout = false
+
+    // Maintain the search query
+    private var currentSearchQuery: String = ""
+
 
     //TAG
     companion object {
@@ -67,6 +77,7 @@ class ApprovalActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
                     val selectedStatus = it.text.toString()
+                    dataArrayList.clear() // Clear existing data
                     viewModel.fetchItemsByStatus(selectedStatus)
                 }
             }
@@ -78,6 +89,7 @@ class ApprovalActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         // init arraylist
+        showLoading(true)  // Show progress bar
         dataArrayList = ArrayList()
 
         adapter = ApprovalAdapter(this, dataArrayList, viewModel) { dataModel ->
@@ -90,20 +102,23 @@ class ApprovalActivity : AppCompatActivity() {
         binding.rvData.adapter = adapter
         binding.rvData.layoutManager = LinearLayoutManager(this)
 
+        // Observe data changes
         viewModel.items.observe(this, Observer { items ->
-            if (items != null && items.isNotEmpty()) {
-                adapter.updateData(ArrayList(items))
-                Log.d(TAG, "RecyclerView updated with ${items.size} items")
+            if (items != null) {
+                dataArrayList.addAll(items)
+                adapter.updateData(dataArrayList)
+                applySearchFilter()
+                showLoading(false)
             } else {
                 Log.d(TAG, "No items found")
+                showLoading(false)
             }
         })
-
-//        viewModel.items.observe(this, Observer { items ->
-//            adapter.submitList(items)
-//        })
     }
 
+    private fun applySearchFilter() {
+        adapter.filter.filter(currentSearchQuery)
+    }
 
     // enable setupToolbar as actionbar
     private fun setupToolbar() {
@@ -115,17 +130,48 @@ class ApprovalActivity : AppCompatActivity() {
     // TODO: Search yg lebih advanced. by komoditas, by penyakit, by deskripsi, by user
 
     private fun toggleLayout() {
-        // Toggle between grid and list layout
-        if (binding.rvData.layoutManager is LinearLayoutManager) {
-            binding.rvData.layoutManager = GridLayoutManager(this, 2)
+        isGridLayout = !isGridLayout
+        applyLayoutManager()
+        adapter.setLayoutType(isGridLayout)
+        updateMenuIcon()
+    }
+
+    private fun applyLayoutManager() {
+        binding.rvData.layoutManager = if (isGridLayout) {
+            GridLayoutManager(this, 2)
         } else {
-            binding.rvData.layoutManager = LinearLayoutManager(this)
+            LinearLayoutManager(this)
         }
-        adapter.notifyItemRangeChanged(0, adapter.itemCount)
+    }
+
+    private fun updateMenuIcon() {
+        val menuItem = binding.toolbar.menu.findItem(R.id.action_layout)
+        menuItem.icon = if (!isGridLayout) {
+            AppCompatResources.getDrawable(this, R.drawable.ic_list_view)  // Icon for list layout
+        } else {
+            AppCompatResources.getDrawable(this, R.drawable.ic_grid_view)  // Icon for grid layout
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_approval, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                currentSearchQuery = query ?: ""
+                applySearchFilter()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                currentSearchQuery = newText ?: ""
+                applySearchFilter()
+                return true
+            }
+        })
+
         return true
     }
 
@@ -136,10 +182,6 @@ class ApprovalActivity : AppCompatActivity() {
                 return true
             }
 
-            R.id.action_filter -> {
-                true
-            }
-
             R.id.action_layout -> {
                 toggleLayout()
                 true
@@ -147,5 +189,9 @@ class ApprovalActivity : AppCompatActivity() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

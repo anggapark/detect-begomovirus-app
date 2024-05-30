@@ -8,6 +8,14 @@ class DataRepository {
 
     private val db = FirebaseFirestore.getInstance()
 
+    // Caches for storing fetched names
+    private val komoditasCache = mutableMapOf<String, String>()
+    private val penyakitCache = mutableMapOf<String, String>()
+    private val gejalaCache = mutableMapOf<String, String>()
+    private val pathogenCache = mutableMapOf<String, String>()
+    private val userNameCache = mutableMapOf<String, String>()
+    private val userNimCache = mutableMapOf<String, String>()
+
     fun fetchDataByStatus(status: String, callback: (List<DataModel>) -> Unit) {
         db.collection("Data")
             .whereEqualTo("status", status)
@@ -25,18 +33,24 @@ class DataRepository {
     }
 
     fun fetchCategoryName(category: String, id: String, callback: (String) -> Unit) {
-        db.collection("Categories")
+        val cache = when (category) {
+            "Komoditas" -> komoditasCache
+            "Penyakit" -> penyakitCache
+            "Gejala Penyakit" -> gejalaCache
+            else -> null
+        }
+
+        cache?.get(id)?.let {
+            callback(it)
+        } ?: db.collection("Categories")
             .document(category)
             .collection("Items")
             .document(id)
             .get()
             .addOnSuccessListener { document ->
-                val name = document.getString("name")
-                if (name != null) {
-                    callback(name)
-                } else {
-                    Log.w("DataRepository", "No name found in document")
-                }
+                val name = document.getString("name") ?: ""
+                cache?.put(id, name)
+                callback(name)
             }
             .addOnFailureListener { exception ->
                 Log.w("DataRepository", "Error getting document: ", exception)
@@ -44,148 +58,115 @@ class DataRepository {
             }
     }
 
-    fun fetchUserName(uid: String, callback: (String) -> Unit) {
-        db.collection("Users")
-            .document(uid)
+    fun fetchKategoriPathogen(dataModel: DataModel, callback: (DataModel) -> Unit) {
+        val categoryCollection = when (dataModel.kategoriPathogen) {
+            "Virus" -> "Virus"
+            "Bakteri" -> "Bakteri"
+            "Cendawan" -> "Cendawan"
+            "Nematoda" -> "Nematoda"
+            "Fitoplasma" -> "Fitoplasma"
+            else -> ""
+        }
+        dataModel.kategoriPathogen = categoryCollection
+        callback(dataModel)
+
+    }
+
+    fun fetchPathogen(dataModel: DataModel, callback: (DataModel) -> Unit) {
+        val categoryCollection = dataModel.kategoriPathogen
+        db.collection("Categories")
+            .document("Kategori Pathogen")
+            .collection(categoryCollection)
+            .document(dataModel.pathogenId)
             .get()
             .addOnSuccessListener { document ->
-                val userName = document.getString("userName")
-                if (userName != null) {
-                    callback(userName)
-                } else {
-                    Log.w("DataRepository", "No user name found in document")
-                }
+                dataModel.pathogenName = document.getString("name") ?: ""
+                pathogenCache[dataModel.pathogenId] = dataModel.pathogenName ?: ""
+                callback(dataModel)
             }
             .addOnFailureListener { exception ->
                 Log.w("DataRepository", "Error getting document: ", exception)
-                callback("")
+                callback(dataModel)
             }
     }
 
-    fun fetchData(category: String, callback: (List<DataModel>) -> Unit) {
-        val query = db.collection("Data")
-            .whereEqualTo(
-                when (category) {
-                    "Komoditas" -> "komoditasId"
-                    "Penyakit" -> "penyakitId"
-                    "Gejala Penyakit" -> "gejalaId"
-                    else -> "unknown"
-                }, category
-            )
-
-        query.get()
-            .addOnSuccessListener { result ->
-                val dataList = result.map { document ->
-                    document.toObject(DataModel::class.java)
-                }
-                callback(dataList)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("DataRepository", "Error getting documents: ", exception)
-                callback(emptyList())
-            }
-    }
-
-    // TODO: FETCH DATA!! BUKAN FETCH CATEGORY!!!!
-//    fun fetchData(category: String, callback: (List<DataModel>) -> Unit) {
-//        db.collection("Data")
-//            .whereEqualTo("category", category)
-//            .get()
-//            .addOnSuccessListener { result ->
-//                val dataList = result.map { document ->
-//                    document.toObject(DataModel::class.java)
-//                }
-//                callback(dataList)
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.w("DataRepository", "Error getting documents: ", exception)
-//                callback(emptyList())
-//            }
-//    }
-
-    fun fetchNames(dataModel: DataModel, callback: (DataModel) -> Unit) {
-        fetchKomoditasName(dataModel) {
-            fetchPenyakitName(it) {
-                fetchGejalaName(it) {
-                    fetchKategoriPathogenName(it) {
-                        fetchPathogenName(it, callback)
+    fun fetchAndCacheNames(dataModel: DataModel, callback: () -> Unit) {
+        fetchCategoryName("Komoditas", dataModel.komoditasId) { komoditasName ->
+            dataModel.komoditasName = komoditasName
+            fetchCategoryName("Penyakit", dataModel.penyakitId) { penyakitName ->
+                dataModel.penyakitName = penyakitName
+                fetchCategoryName("Gejala Penyakit", dataModel.gejalaId) { gejalaName ->
+                    dataModel.gejalaName = gejalaName
+                    fetchKategoriPathogen(dataModel) { updatedDataModel ->
+                        fetchPathogen(updatedDataModel) {
+                            fetchAndCacheUserDetails(dataModel) {
+                                callback()
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun fetchKomoditasName(dataModel: DataModel, callback: (DataModel) -> Unit) {
-        db.collection("Categories").document("Komoditas").collection("Items")
-            .document(dataModel.komoditasId)
+
+    fun fetchAndCacheUserDetails(dataModel: DataModel, callback: () -> Unit) {
+        fetchUserName(dataModel.uid) { userName ->
+            dataModel.userName = userName
+            fetchUserNim(dataModel.uid) { userNim ->
+                dataModel.userNim = userNim
+                callback()
+            }
+        }
+    }
+
+    fun fetchUserName(uid: String, callback: (String) -> Unit) {
+        userNameCache[uid]?.let {
+            callback(it)
+        } ?: db.collection("Users")
+            .document(uid)
             .get()
             .addOnSuccessListener { document ->
-                dataModel.komoditasId = document.getString("name") ?: ""
-                callback(dataModel)
+                val userName = document.getString("userName") ?: ""
+                userNameCache[uid] = userName
+                callback(userName)
             }
             .addOnFailureListener { exception ->
                 Log.w("DataRepository", "Error getting document: ", exception)
+                callback("")
             }
     }
 
-    private fun fetchPenyakitName(dataModel: DataModel, callback: (DataModel) -> Unit) {
-        db.collection("Categories").document("Penyakit").collection("Items")
-            .document(dataModel.penyakitId)
+    fun fetchUserNim(uid: String, callback: (String) -> Unit) {
+        userNimCache[uid]?.let {
+            callback(it)
+        } ?: db.collection("Users")
+            .document(uid)
             .get()
             .addOnSuccessListener { document ->
-                dataModel.penyakitId = document.getString("name") ?: ""
-                callback(dataModel)
+                val userNim = document.getString("userNim") ?: ""
+                userNimCache[uid] = userNim
+                callback(userNim)
             }
             .addOnFailureListener { exception ->
                 Log.w("DataRepository", "Error getting document: ", exception)
+                callback("")
             }
     }
 
-    private fun fetchGejalaName(dataModel: DataModel, callback: (DataModel) -> Unit) {
-        db.collection("Categories").document("Gejala Penyakit").collection("Items")
-            .document(dataModel.gejalaId)
-            .get()
+    fun fetchItemDetail(id: String, callback: (DataModel) -> Unit) {
+        db.collection("Data").document(id).get()
             .addOnSuccessListener { document ->
-                dataModel.gejalaId = document.getString("name") ?: ""
-                callback(dataModel)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("DataRepository", "Error getting document: ", exception)
-            }
-    }
-
-    private fun fetchKategoriPathogenName(dataModel: DataModel, callback: (DataModel) -> Unit) {
-        db.collection("Categories").document("Kategori Pathogen")
-            .get()
-            .addOnSuccessListener { document ->
-                val categoryCollection = when (dataModel.kategoriPathogen) {
-                    "Virus" -> "Virus"
-                    "Bakteri" -> "Bakteri"
-                    "Cendawan" -> "Cendawan"
-                    "Nematoda" -> "Nematoda"
-                    "Fitoplasma" -> "Fitoplasma"
-                    else -> ""
+                val dataModel = document.toObject(DataModel::class.java) ?: DataModel()
+                fetchAndCacheNames(dataModel) {
+                    fetchAndCacheUserDetails(dataModel) {
+                        callback(dataModel)
+                    }
                 }
-
-                dataModel.kategoriPathogen = categoryCollection
-                callback(dataModel)
             }
             .addOnFailureListener { exception ->
                 Log.w("DataRepository", "Error getting document: ", exception)
-            }
-    }
-
-    private fun fetchPathogenName(dataModel: DataModel, callback: (DataModel) -> Unit) {
-        val categoryCollection = dataModel.kategoriPathogen
-        db.collection("Categories").document("Kategori Pathogen").collection(categoryCollection)
-            .document(dataModel.pathogenId)
-            .get()
-            .addOnSuccessListener { document ->
-                dataModel.pathogenId = document.getString("name") ?: ""
-                callback(dataModel)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("DataRepository", "Error getting document: ", exception)
+                callback(DataModel())
             }
     }
 

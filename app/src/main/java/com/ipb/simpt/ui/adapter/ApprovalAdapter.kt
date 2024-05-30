@@ -1,94 +1,133 @@
 package com.ipb.simpt.ui.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Filter
+import android.widget.Filterable
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.ipb.simpt.R
+import com.ipb.simpt.databinding.ItemApprovalGridBinding
 import com.ipb.simpt.databinding.ItemApprovalListBinding
 import com.ipb.simpt.model.DataModel
+import com.ipb.simpt.repository.DataRepository
 import com.ipb.simpt.ui.dosen.approval.ApprovalViewModel
 
 class ApprovalAdapter(
     private val context: Context,
-    private var dataList: ArrayList<DataModel>,
+    var dataList: ArrayList<DataModel>,
     private val viewModel: ApprovalViewModel,
     private val itemClick: (DataModel) -> Unit
-) : RecyclerView.Adapter<ApprovalAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
-    private lateinit var binding: ItemApprovalListBinding
+    var filterList: ArrayList<DataModel> = ArrayList(dataList)
+    private var filter: DataFilter? = null
+    private var isGridLayout = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = ItemApprovalListBinding.inflate(LayoutInflater.from(context), parent, false)
-        return ViewHolder(binding.root)
+    init {
+        filter = DataFilter(dataList, this)
+    }
+
+    fun setLayoutType(isGridLayout: Boolean) {
+        this.isGridLayout = isGridLayout
+        notifyDataSetChanged()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (isGridLayout) R.layout.item_approval_grid else R.layout.item_approval_list
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == R.layout.item_approval_grid) {
+            val binding =
+                ItemApprovalGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            GridViewHolder(binding)
+        } else {
+            val binding =
+                ItemApprovalListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ListViewHolder(binding)
+        }
     }
 
     override fun getItemCount() = dataList.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataList[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val data = dataList[position]
+        if (holder is ListViewHolder) {
+            holder.bind(data)
+        } else if (holder is GridViewHolder) {
+            holder.bind(data)
+        }
     }
-
-    // viewHolder class to hold/init UI views for item_approval_list.xml
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private var title: TextView = binding.tvTitle
-        private var description: TextView = binding.tvDescription
-        private var user: TextView = binding.tvUser
-        private var status: TextView = binding.tvStatus
-
+    // working code before changes
+    inner class ListViewHolder(private val binding: ItemApprovalListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(data: DataModel) {
             viewModel.fetchCategoryName("Komoditas", data.komoditasId) { name ->
-                title.text = name
+                binding.tvTitle.text = name
             }
 
             viewModel.fetchUserName(data.uid) { userName ->
-                user.text = userName
+                binding.tvUser.text = userName
             }
 
-            description.text = data.deskripsi
-            status.text = data.status
-
-            itemView.setOnClickListener {
-                itemClick(data)
+            binding.tvDescription.text = data.deskripsi
+            binding.tvStatus.text = data.status
+            when (data.status) {
+                "Pending" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_pending)
+                "Approved" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_approved)
+                "Rejected" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_rejected)
             }
+
+            // set to imageView
+            Glide.with(context)
+                .load(data.url)
+                .into(binding.ivImage)
+
+            binding.root.setOnClickListener { itemClick(data) }
+        }
+    }
+
+    inner class GridViewHolder(private val binding: ItemApprovalGridBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(data: DataModel) {
+            viewModel.fetchCategoryName("Komoditas", data.komoditasId) { name ->
+                binding.tvTitle.text = name
+            }
+
+            viewModel.fetchUserName(data.uid) { userName ->
+                binding.tvUser.text = userName
+            }
+
+            binding.tvDescription.text = data.deskripsi
+            binding.tvStatus.text = data.status
+            when (data.status) {
+                "Pending" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_pending)
+                "Approved" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_approved)
+                "Rejected" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_rejected)
+
+            }
+
+            // set to imageView
+            Glide.with(context)
+                .load(data.url)
+                .into(binding.ivImage)
+
+            binding.root.setOnClickListener { itemClick(data) }
         }
     }
 
     fun updateData(newData: ArrayList<DataModel>) {
         dataList = newData
+        filterList = ArrayList(newData)
         notifyDataSetChanged()
-        Log.d("ApprovalAdapter", "Data updated with ${newData.size} items")
+    }
+
+    override fun getFilter(): Filter {
+        return filter as Filter
     }
 }
-
-//class ApprovalAdapter(private val onClick: (DataModel) -> Unit) :
-//    ListAdapter<DataModel, ApprovalAdapter.ApprovalViewHolder>(DataModelDiffCallback()) {
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ApprovalViewHolder {
-//        val binding = ItemApprovalListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-//        return ApprovalViewHolder(binding)
-//    }
-//
-//    override fun onBindViewHolder(holder: ApprovalViewHolder, position: Int) {
-//        holder.bind(getItem(position), onClick)
-//    }
-//
-//    class ApprovalViewHolder(private val binding: ItemApprovalListBinding) : RecyclerView.ViewHolder(binding.root) {
-//        fun bind(dataModel: DataModel, onClick: (DataModel) -> Unit) {
-//            // TODO: FIX tvTitle to change the name to whatever current tabs's category
-//            binding.tvTitle.text = dataModel.komoditasId
-//            binding.tvDescription.text = dataModel.deskripsi
-//            binding.tvUser.text = dataModel.uid
-//            binding.tvStatus.text = dataModel.status
-//            binding.root.setOnClickListener { onClick(dataModel) }
-//        }
-//    }
-//
-//    class DataModelDiffCallback : DiffUtil.ItemCallback<DataModel>() {
-//        override fun areItemsTheSame(oldItem: DataModel, newItem: DataModel): Boolean = oldItem.id == newItem.id
-//        override fun areContentsTheSame(oldItem: DataModel, newItem: DataModel): Boolean = oldItem == newItem
-//    }
-//}

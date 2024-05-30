@@ -2,77 +2,96 @@ package com.ipb.simpt.ui.dosen.approval
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.ipb.simpt.databinding.ActivityApprovalDetailBinding
-import com.ipb.simpt.repository.DataRepository
+import com.ipb.simpt.model.DataModel
 
 class ApprovalDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityApprovalDetailBinding
-    private lateinit var viewModel: ApprovalViewModel
-    private val dataRepository = DataRepository()
+    private lateinit var viewModel: ApprovalDetailViewModel
+    private lateinit var itemId: String
 
+    //TODO: ADD COMMENT WHEN REJECT
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityApprovalDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         enableEdgeToEdge()
-        val itemId = intent.getStringExtra("itemId") ?: return
+
+        // Initialize ViewModel
+        viewModel = ViewModelProvider(this).get(ApprovalDetailViewModel::class.java)
+
+        // Get item ID from intent
+        itemId = intent.getStringExtra("ITEM_ID") ?: ""
 
         // Setup toolbar
         setupToolbar()
 
-        // Fetch item details
-//        setupViewModel(itemId)
+        // Show loading indicator
+        showLoading(true)
+
+        // Load item details
+        loadItemDetails()
 
         // Handle click
         setupAction(itemId)
     }
 
-    private fun setupAction(itemId: String) {
+    private fun loadItemDetails() {
+        viewModel.fetchItemDetails(itemId) { dataModel ->
+            // Fetch names using cached data
+            viewModel.fetchAndCacheNames(dataModel) {
+                updateUI(dataModel)
+            }
+        }
+    }
 
+    private fun updateUI(data: DataModel) {
+        // Update UI elements with cached names
+
+        binding.tvKomoditas.text = data.komoditasName
+        binding.tvPenyakit.text = data.penyakitName
+        binding.tvKategoriPathogen.text = data.kategoriPathogen
+        binding.tvPathogen.text = data.pathogenName
+        binding.tvGejala.text = data.gejalaName
+        binding.tvDataset.text = data.dataset
+        binding.tvDescription.text = data.deskripsi
+        binding.tvUploaderName.text = data.userName
+        binding.tvUploaderNim.text = data.userNim
+
+        // Load image
+        Glide.with(this).load(data.url).into(binding.ivImage)
+
+        // Hide loading indicator after data is fetched and UI is updated
+        showLoading(false)
+
+    }
+
+    // TODO: ADD COMMENT WHEN APPROVE OR REJECT
+    private fun setupAction(itemId: String) {
         binding.btnApprove.setOnClickListener {
+            viewModel.approveData(itemId)
+            Toast.makeText(this, "Item Approved", Toast.LENGTH_SHORT).show()
             finish()
         }
 
         binding.btnReject.setOnClickListener {
+            viewModel.rejectData(itemId)
+            Toast.makeText(this, "Item Rejected", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
-
-//    private fun setupViewModel(itemId: String) {
-//        viewModel = ViewModelProvider(this).get(ApprovalViewModel::class.java)
-//
-//        viewModel.fetchItemById(itemId)
-//        viewModel.item.observe(this, Observer { item ->
-//            item?.let {
-//                dataRepository.fetchNames(it) { updatedItem ->
-//                    binding.tvKomoditas.text = updatedItem.komoditasId
-//                    binding.tvPenyakit.text = updatedItem.penyakitId
-//                    binding.tvKategoriPathogen.text = updatedItem.kategoriPathogen
-//                    binding.tvPathogen.text = updatedItem.pathogenId
-//                    binding.tvGejala.text = updatedItem.gejalaId
-//                    binding.tvDataset.text = updatedItem.dataset
-//                    binding.tvDeskripsi.text = updatedItem.deskripsi
-//
-//                    // Load image
-//                    Glide.with(this)
-//                        .load(updatedItem.url)
-//                        .into(binding.ivImage)
-//                }
-//            }
-//        })
-//    }
-
-
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Approval Detail"
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -84,5 +103,9 @@ class ApprovalDetailActivity : AppCompatActivity() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

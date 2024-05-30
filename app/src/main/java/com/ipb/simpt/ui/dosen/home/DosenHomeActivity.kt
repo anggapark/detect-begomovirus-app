@@ -15,6 +15,7 @@ import com.ipb.simpt.databinding.ActivityDosenHomeBinding
 import com.ipb.simpt.ui.dosen.add.AddCategoryActivity
 import com.ipb.simpt.ui.auth.splash.WelcomeActivity
 import com.ipb.simpt.ui.dosen.approval.ApprovalActivity
+import com.ipb.simpt.ui.dosen.library.DosenCategoryActivity
 import com.ipb.simpt.utils.Extensions.toast
 
 class DosenHomeActivity : AppCompatActivity() {
@@ -46,6 +47,8 @@ class DosenHomeActivity : AppCompatActivity() {
 
         setupAction()
     }
+    //TODO: Bikin Profile Page
+
 
     private fun setupAction() {
         // handle button
@@ -53,7 +56,7 @@ class DosenHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, AddCategoryActivity::class.java))
         }
         binding.cvShow.setOnClickListener {
-//            startActivity(Intent(this, DosenShowActivity::class.java))
+            startActivity(Intent(this, DosenCategoryActivity::class.java))
         }
         binding.cvApproval.setOnClickListener {
             startActivity(Intent(this, ApprovalActivity::class.java))

@@ -19,19 +19,22 @@
         android:theme="@style/Theme.SIMPT"
         tools:targetApi="31">
         <activity
+            android:name=".ui.dosen.library.DosenCategoryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dosen.library.DosenCategoryPathogenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dosen.library.DosenCategoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.dosen.approval.ApprovalDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ui.dosen.approval.ApprovalActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.library.DosenDataListActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.mahasiswa.add.AddDataActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.library.DosenShowActivity"
             android:exported="false" />
         <activity
             android:name=".ui.dosen.home.DosenHomeActivity"

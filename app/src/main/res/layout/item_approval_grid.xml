@@ -61,7 +61,7 @@
             android:layout_below="@id/tv_user"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_box"
+            android:background="@drawable/bg_pending"
             android:paddingHorizontal="10dp"
             android:paddingVertical="6dp"
             android:textColor="@color/white"

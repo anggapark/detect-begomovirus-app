@@ -69,6 +69,13 @@
     <string name="title_pathogen">Pathogen</string>
     <string name="hint_pathogen">Pilih Pathogen</string>
 
+    <string name="pathogen_virus">Virus</string>
+    <string name="pathogen_bakteri">Bakteri</string>
+    <string name="pathogen_cendawan">Cendawan</string>
+    <string name="pathogen_nematoda">Nematoda</string>
+    <string name="pathogen_fitoplasma">Fitoplasma</string>
+
+
     <string name="title_gejala">Gejala Penyakit</string>
     <string name="hint_gejala">Pilih Gejala Penyakit</string>
 
@@ -89,6 +96,7 @@
     <string name="hint_nama_kategori">Masukkan Nama Kategori</string>
     <string name="hint_keterangan">Masukkan Keterangan</string>
     <string name="hint_nama">Masukkan Nama</string>
+    <string name="hint_search">Cari Data</string>
 
 
     <string name="btn_apply">Apply</string>
@@ -134,9 +142,11 @@
     <string name="hybrid_type">Hybrid</string>
     <string name="retry">Try Again</string>
     <string name="forgot_password">Forgot Password?</string>
+
     <string name="hint_reject">Reject Submission</string>
     <string name="hint_approve">Approve Submission</string>
     <string name="all_categories">All Categories</string>
+    <string name="hint_empty">NO DATA FOUND</string>
 
 
 </resources>
