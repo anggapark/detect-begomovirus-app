@@ -2,6 +2,7 @@ package com.ipb.simpt.repository
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ipb.simpt.model.CategoryModel
 import com.ipb.simpt.model.DataModel
 
 class DataRepository {
@@ -15,6 +16,38 @@ class DataRepository {
     private val pathogenCache = mutableMapOf<String, String>()
     private val userNameCache = mutableMapOf<String, String>()
     private val userNimCache = mutableMapOf<String, String>()
+
+    fun fetchDataByCategory(categoryName: String, itemId: String, categoryValue: String?, callback: (List<DataModel>) -> Unit) {
+        val fieldName = when (categoryName) {
+            "Komoditas" -> "komoditasId"
+            "Penyakit" -> "penyakitId"
+            "Gejala Penyakit" -> "gejalaId"
+            "Kategori Pathogen" -> "pathogenId"
+            else -> throw IllegalArgumentException("Invalid category name")
+        }
+
+        val query = if (categoryName == "Kategori Pathogen" && categoryValue != null) {
+            db.collection("Data")
+                .whereEqualTo("kategoriPathogen", categoryValue)
+                .whereEqualTo(fieldName, itemId)
+        } else {
+            db.collection("Data")
+                .whereEqualTo(fieldName, itemId)
+        }
+
+        query.get()
+            .addOnSuccessListener { result ->
+                val dataList = result.map { document ->
+                    document.toObject(DataModel::class.java)
+                }
+                Log.d("DataRepository", "fetchDataByCategory onSuccess called with ${dataList.size} items")
+                callback(dataList)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DataRepository", "Error getting documents: ", exception)
+                callback(emptyList())
+            }
+    }
 
     fun fetchDataByStatus(status: String, callback: (List<DataModel>) -> Unit) {
         db.collection("Data")
@@ -56,6 +89,24 @@ class DataRepository {
                 Log.w("DataRepository", "Error getting document: ", exception)
                 callback("")
             }
+    }
+
+    fun fetchPathogenName(categoryValue: String?, itemId: String, callback: (String) -> Unit) {
+        if (categoryValue != null) {
+            db.collection("Categories")
+                .document("Kategori Pathogen")
+                .collection(categoryValue)
+                .document(itemId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val name = document.getString("name") ?: ""
+                    callback(name)
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("DataRepository", "Error getting document: ", exception)
+                    callback("")
+                }
+        }
     }
 
     fun fetchKategoriPathogen(dataModel: DataModel, callback: (DataModel) -> Unit) {

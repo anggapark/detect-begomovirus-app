@@ -63,7 +63,7 @@ class ApprovalAdapter(
             holder.bind(data)
         }
     }
-    // working code before changes
+
     inner class ListViewHolder(private val binding: ItemApprovalListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: DataModel) {

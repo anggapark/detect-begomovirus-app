@@ -147,6 +147,8 @@
     <string name="hint_approve">Approve Submission</string>
     <string name="all_categories">All Categories</string>
     <string name="hint_empty">NO DATA FOUND</string>
+    <string name="title_nama_kategori">Nama Kategori</string>
+    <string name="btn_delete">Delete</string>
 
 
 </resources>

@@ -16,7 +16,6 @@
         <!-- No Action Bar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-
     </style>
 
     <!--  Transparent Toolbar  -->
