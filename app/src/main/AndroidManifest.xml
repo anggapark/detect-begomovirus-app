@@ -19,6 +19,9 @@
         android:theme="@style/Theme.SIMPT"
         tools:targetApi="31">
         <activity
+            android:name=".ui.mahasiswa.library.LibraryDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.dosen.library.detail.DosenCategoryDetailActivity"
             android:exported="false" />
         <activity

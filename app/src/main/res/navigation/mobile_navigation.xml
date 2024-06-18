@@ -33,5 +33,25 @@
         android:id="@+id/navigation_profile"
         android:name="com.ipb.simpt.ui.mahasiswa.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/navigation_profile_to_navigation_profile_edit"
+            app:destination="@id/navigation_profile_edit">
+            <argument
+                android:name="field"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_profile_edit"
+        android:name="com.ipb.simpt.ui.mahasiswa.profile.EditProfileFragment"
+        android:label="@string/title_profile_edit"
+        tools:layout="@layout/fragment_edit_profile">
+        <argument
+            android:name="field"
+            app:argType="string" />
+    </fragment>
+
+
 </navigation>

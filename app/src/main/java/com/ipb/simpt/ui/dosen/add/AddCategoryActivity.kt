@@ -38,7 +38,6 @@ class AddCategoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
         setupToolbar()
 
         // init firebase auth

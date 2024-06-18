@@ -49,7 +49,6 @@ class AddDataActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddDataBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
 
         setupToolbar()
 

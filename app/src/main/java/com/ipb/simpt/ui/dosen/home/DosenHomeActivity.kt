@@ -38,7 +38,6 @@ class DosenHomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDosenHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
         setupToolbar()
 
         // init firebase auth

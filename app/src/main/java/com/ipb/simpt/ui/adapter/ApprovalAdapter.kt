@@ -6,15 +6,12 @@ import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemApprovalGridBinding
 import com.ipb.simpt.databinding.ItemApprovalListBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.repository.DataRepository
 import com.ipb.simpt.ui.dosen.approval.ApprovalViewModel
 
 class ApprovalAdapter(
@@ -78,9 +75,14 @@ class ApprovalAdapter(
             binding.tvDescription.text = data.deskripsi
             binding.tvStatus.text = data.status
             when (data.status) {
-                "Pending" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_pending)
-                "Approved" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_approved)
-                "Rejected" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_rejected)
+                "Pending" -> binding.tvStatus.background =
+                    AppCompatResources.getDrawable(itemView.context, R.drawable.bg_pending)
+
+                "Approved" -> binding.tvStatus.background =
+                    AppCompatResources.getDrawable(itemView.context, R.drawable.bg_approved)
+
+                "Rejected" -> binding.tvStatus.background =
+                    AppCompatResources.getDrawable(itemView.context, R.drawable.bg_rejected)
             }
 
             // set to imageView
@@ -106,9 +108,14 @@ class ApprovalAdapter(
             binding.tvDescription.text = data.deskripsi
             binding.tvStatus.text = data.status
             when (data.status) {
-                "Pending" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_pending)
-                "Approved" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_approved)
-                "Rejected" -> binding.tvStatus.background = AppCompatResources.getDrawable(itemView.context, R.drawable.bg_rejected)
+                "Pending" -> binding.tvStatus.background =
+                    AppCompatResources.getDrawable(itemView.context, R.drawable.bg_pending)
+
+                "Approved" -> binding.tvStatus.background =
+                    AppCompatResources.getDrawable(itemView.context, R.drawable.bg_approved)
+
+                "Rejected" -> binding.tvStatus.background =
+                    AppCompatResources.getDrawable(itemView.context, R.drawable.bg_rejected)
 
             }
 

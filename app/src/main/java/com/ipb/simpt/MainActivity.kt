@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         // Navbar Visibility
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_home, R.id.navigation_scan -> {
+                R.id.navigation_home, R.id.navigation_scan, R.id.navigation_library -> {
                     toolbar.visibility = View.GONE
                 }
 
@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             else -> {
-                menuInflater.inflate(R.menu.default_menu, menu)
+                // Handle else
             }
         }
         return super.onPrepareOptionsMenu(menu)

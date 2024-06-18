@@ -17,7 +17,7 @@ import com.ipb.simpt.ui.adapter.DataCategoryAdapter
 
 class DosenCategoryRecyclerViewFragment : Fragment() {
 
-    private val viewModel: DosenCategoryRecyclerViewViewModel by activityViewModels()
+    private val viewModel: DosenCategoryViewModel by activityViewModels()
     private lateinit var progressBar: ProgressBar
     private lateinit var itemId: String
     private lateinit var itemName: String

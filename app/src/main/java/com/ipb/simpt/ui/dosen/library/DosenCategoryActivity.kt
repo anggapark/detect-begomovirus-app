@@ -18,7 +18,6 @@ class DosenCategoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDosenCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
         setupToolbar()
         setupAction()
     }

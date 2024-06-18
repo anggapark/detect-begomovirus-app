@@ -1,40 +1,151 @@
 package com.ipb.simpt.ui.mahasiswa.profile
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentProfileBinding
+import com.ipb.simpt.utils.FileHelper
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var profileViewModel: ProfileViewModel
+
+    private var imgUri: Uri? = null
+
+    companion object {
+        private const val TAG = "ProfileFragment"
+    }
+
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        val profileViewModel =
-//            ViewModelProvider(this).get(ProfileViewModel::class.java)
-//
-//        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-//        val root: View = binding.root
-//
-//        val textView: TextView = binding.textProfile
-//        profileViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
-//        return root
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+        setupUserProfile()
+        setupAction()
+    }
+
+    private fun setupUserProfile() {
+        val firebaseUser = firebaseAuth.currentUser
+        if (firebaseUser != null) {
+            profileViewModel.fetchUserDetails(firebaseUser.uid)
+            profileViewModel.user.observe(viewLifecycleOwner) { user ->
+                if (user != null) {
+                    binding.tvName.text = user.userName
+                    binding.tvNim.text = user.userNim
+                    binding.tvEmail.text = user.email
+                    Glide.with(this)
+                        .load(user.profileImage)
+                        .placeholder(R.drawable.ic_profile) // Placeholder icon
+                        .into(binding.ivProfile)
+                }
+            }
+        }
+    }
+
+    private fun setupAction() {
+        binding.tvName.setOnClickListener {
+            navigateToEditProfile("userName")
+        }
+
+        binding.tvNim.setOnClickListener {
+            navigateToEditProfile("userNim")
+        }
+
+        binding.tvEmail.setOnClickListener {
+//            navigateToEditProfile("email")
+        }
+
+        binding.tvProfileChange.setOnClickListener {
+            imagePickIntent()
+        }
+
+        binding.tvPasswordChange.setOnClickListener {
+            navigateToChangePassword()
+        }
+    }
+
+    private fun imagePickIntent() {
+        Log.d(TAG, "imagePickIntent: starting image pick intent")
+
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        imageActivityResultLauncher.launch(intent)
+    }
+
+    private val imageActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+        ActivityResultCallback { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "Image Picked")
+                imgUri = result.data?.data
+
+                // Convert the image URI to a File object
+                val imgFile = FileHelper.uriToFile(imgUri!!, requireContext())
+
+                // Reduce the size of the image file
+                val reducedImgFile = FileHelper.reduceFileImage(imgFile)
+
+                // Update imgUri to point to the reduced image file
+                imgUri = Uri.fromFile(reducedImgFile)
+
+                // Set the picked image to your ImageView
+                binding.ivProfile.setImageURI(imgUri)
+
+                // Upload the new profile picture to Firebase Storage
+                profileViewModel.uploadImgToStorage(imgUri!!)
+            } else {
+                Log.d(TAG, "Image pick cancelled")
+                Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+
+    private fun navigateToEditProfile(field: String) {
+        val bundle = Bundle().apply {
+            putString("field", field)
+        }
+        findNavController().navigate(R.id.navigation_profile_edit, bundle)
+    }
+
+    private fun navigateToChangePassword() {
+        val bundle = Bundle().apply {
+            putBoolean("isPasswordChange", true)
+        }
+        findNavController().navigate(R.id.navigation_profile_edit, bundle)
     }
 
     override fun onDestroyView() {

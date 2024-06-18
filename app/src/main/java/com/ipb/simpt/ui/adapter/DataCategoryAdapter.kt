@@ -2,21 +2,17 @@ package com.ipb.simpt.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemCategoryDetailListBinding
-import com.ipb.simpt.model.CategoryModel
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.dosen.library.detail.DosenCategoryRecyclerViewViewModel
+import com.ipb.simpt.ui.dosen.library.detail.DosenCategoryViewModel
 
-class DataCategoryAdapter (
+class DataCategoryAdapter(
     private val context: Context,
     private var dataList: List<DataModel>,
-    private val viewModel: DosenCategoryRecyclerViewViewModel,
+    private val viewModel: DosenCategoryViewModel,
     private val categoryName: String,
     private val categoryValue: String?
 ) : RecyclerView.Adapter<DataCategoryAdapter.ViewHolder>() {
@@ -30,21 +26,25 @@ class DataCategoryAdapter (
                         binding.tvTitle.text = name
                     }
                 }
+
                 "Penyakit" -> {
                     viewModel.fetchCategoryName("Penyakit", data.penyakitId) { name ->
                         binding.tvTitle.text = name
                     }
                 }
+
                 "Gejala Penyakit" -> {
                     viewModel.fetchCategoryName("Gejala Penyakit", data.gejalaId) { name ->
                         binding.tvTitle.text = name
                     }
                 }
+
                 "Kategori Pathogen" -> {
                     viewModel.fetchPathogenName(categoryValue, data.pathogenId) { name ->
                         binding.tvTitle.text = name
                     }
                 }
+
                 else -> {
                     binding.tvTitle.text = "Unknown Category"
                 }
@@ -63,7 +63,11 @@ class DataCategoryAdapter (
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemCategoryDetailListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCategoryDetailListBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 

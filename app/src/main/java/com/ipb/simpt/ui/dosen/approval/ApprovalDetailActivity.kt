@@ -22,7 +22,6 @@ class ApprovalDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityApprovalDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
 
         // Initialize ViewModel
         viewModel = ViewModelProvider(this).get(ApprovalDetailViewModel::class.java)

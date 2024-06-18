@@ -44,7 +44,6 @@ class DosenCategoryListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDosenCategoryListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
         setupToolbar()
 
         // Get data from intent

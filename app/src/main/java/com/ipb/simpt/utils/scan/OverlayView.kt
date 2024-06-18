@@ -35,7 +35,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         when (clsName) {
             "negatif_begomovirus" -> boxPaint.color = Color.BLUE
             "positif_begomovirus" -> boxPaint.color = Color.RED
-            else -> boxPaint.color = ContextCompat.getColor(context!!, R.color.bounding_box_color)
+            else -> boxPaint.color = context?.let { ContextCompat.getColor(it, R.color.bounding_box_color) } ?: Color.BLACK
         }
     }
 

@@ -23,6 +23,9 @@ class Detector(
     private val detectorListener: DetectorListener
 ) {
 
+    @Volatile
+    private var isDetecting = false
+
     private var interpreter: Interpreter? = null
     private var labels = mutableListOf<String>()
 
@@ -68,11 +71,15 @@ class Detector(
     }
 
     fun clear() {
-        interpreter?.close()
-        interpreter = null
+        if (!isDetecting) {
+            interpreter?.close()
+            interpreter = null
+        }
     }
 
     fun detect(frame: Bitmap) {
+        isDetecting = true
+
         interpreter ?: return
         if (tensorWidth == 0) return
         if (tensorHeight == 0) return
@@ -102,6 +109,8 @@ class Detector(
         }
 
         detectorListener.onDetect(bestBoxes, inferenceTime)
+
+        isDetecting = false
     }
 
     private fun bestBox(array: FloatArray) : List<BoundingBox>? {

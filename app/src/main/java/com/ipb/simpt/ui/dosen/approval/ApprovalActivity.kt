@@ -50,7 +50,6 @@ class ApprovalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityApprovalBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
 
         // Initialize Firebase Auth and Firestore
         firebaseAuth = FirebaseAuth.getInstance()

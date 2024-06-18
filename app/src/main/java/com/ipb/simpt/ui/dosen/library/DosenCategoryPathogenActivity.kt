@@ -18,7 +18,6 @@ class DosenCategoryPathogenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDosenCategoryPathogenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        enableEdgeToEdge()
 
         // Get data from intent
         categoryName = intent.getStringExtra("CATEGORY_NAME") ?: ""
