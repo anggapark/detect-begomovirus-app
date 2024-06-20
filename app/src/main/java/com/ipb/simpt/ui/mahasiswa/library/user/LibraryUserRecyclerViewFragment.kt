@@ -1,38 +1,62 @@
-package com.ipb.simpt.ui.mahasiswa.library
+package com.ipb.simpt.ui.mahasiswa.library.user
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentLibraryBinding
+import com.ipb.simpt.databinding.FragmentLibraryUserRecyclerViewBinding
 import com.ipb.simpt.model.DataModel
+import com.ipb.simpt.ui.adapter.DataCategoryAdapter
 import com.ipb.simpt.ui.adapter.LibraryAdapter
+import com.ipb.simpt.ui.mahasiswa.library.LibraryDetailActivity
+import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
 
-class LibraryFragment : Fragment() {
+class LibraryUserRecyclerViewFragment : Fragment() {
 
-    private var _binding: FragmentLibraryBinding? = null
+    private var _binding: FragmentLibraryUserRecyclerViewBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var dataList: ArrayList<DataModel>
     private lateinit var viewModel: LibraryViewModel
     private lateinit var adapter: LibraryAdapter
-    private var isGridLayout : Boolean = false
+    private lateinit var userId: String
+
+    companion object {
+        private const val ARG_USER_ID = "USER_ID"
+
+        fun newInstance(userId: String) =
+            LibraryUserRecyclerViewFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_USER_ID, userId)
+                }
+            }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            userId = it.getString(ARG_USER_ID) ?: ""
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentLibraryBinding.inflate(inflater, container, false)
+        _binding = FragmentLibraryUserRecyclerViewBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -42,10 +66,9 @@ class LibraryFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(LibraryViewModel::class.java)
 
         setupRecyclerView()
-        setupLayoutSwitcher()
         setupSearchFilter()
 
-        viewModel.fetchApprovedItems()
+        viewModel.fetchDataByStatusAndUserId(userId)
     }
 
     private fun setupRecyclerView() {
@@ -59,44 +82,20 @@ class LibraryFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.rvLibrary.adapter = adapter
-        binding.rvLibrary.layoutManager = LinearLayoutManager(requireContext()) // Default to list layout
+        binding.rvData.adapter = adapter
+        binding.rvData.layoutManager = LinearLayoutManager(requireContext()) // Default to list layout
 
         // Observe data changes
         viewModel.items.observe(viewLifecycleOwner, Observer { items ->
             if (items != null) {
-                Log.d("LibraryFragment", "Items found: $items")
                 dataList.clear()
                 dataList.addAll(items)
                 adapter.updateData(dataList)
                 showLoading(false)
             } else {
-                Log.d("LibraryFragment", "No items found")
                 showLoading(false)
             }
         })
-    }
-
-    private fun setupLayoutSwitcher() {
-        binding.btnList.setOnClickListener {
-            isGridLayout = false
-            applyLayoutManager()
-            adapter.setLayoutType(isGridLayout)
-        }
-
-        binding.btnGrid.setOnClickListener {
-            isGridLayout = true
-            applyLayoutManager()
-            adapter.setLayoutType(isGridLayout)
-        }
-    }
-
-    private fun applyLayoutManager() {
-        binding.rvLibrary.layoutManager = if (isGridLayout) {
-            GridLayoutManager(requireContext(), 2)
-        } else {
-            LinearLayoutManager(requireContext())
-        }
     }
 
     private fun setupSearchFilter() {
@@ -124,8 +123,4 @@ class LibraryFragment : Fragment() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

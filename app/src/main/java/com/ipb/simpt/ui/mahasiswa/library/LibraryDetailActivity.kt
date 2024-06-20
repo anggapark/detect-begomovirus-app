@@ -1,28 +1,27 @@
 package com.ipb.simpt.ui.mahasiswa.library
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ipb.simpt.R
-import com.ipb.simpt.databinding.ActivityApprovalDetailBinding
 import com.ipb.simpt.databinding.ActivityLibraryDetailBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.dosen.approval.ApprovalDetailViewModel
+import com.ipb.simpt.ui.dosen.library.DosenCategoryListActivity
+import com.ipb.simpt.ui.mahasiswa.library.user.LibraryUserDetailActivity
 
 class LibraryDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLibraryDetailBinding
     private lateinit var viewModel: LibraryViewModel
+    private lateinit var data: DataModel
     private lateinit var itemId: String
 
-    //TODO: Go to User Detail on Click
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLibraryDetailBinding.inflate(layoutInflater)
@@ -44,13 +43,13 @@ class LibraryDetailActivity : AppCompatActivity() {
         loadItemDetails()
 
         // Handle click
-        setupAction(itemId)
+        setupAction()
     }
 
     private fun loadItemDetails() {
         viewModel.fetchItemDetails(itemId) { dataModel ->
-            // Fetch names using cached data
             viewModel.fetchAndCacheNames(dataModel) {
+                data = dataModel
                 updateUI(dataModel)
             }
         }
@@ -66,20 +65,41 @@ class LibraryDetailActivity : AppCompatActivity() {
         binding.tvGejala.text = data.gejalaName
         binding.tvDataset.text = data.dataset
         binding.tvDescription.text = data.deskripsi
-        binding.tvUploaderName.text = data.userName
-        binding.tvUploaderNim.text = data.userNim
 
         // Load image
         Glide.with(this).load(data.url).into(binding.ivImage)
+
+        // load user details
+        updateUserUI(data.uid)
 
         // Hide loading indicator after data is fetched and UI is updated
         showLoading(false)
 
     }
 
-    private fun setupAction(itemId: String) {
-        binding.llUploader.setOnClickListener {
+    private fun updateUserUI(uid: String) {
+        viewModel.fetchUserDetails(uid)
+        viewModel.user.observe(this, Observer { user ->
+            if (user != null) {
+                binding.tvUploaderName.text = user.userName
+                binding.tvUploaderNim.text = user.userNim
+                Glide.with(this)
+                    .load(user.profileImage)
+                    .placeholder(R.drawable.ic_profile) // Placeholder icon
+                    .transform(CircleCrop())
+                    .into(binding.ivUploader)
+                showLoading(false)
+            } else {
+                showLoading(false)
+            }
+        })
+    }
 
+    private fun setupAction() {
+        binding.llUploader.setOnClickListener {
+            val intent = Intent(this, LibraryUserDetailActivity::class.java)
+            intent.putExtra("USER_ID", data.uid)
+            this.startActivity(intent)
         }
     }
 

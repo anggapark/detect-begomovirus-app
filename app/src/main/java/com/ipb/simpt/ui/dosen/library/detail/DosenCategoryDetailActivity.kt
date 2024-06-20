@@ -68,6 +68,4 @@ class DosenCategoryDetailActivity : AppCompatActivity() {
             fragment.fetchData()
         }
     }
-
-
 }

@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
@@ -88,7 +87,7 @@ class ApprovalActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         // init arraylist
-        showLoading(true)  // Show progress bar
+        showLoading(true)
         dataArrayList = ArrayList()
 
         adapter = ApprovalAdapter(this, dataArrayList, viewModel) { dataModel ->

@@ -3,7 +3,6 @@ package com.ipb.simpt.repository
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.ipb.simpt.model.CategoryModel
 import com.ipb.simpt.model.DataModel
 
 class DataRepository {
@@ -65,6 +64,24 @@ class DataRepository {
                 callback(emptyList())
             }
     }
+
+    fun fetchDataByStatusAndUserId(status: String, userId: String, callback: (List<DataModel>) -> Unit) {
+        db.collection("Data")
+            .whereEqualTo("status", status)
+            .whereEqualTo("uid", userId)
+            .get()
+            .addOnSuccessListener { result ->
+                val dataList = result.map { document ->
+                    document.toObject(DataModel::class.java)
+                }
+                callback(dataList)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DataRepository", "Error getting documents: ", exception)
+                callback(emptyList())
+            }
+    }
+
 
     fun fetchDataWithFilters(status: String, komoditas: String?, penyakit: String?, callback: (List<DataModel>) -> Unit) {
         var query: Query = db.collection("Data").whereEqualTo("status", status)

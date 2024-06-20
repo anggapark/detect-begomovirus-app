@@ -3,9 +3,9 @@ package com.ipb.simpt.ui.adapter
 import android.widget.Filter
 import com.ipb.simpt.model.DataModel
 
-class DataFilter(
+class LibraryFilter(
     private var dataList: ArrayList<DataModel>,
-    private var adapter: ApprovalAdapter
+    private var adapter: LibraryAdapter
 ) : Filter() {
 
     override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -21,13 +21,12 @@ class DataFilter(
             // that only includes categories that contain the input
             val filteredList = dataList.filter { data ->
                 data.komoditasName.contains(charString, true) ||
-                        data.penyakitName?.contains(charString, true) ?: false ||
-                        data.gejalaName?.contains(charString, true) ?: false ||
-                        data.pathogenName?.contains(charString, true) ?: false ||
+                        data.penyakitName.contains(charString, true) ||
+                        data.gejalaName.contains(charString, true) ||
+                        data.pathogenName.contains(charString, true) ||
                         data.kategoriPathogen.contains(charString, true) ||
                         data.dataset.contains(charString, true) ||
                         data.deskripsi.contains(charString, true) ||
-                        data.status.contains(charString, true) ||
                         data.userName.contains(charString, true) ||
                         data.userNim.contains(charString, true)
             }.toMutableList()

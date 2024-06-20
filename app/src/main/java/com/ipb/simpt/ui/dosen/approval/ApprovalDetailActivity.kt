@@ -6,15 +6,18 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityApprovalDetailBinding
 import com.ipb.simpt.model.DataModel
 
 class ApprovalDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityApprovalDetailBinding
-    private lateinit var viewModel: ApprovalDetailViewModel
+    private lateinit var viewModel: ApprovalViewModel
     private lateinit var itemId: String
 
     //TODO: ADD COMMENT WHEN REJECT
@@ -24,7 +27,7 @@ class ApprovalDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Initialize ViewModel
-        viewModel = ViewModelProvider(this).get(ApprovalDetailViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ApprovalViewModel::class.java)
 
         // Get item ID from intent
         itemId = intent.getStringExtra("ITEM_ID") ?: ""
@@ -61,16 +64,36 @@ class ApprovalDetailActivity : AppCompatActivity() {
         binding.tvGejala.text = data.gejalaName
         binding.tvDataset.text = data.dataset
         binding.tvDescription.text = data.deskripsi
-        binding.tvUploaderName.text = data.userName
-        binding.tvUploaderNim.text = data.userNim
 
         // Load image
         Glide.with(this).load(data.url).into(binding.ivImage)
+
+        // load user details
+        updateUserUI(data.uid)
 
         // Hide loading indicator after data is fetched and UI is updated
         showLoading(false)
 
     }
+
+    private fun updateUserUI(uid: String) {
+        viewModel.fetchUserDetails(uid)
+        viewModel.user.observe(this, Observer { user ->
+            if (user != null) {
+                binding.tvUploaderName.text = user.userName
+                binding.tvUploaderNim.text = user.userNim
+                Glide.with(this)
+                    .load(user.profileImage)
+                    .placeholder(R.drawable.ic_profile) // Placeholder icon
+                    .transform(CircleCrop())
+                    .into(binding.ivUploader)
+                showLoading(false)
+            } else {
+                showLoading(false)
+            }
+        })
+    }
+
 
     // TODO: ADD COMMENT WHEN APPROVE OR REJECT
     private fun setupAction(itemId: String) {

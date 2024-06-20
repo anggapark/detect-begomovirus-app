@@ -5,14 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ipb.simpt.model.DataModel
+import com.ipb.simpt.model.UserModel
 import com.ipb.simpt.repository.DataRepository
+import com.ipb.simpt.repository.UserRepository
 
 class LibraryViewModel : ViewModel() {
 
     private val repository = DataRepository()
+    private val userRepository = UserRepository()
 
     private val _items = MutableLiveData<List<DataModel>>()
     val items: LiveData<List<DataModel>> get() = _items
+
+    private val _user = MutableLiveData<UserModel>()
+    val user: LiveData<UserModel> get() = _user
 
     fun fetchApprovedItems() {
         Log.d("LibraryViewModel", "Fetching approved items")
@@ -32,6 +38,23 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
+    fun fetchDataByStatusAndUserId(userId: String) {
+        Log.d("LibraryViewModel", "Fetching approved items for user $userId")
+        repository.fetchDataByStatusAndUserId("Approved", userId) { dataList ->
+            val updatedDataList = mutableListOf<DataModel>()
+            dataList.forEach { dataModel ->
+                repository.fetchAndCacheNames(dataModel) {
+                    repository.fetchAndCacheUserDetails(dataModel) {
+                        updatedDataList.add(dataModel)
+                        if (updatedDataList.size == dataList.size) {
+                            Log.d("LibraryViewModel", "Fetched items: $updatedDataList")
+                            _items.postValue(updatedDataList)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun fetchUserName(uid: String, callback: (String) -> Unit) {
         repository.fetchUserName(uid, callback)
@@ -53,9 +76,7 @@ class LibraryViewModel : ViewModel() {
                     dataModel.gejalaName = gejalaName
                     repository.fetchKategoriPathogen(dataModel) { updatedDataModel ->
                         repository.fetchPathogen(updatedDataModel) {
-                            fetchAndCacheUserDetails(dataModel) {
-                                callback()
-                            }
+                            callback()
                         }
                     }
                 }
@@ -63,13 +84,12 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
-    // Method to fetch and cache user details
-    private fun fetchAndCacheUserDetails(dataModel: DataModel, callback: () -> Unit) {
-        repository.fetchUserName(dataModel.uid) { userName ->
-            dataModel.userName = userName
-            repository.fetchUserNim(dataModel.uid) { userNim ->
-                dataModel.userNim = userNim
-                callback()
+    fun fetchUserDetails(uid: String) {
+        userRepository.fetchUserDetails(uid) { user ->
+            user?.let {
+                _user.value = it
+            } ?: run {
+                Log.w("ProfileViewModel", "User not found")
             }
         }
     }

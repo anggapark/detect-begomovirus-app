@@ -12,13 +12,10 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentProfileBinding
 import com.ipb.simpt.utils.FileHelper
@@ -84,7 +81,8 @@ class ProfileFragment : Fragment() {
         }
 
         binding.tvEmail.setOnClickListener {
-//            navigateToEditProfile("email")
+            // TODO: email change with user authentication
+            // navigateToEditProfile("email")
         }
 
         binding.tvProfileChange.setOnClickListener {

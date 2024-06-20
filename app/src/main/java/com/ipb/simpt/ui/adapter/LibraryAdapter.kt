@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -15,11 +16,13 @@ import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
 
 class LibraryAdapter(
     private val context: Context,
-    private var dataList: List<DataModel>,
+    var dataList: ArrayList<DataModel>,
     private val viewModel: LibraryViewModel,
     private val itemClick: (DataModel) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
+    var filterList: ArrayList<DataModel> = dataList
+    private lateinit var filter: Filter
     private var isGridLayout = false
 
     fun setLayoutType(isGridLayout: Boolean) {
@@ -86,9 +89,17 @@ class LibraryAdapter(
         }
     }
 
-    fun updateData(newData: List<DataModel>) {
+    fun updateData(newData: ArrayList<DataModel>) {
         Log.d("LibraryAdapter", "Updating data with new items: $newData")
         dataList = newData
+        filterList = ArrayList(newData)
         notifyDataSetChanged()
+    }
+
+    override fun getFilter(): Filter {
+        if (!::filter.isInitialized) {
+            filter = LibraryFilter(filterList, this)
+        }
+        return filter
     }
 }

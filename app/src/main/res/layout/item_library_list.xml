@@ -74,12 +74,12 @@
         <TextView
             android:id="@+id/tv_deskripsi"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="45dp"
             android:layout_below="@id/iv_image"
             android:layout_marginTop="5dp"
             android:gravity="top|start"
             android:lineSpacingMultiplier="1.1"
-            android:maxLines="4"
+            android:maxLines="2"
             android:textColor="@color/gray2"
             android:textSize="14sp"
             tools:text="@string/lorem" />

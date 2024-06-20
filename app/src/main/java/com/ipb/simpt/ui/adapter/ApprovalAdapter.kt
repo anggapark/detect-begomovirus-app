@@ -22,11 +22,11 @@ class ApprovalAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
     var filterList: ArrayList<DataModel> = ArrayList(dataList)
-    private var filter: DataFilter? = null
+    private var filter: ApprovalFilter? = null
     private var isGridLayout = false
 
     init {
-        filter = DataFilter(dataList, this)
+        filter = ApprovalFilter(dataList, this)
     }
 
     fun setLayoutType(isGridLayout: Boolean) {

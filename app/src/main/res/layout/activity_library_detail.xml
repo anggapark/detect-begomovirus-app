@@ -62,9 +62,10 @@
 
                 <ImageView
                     android:id="@+id/iv_uploader"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center"
                     android:contentDescription="@string/desc_profile"
                     android:src="@drawable/ic_profile" />
 
@@ -249,7 +250,7 @@
                 android:background="@drawable/bg_text"
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
-                android:hint="@string/hint_gejala"
+                android:hint="@string/hint_dataset"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
@@ -266,6 +267,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <!-- TODO: Scrollable Description -->
             <TextView
                 android:id="@+id/tv_description"
                 android:layout_width="match_parent"
@@ -276,7 +278,7 @@
                 android:background="@drawable/bg_text"
                 android:drawablePadding="10dp"
                 android:gravity="top|start"
-                android:hint="@string/hint_gejala"
+                android:hint="@string/hint_deskripsi"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray1"
