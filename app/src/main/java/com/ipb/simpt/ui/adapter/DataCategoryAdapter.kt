@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ipb.simpt.databinding.ItemCategoryDetailListBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.dosen.library.detail.DosenCategoryViewModel
+import com.ipb.simpt.ui.dosen.library.DosenCategoryViewModel
 
 class DataCategoryAdapter(
     private val context: Context,

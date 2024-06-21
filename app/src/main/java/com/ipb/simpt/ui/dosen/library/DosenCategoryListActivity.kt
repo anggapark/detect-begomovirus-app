@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -28,7 +28,7 @@ class DosenCategoryListActivity : AppCompatActivity() {
 
     // arraylist to hold data model
     private lateinit var categoryList: ArrayList<CategoryModel>
-    private lateinit var viewModel: DosenCategoryListViewModel
+    private lateinit var viewModel: DosenCategoryViewModel
     private lateinit var adapter: CategoryAdapter
 
     private lateinit var categoryName: String
@@ -51,7 +51,7 @@ class DosenCategoryListActivity : AppCompatActivity() {
         categoryValue = intent.getStringExtra("CATEGORY_VALUE") ?: ""
 
         // Setup ViewModel
-        viewModel = ViewModelProvider(this).get(DosenCategoryListViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DosenCategoryViewModel::class.java)
 
         // Setup Recycler View
         setupRecyclerView()
@@ -61,7 +61,6 @@ class DosenCategoryListActivity : AppCompatActivity() {
 
         // Load initial data
         viewModel.fetchCategoryData(categoryName, categoryValue)
-        Log.d(TAG, "DosenCategoryListActivity created and fetchItems called")
     }
 
     private fun setupRecyclerView() {
@@ -72,7 +71,7 @@ class DosenCategoryListActivity : AppCompatActivity() {
         binding.rvCategories.adapter = adapter
 
         // Observe data changes
-        viewModel.categoryData.observe(this, Observer { categoryData ->
+        viewModel.category.observe(this, Observer { categoryData ->
             if (categoryData != null) {
                 categoryList.clear()
                 categoryList.addAll(categoryData)
@@ -120,11 +119,22 @@ class DosenCategoryListActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.default_menu, menu)
+        return true
+    }
+
     // handle back button
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressedDispatcher.onBackPressed()
+                return true
+            }
+
+            R.id.action_refresh -> {
+                showLoading(true)
+                viewModel.fetchCategoryData(categoryName, categoryValue)
                 return true
             }
         }

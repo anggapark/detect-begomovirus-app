@@ -81,7 +81,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.tvEmail.setOnClickListener {
-            // TODO: email change with user authentication
+            // TODO: email change also change user authentication
             // navigateToEditProfile("email")
         }
 

@@ -1,8 +1,8 @@
 package com.ipb.simpt.ui.dosen.library.detail
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.ipb.simpt.R
@@ -12,14 +12,13 @@ class DosenCategoryDetailActivity : AppCompatActivity() {
 
     // view binding
     private lateinit var binding: ActivityDosenCategoryDetailBinding
-
-    // toolbar
     private lateinit var toolbar: Toolbar
 
     private lateinit var itemId: String
     private lateinit var itemName: String
     private lateinit var categoryName: String
     private lateinit var categoryValue: String
+    private var fragment: DosenCategoryRecyclerViewFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,15 +32,27 @@ class DosenCategoryDetailActivity : AppCompatActivity() {
         categoryName = intent.getStringExtra("CATEGORY_NAME") ?: ""
         categoryValue = intent.getStringExtra("CATEGORY_VALUE") ?: ""
 
-        // Load the DosenCategoryFragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.categoryFragmentContainer, DosenCategoryFragment.newInstance(itemId, itemName, categoryName, categoryValue))
-            .commit()
+        loadFragments()
+    }
 
-        // Load the DosenCategoryRecyclerViewFragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.recyclerFragmentContainer, DosenCategoryRecyclerViewFragment.newInstance(itemId, itemName, categoryName, categoryValue))
-            .commit()
+    private fun loadFragments() {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+        // Initialize your fragments
+        val categoryFragment =
+            DosenCategoryFragment.newInstance(itemId, itemName, categoryName, categoryValue)
+        fragment = DosenCategoryRecyclerViewFragment.newInstance(
+            itemId,
+            itemName,
+            categoryName,
+            categoryValue
+        )
+
+        // Replace the fragments in your layout
+        fragmentTransaction.replace(R.id.categoryFragmentContainer, categoryFragment)
+        fragmentTransaction.replace(R.id.recyclerFragmentContainer, fragment!!)
+
+        fragmentTransaction.commit()
     }
 
     // enable setupToolbar as actionbar
@@ -51,6 +62,11 @@ class DosenCategoryDetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.default_menu, menu)
+//        return true
+//    }
+
     // handle back button
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -58,14 +74,12 @@ class DosenCategoryDetailActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
                 return true
             }
+//            R.id.action_refresh -> {
+//                // Reload fragments
+//                fragment?.fetchData()
+//                return true
+//            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    fun refreshRecyclerView() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.recyclerFragmentContainer)
-        if (fragment is DosenCategoryRecyclerViewFragment) {
-            fragment.fetchData()
-        }
     }
 }

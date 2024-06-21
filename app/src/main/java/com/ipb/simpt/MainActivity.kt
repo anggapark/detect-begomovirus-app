@@ -173,12 +173,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.action_back -> {
-                // Navigate back when back button is clicked
-                navController.navigateUp()
-                true
-            }
-
             R.id.action_logout -> {
                 signOut()
                 true

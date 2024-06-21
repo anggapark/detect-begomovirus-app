@@ -4,21 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.ipb.simpt.R
-import com.ipb.simpt.databinding.FragmentLibraryBinding
 import com.ipb.simpt.databinding.FragmentLibraryUserRecyclerViewBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.adapter.DataCategoryAdapter
 import com.ipb.simpt.ui.adapter.LibraryAdapter
 import com.ipb.simpt.ui.mahasiswa.library.LibraryDetailActivity
 import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
@@ -83,7 +77,8 @@ class LibraryUserRecyclerViewFragment : Fragment() {
         }
 
         binding.rvData.adapter = adapter
-        binding.rvData.layoutManager = LinearLayoutManager(requireContext()) // Default to list layout
+        binding.rvData.layoutManager =
+            LinearLayoutManager(requireContext()) // Default to list layout
 
         // Observe data changes
         viewModel.items.observe(viewLifecycleOwner, Observer { items ->

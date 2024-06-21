@@ -4,26 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.ipb.simpt.R
+import com.ipb.simpt.databinding.FragmentDosenCategoryRecyclerViewBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.adapter.DataCategoryAdapter
+import com.ipb.simpt.ui.dosen.library.DosenCategoryViewModel
 
 class DosenCategoryRecyclerViewFragment : Fragment() {
 
+    private var _binding: FragmentDosenCategoryRecyclerViewBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: DosenCategoryViewModel by activityViewModels()
-    private lateinit var progressBar: ProgressBar
     private lateinit var itemId: String
     private lateinit var itemName: String
     private lateinit var categoryName: String
     private var categoryValue: String? = null
-    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: DataCategoryAdapter
     private lateinit var dataArrayList: ArrayList<DataModel>
 
@@ -62,14 +61,12 @@ class DosenCategoryRecyclerViewFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_dosen_category_recycler_view, container, false)
+        _binding = FragmentDosenCategoryRecyclerViewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        recyclerView = view.findViewById(R.id.rv_data)
-        progressBar = view.findViewById(R.id.progressBar)
 
         setupRecyclerView()
 
@@ -92,7 +89,7 @@ class DosenCategoryRecyclerViewFragment : Fragment() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun setupRecyclerView() {
@@ -104,7 +101,8 @@ class DosenCategoryRecyclerViewFragment : Fragment() {
             categoryName,
             categoryValue
         )
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        binding.rvData.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvData.adapter = adapter
+
     }
 }

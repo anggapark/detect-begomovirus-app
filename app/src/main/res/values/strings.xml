@@ -27,6 +27,7 @@
     <string name="menu_ascending">Ascending</string>
     <string name="menu_descending">Descending</string>
     <string name="menu_back">Back</string>
+    <string name="menu_refresh">Refresh</string>
     <string name="menu_logout">Log out</string>
 
     <string name="tab_komoditas">Komoditas</string>
@@ -200,5 +201,6 @@
     </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_edit_category">Edit Nama Kategori</string>
 
 </resources>

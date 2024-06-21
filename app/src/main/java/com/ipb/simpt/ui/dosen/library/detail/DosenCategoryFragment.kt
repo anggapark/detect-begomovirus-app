@@ -1,33 +1,36 @@
 package com.ipb.simpt.ui.dosen.library.detail
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.ipb.simpt.R
+import com.ipb.simpt.databinding.FragmentDosenCategoryBinding
+import com.ipb.simpt.ui.dosen.approval.ApprovalDetailActivity
+import com.ipb.simpt.ui.dosen.library.DosenCategoryListActivity
+import com.ipb.simpt.ui.dosen.library.DosenCategoryViewModel
 
 class DosenCategoryFragment : Fragment() {
+
+
+    private var _binding: FragmentDosenCategoryBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: DosenCategoryViewModel by activityViewModels()
     private lateinit var itemId: String
     private lateinit var itemName: String
     private lateinit var categoryName: String
     private lateinit var categoryValue: String
-
-    private lateinit var etCategoryName: EditText
-    private lateinit var saveButton: Button
-    private lateinit var editButton: Button
-    private lateinit var deleteButton: ImageView
 
     companion object {
         private const val ARG_ITEM_ID = "ITEM_ID"
@@ -65,47 +68,28 @@ class DosenCategoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_dosen_category, container, false)
+        _binding = FragmentDosenCategoryBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        etCategoryName = view.findViewById(R.id.et_category_name)
-        deleteButton = view.findViewById(R.id.iv_delete)
-        editButton = view.findViewById(R.id.btn_edit)
-        saveButton = view.findViewById(R.id.btn_save)
-
         // Set the category name
-        etCategoryName.setText(itemName)
-
-        // Initial state: disable save button
-        enableEditText(false)
-
-        // Handle edit button click
-        editButton.setOnClickListener {
-            enableEditText(true)
-        }
-
-        // Handle save button click
-        saveButton.setOnClickListener {
-            // Save the updated category name
-            val updatedItemName = etCategoryName.text.toString()
-            if (updatedItemName.isNotBlank()) {
-                viewModel.updateCategoryName(categoryName, categoryValue, itemId, updatedItemName)
-
-                // Refresh the RecyclerView
-                (activity as DosenCategoryDetailActivity).refreshRecyclerView()
-
-                enableEditText(false)
-            } else {
-                Toast.makeText(context, "Category name cannot be empty", Toast.LENGTH_SHORT).show()
+        binding.tvCategoryName.setText(itemName)
+        binding.tvCategoryName.setOnClickListener {
+            val intent = Intent(requireContext(), DosenCategoryDetailEditActivity::class.java).apply {
+                putExtra("ITEM_ID", itemId)
+                putExtra("ITEM_NAME", itemName)
+                putExtra("CATEGORY_NAME", categoryName)
+                putExtra("CATEGORY_VALUE", categoryValue)
             }
+            startActivity(intent)
         }
 
         // Handle delete button click
-        deleteButton.setOnClickListener {
+        binding.ivDelete.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Confirm Deletion")
                 .setMessage("Are you sure you want to delete this category?")
@@ -120,17 +104,6 @@ class DosenCategoryFragment : Fragment() {
                 .show()
         }
 
-        // Observe update result
-        viewModel.updateResult.observe(viewLifecycleOwner) { result ->
-            result.onSuccess {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                requireActivity().setResult(Activity.RESULT_OK)
-                requireActivity().finish() // Close detail activity
-            }.onFailure {
-                Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
-            }
-        }
-
         // Observe delete result
         viewModel.deleteResult.observe(viewLifecycleOwner, Observer { result ->
             result.onSuccess {
@@ -141,10 +114,5 @@ class DosenCategoryFragment : Fragment() {
                 Toast.makeText(requireContext(), it.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    private fun enableEditText(enable: Boolean) {
-        etCategoryName.isEnabled = enable
-        saveButton.isEnabled = enable
     }
 }

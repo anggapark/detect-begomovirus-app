@@ -1,8 +1,9 @@
-package com.ipb.simpt.ui.dosen.library.detail
+package com.ipb.simpt.ui.dosen.library
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ipb.simpt.model.CategoryModel
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.repository.CategoryRepository
 import com.ipb.simpt.repository.DataRepository
@@ -21,6 +22,9 @@ class DosenCategoryViewModel : ViewModel() {
     private val _categoryData = MutableLiveData<List<DataModel>>()
     val categoryData: LiveData<List<DataModel>> get() = _categoryData
 
+    private val _category = MutableLiveData<List<CategoryModel>>()
+    val category: LiveData<List<CategoryModel>> get() = _category
+
     fun updateCategoryName(categoryName: String, categoryValue: String, itemId: String, updatedName: String) {
         categoryRepository.updateCategoryName(categoryName, categoryValue, itemId, updatedName, {
             _updateResult.value = Result.success("Category name updated successfully")
@@ -35,6 +39,12 @@ class DosenCategoryViewModel : ViewModel() {
         }, {
             _deleteResult.value = Result.failure(it)
         })
+    }
+
+    fun fetchCategoryData(categoryName: String, categoryValue: String?) {
+        categoryRepository.fetchDataByCategory(categoryName, categoryValue) { data ->
+            _category.postValue(data)
+        }
     }
 
     fun fetchDataByCategory(categoryName: String, itemId: String, categoryValue: String?) {

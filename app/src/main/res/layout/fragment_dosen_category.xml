@@ -33,36 +33,41 @@
             android:src="@drawable/ic_delete" />
 
         <!-- Edit Text for Category Name -->
-        <EditText
-            android:id="@+id/et_category_name"
+        <TextView
+            android:id="@+id/tv_category_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/tvNamaKategori"
-            android:textColor="@color/black"
-            android:layout_marginBottom="16dp"
-            android:hint="Category Name" />
+            android:layout_marginVertical="8dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_text"
+            android:drawableEnd="@drawable/ic_right"
+            android:gravity="center|start"
+            android:hint="Category Name"
+            android:padding="10dp"
+            android:textColor="@color/black" />
 
-        <!-- Edit Button -->
-        <Button
-            android:id="@+id/btn_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/et_category_name"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
-            android:background="@android:color/holo_purple"
-            android:text="Edit" />
+        <!--        &lt;!&ndash; Edit Button &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/btn_edit"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/et_category_name"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:background="@android:color/holo_purple"-->
+<!--            android:text="Edit" />-->
 
-        <!-- Save Button -->
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/et_category_name"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
-            android:background="@android:color/holo_purple"
-            android:text="Save" />
+<!--        &lt;!&ndash; Save Button &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/btn_save"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@id/et_category_name"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:background="@android:color/holo_purple"-->
+<!--            android:text="Save" />-->
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
