@@ -10,6 +10,35 @@
         android:layout_height="wrap_content"
         tools:context=".ui.mahasiswa.scan.ScanFragment">
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_illustration"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="50dp"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/scan_illustration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/scan_illust" />
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btn_camera"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/btn_camera"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cv_illustration" />
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -20,7 +49,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/btn_camera">
 
             <TextView
                 android:id="@+id/tv_desc"
@@ -84,6 +113,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="50dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -106,46 +136,5 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginTop="24dp"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-            <ImageView
-                android:id="@+id/scan_illustration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/scan_illust" />
-        </androidx.cardview.widget.CardView>
-
-        <Button
-            android:id="@+id/btn_camera"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/btn_camera"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView" />
-
-<!--        <Button-->
-<!--            android:id="@+id/btn_gallery"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="55dp"-->
-<!--            android:layout_marginHorizontal="40dp"-->
-<!--            android:layout_marginTop="32dp"-->
-<!--            android:text="@string/btn_gallery"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/btn_camera" />-->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

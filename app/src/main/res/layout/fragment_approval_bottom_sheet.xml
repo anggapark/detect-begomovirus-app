@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="30dp"
+    tools:context=".ui.dosen.approval.ApprovalBottomSheetFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="36dp"
+            android:text="@string/title_comment"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <android.widget.Switch
+            android:id="@+id/switch_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:switchMinWidth="50dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_comment"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_comment"
+            android:layout_marginBottom="36dp"
+            android:visibility="gone"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/ed_add_comment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_text"
+                android:gravity="top|start"
+                android:maxLines="4"
+                android:hint="@string/hint_comment"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray1"
+                android:textSize="16sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/til_comment"
+            android:layout_marginBottom="30dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <!-- Reject Button -->
+            <Button
+                android:id="@+id/btn_reject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/rejected_fill"
+                android:drawableLeft="@drawable/ic_reject"
+                android:padding="10dp"
+                android:text="@string/hint_reject"
+                android:textColor="@color/white" />
+
+            <!-- Approve Button -->
+            <Button
+                android:id="@+id/btn_approve"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/approved_fill"
+                android:drawableLeft="@drawable/ic_approve"
+                android:padding="10dp"
+                android:text="@string/hint_approve"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.ipb.simpt.model.DataModel
+import kotlinx.coroutines.tasks.await
 
 class DataRepository {
 
@@ -17,7 +18,12 @@ class DataRepository {
     private val userNameCache = mutableMapOf<String, String>()
     private val userNimCache = mutableMapOf<String, String>()
 
-    fun fetchDataByCategory(categoryName: String, itemId: String, categoryValue: String?, callback: (List<DataModel>) -> Unit) {
+    fun fetchDataByCategory(
+        categoryName: String,
+        itemId: String,
+        categoryValue: String?,
+        callback: (List<DataModel>) -> Unit
+    ) {
         val fieldName = when (categoryName) {
             "Komoditas" -> "komoditasId"
             "Penyakit" -> "penyakitId"
@@ -40,7 +46,10 @@ class DataRepository {
                 val dataList = result.map { document ->
                     document.toObject(DataModel::class.java)
                 }
-                Log.d("DataRepository", "fetchDataByCategory onSuccess called with ${dataList.size} items")
+                Log.d(
+                    "DataRepository",
+                    "fetchDataByCategory onSuccess called with ${dataList.size} items"
+                )
                 callback(dataList)
             }
             .addOnFailureListener { exception ->
@@ -65,7 +74,11 @@ class DataRepository {
             }
     }
 
-    fun fetchDataByStatusAndUserId(status: String, userId: String, callback: (List<DataModel>) -> Unit) {
+    fun fetchDataByStatusAndUserId(
+        status: String,
+        userId: String,
+        callback: (List<DataModel>) -> Unit
+    ) {
         db.collection("Data")
             .whereEqualTo("status", status)
             .whereEqualTo("uid", userId)
@@ -82,8 +95,29 @@ class DataRepository {
             }
     }
 
+    fun fetchDataByUserId(userId: String, callback: (List<DataModel>) -> Unit) {
+        db.collection("Data")
+            .whereEqualTo("uid", userId)
+            .get()
+            .addOnSuccessListener { result ->
+                val dataList = result.map { document ->
+                    document.toObject(DataModel::class.java)
+                }
+                callback(dataList)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DataRepository", "Error getting documents: ", exception)
+                callback(emptyList())
+            }
+    }
 
-    fun fetchDataWithFilters(status: String, komoditas: String?, penyakit: String?, callback: (List<DataModel>) -> Unit) {
+
+    fun fetchDataWithFilters(
+        status: String,
+        komoditas: String?,
+        penyakit: String?,
+        callback: (List<DataModel>) -> Unit
+    ) {
         var query: Query = db.collection("Data").whereEqualTo("status", status)
 
         if (komoditas != null) {
@@ -107,6 +141,19 @@ class DataRepository {
             }
     }
 
+    fun fetchDataResponse(itemId: String, callback: (String) -> Unit) {
+        db.collection("Data")
+            .document(itemId)
+            .get()
+            .addOnSuccessListener { document ->
+                val comment = document.getString("comment") ?: ""
+                callback(comment)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("DataRepository", "Error getting document: ", exception)
+                callback("")
+            }
+    }
 
     fun fetchCategoryName(category: String, id: String, callback: (String) -> Unit) {
         val cache = when (category) {
@@ -265,9 +312,26 @@ class DataRepository {
     }
 
 
-    fun updateApprovalStatus(id: String, status: String) {
+    fun updateApprovalStatus(id: String, status: String, comment: String) {
+        val updateMap = mapOf(
+            "status" to status,
+            "comment" to comment
+        )
+
         db.collection("Data")
             .document(id)
-            .update("status", status)
+            .update(updateMap)
+    }
+
+
+    suspend fun deleteData(itemId: String): Boolean {
+        return try {
+            db.collection("Data").document(itemId).delete().await()
+            Log.d("DataRepository", "DocumentSnapshot successfully deleted!")
+            true
+        } catch (e: Exception) {
+            Log.w("DataRepository", "Error deleting document", e)
+            false
+        }
     }
 }

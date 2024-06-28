@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
@@ -39,10 +40,13 @@ class ApprovalActivity : AppCompatActivity() {
     // Maintain the search query
     private var currentSearchQuery: String = ""
 
+    // userType to distinguish between dosen and user
+    private var userType: String? = null
 
     //TAG
     companion object {
         private const val TAG = "ApprovalActivity"
+        private const val DETAIL_REQUEST_CODE = 1001
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +56,9 @@ class ApprovalActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth and Firestore
         firebaseAuth = FirebaseAuth.getInstance()
+
+        // Retrieve userType from intent
+        userType = intent.getStringExtra("USER_TYPE") ?: "dosen"
 
         // Setup ViewModel
         viewModel = ViewModelProvider(this).get(ApprovalViewModel::class.java)
@@ -65,8 +72,27 @@ class ApprovalActivity : AppCompatActivity() {
         // Setup toolbar
         setupToolbar()
 
-        // Load initial data
-        viewModel.fetchItemsByStatus("Pending")
+        // Listen for fragment result
+        supportFragmentManager.setFragmentResultListener("approvalResult", this) { _, bundle ->
+            val dataChanged = bundle.getBoolean("dataChanged")
+            if (dataChanged) {
+                fetchDataBasedOnUserType()
+            }
+        }
+
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            showLoading(isLoading)
+        })
+
+        viewModel.error.observe(this, Observer { error ->
+            error?.let {
+                Log.e(TAG, it)
+                Toast.makeText(this, "Error: $it", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Load initial data based on userType
+        fetchDataBasedOnUserType()
         Log.d(TAG, "ApprovalActivity created and fetchItems called")
     }
 
@@ -76,7 +102,7 @@ class ApprovalActivity : AppCompatActivity() {
                 tab?.let {
                     val selectedStatus = it.text.toString()
                     dataArrayList.clear() // Clear existing data
-                    viewModel.fetchItemsByStatus(selectedStatus)
+                    fetchDataBasedOnUserType(selectedStatus)
                 }
             }
 
@@ -85,14 +111,14 @@ class ApprovalActivity : AppCompatActivity() {
         })
     }
 
+
     private fun setupRecyclerView() {
-        // init arraylist
-        showLoading(true)
         dataArrayList = ArrayList()
 
         adapter = ApprovalAdapter(this, dataArrayList, viewModel) { dataModel ->
             val intent = Intent(this, ApprovalDetailActivity::class.java).apply {
                 putExtra("ITEM_ID", dataModel.id)
+                putExtra("USER_TYPE", userType)
             }
             startActivity(intent)
         }
@@ -102,15 +128,18 @@ class ApprovalActivity : AppCompatActivity() {
 
         // Observe data changes
         viewModel.items.observe(this, Observer { items ->
-            if (items != null) {
+            if (items != null && items.isNotEmpty()) {
+                dataArrayList.clear()
                 dataArrayList.addAll(items)
                 adapter.updateData(dataArrayList)
-                applySearchFilter()
-                showLoading(false)
+                binding.rvData.visibility = View.VISIBLE
+                binding.tvEmpty.visibility = View.GONE
             } else {
                 Log.d(TAG, "No items found")
-                showLoading(false)
+                binding.rvData.visibility = View.GONE
+                binding.tvEmpty.visibility = View.VISIBLE
             }
+            applySearchFilter()
         })
     }
 
@@ -122,11 +151,21 @@ class ApprovalActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Approval"
+        supportActionBar?.title = if (userType == "user") "Submission" else "Approval"
+    }
+
+    private fun fetchDataBasedOnUserType(selectedStatus: String = "Pending") {
+        if (userType == "user") {
+            val userId = firebaseAuth.currentUser?.uid
+            userId?.let {
+                viewModel.fetchItemsByUserAndStatus(it, selectedStatus)
+            }
+        } else {
+            viewModel.fetchItemsByStatus(selectedStatus)
+        }
     }
 
     // TODO: Search yg lebih advanced. by komoditas, by penyakit, by deskripsi, by user
-
     private fun toggleLayout() {
         isGridLayout = !isGridLayout
         applyLayoutManager()
@@ -191,5 +230,17 @@ class ApprovalActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {
+            fetchDataBasedOnUserType()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onCleared() // Cancel ongoing operations
     }
 }

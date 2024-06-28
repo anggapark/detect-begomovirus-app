@@ -87,10 +87,7 @@
         android:textColor="@color/gray2"
         android:gravity="center"
         android:text="@string/hint_empty"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_approval_list" />
-
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -101,5 +98,6 @@
         android:layout_centerHorizontal="true"
         android:visibility="gone"
         tools:visibility="visible" />
+
 
 </RelativeLayout>

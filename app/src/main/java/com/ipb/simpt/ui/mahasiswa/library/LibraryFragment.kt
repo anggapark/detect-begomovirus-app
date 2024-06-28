@@ -13,9 +13,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentLibraryBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.adapter.LibraryAdapter
+import com.ipb.simpt.ui.adapter.LibraryFilterBottomSheetFragment
+import com.ipb.simpt.ui.dosen.approval.ApprovalBottomSheetFragment
 
 class LibraryFragment : Fragment() {
 
@@ -82,12 +85,24 @@ class LibraryFragment : Fragment() {
             isGridLayout = false
             applyLayoutManager()
             adapter.setLayoutType(isGridLayout)
+            updateLayoutSwitcherBackground()
         }
 
         binding.btnGrid.setOnClickListener {
             isGridLayout = true
             applyLayoutManager()
             adapter.setLayoutType(isGridLayout)
+            updateLayoutSwitcherBackground()
+        }
+    }
+
+    private fun updateLayoutSwitcherBackground() {
+        if (isGridLayout) {
+            binding.btnList.setBackgroundResource(R.drawable.bg_text)
+            binding.btnGrid.setBackgroundResource(R.drawable.bg_text_selected)
+        } else {
+            binding.btnList.setBackgroundResource(R.drawable.bg_text_selected)
+            binding.btnGrid.setBackgroundResource(R.drawable.bg_text)
         }
     }
 

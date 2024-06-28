@@ -56,6 +56,22 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
+    fun fetchItemsByUserId(userId: String) {
+        repository.fetchDataByUserId(userId) { dataList ->
+            val updatedDataList = mutableListOf<DataModel>()
+            dataList.forEach { dataModel ->
+                repository.fetchAndCacheNames(dataModel) {
+                    repository.fetchAndCacheUserDetails(dataModel) {
+                        updatedDataList.add(dataModel)
+                        if (updatedDataList.size == dataList.size) {
+                            _items.postValue(updatedDataList)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun fetchUserName(uid: String, callback: (String) -> Unit) {
         repository.fetchUserName(uid, callback)
     }

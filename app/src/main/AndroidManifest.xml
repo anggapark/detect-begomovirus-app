@@ -62,12 +62,6 @@
             android:name=".ui.dosen.add.AddCategoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.mahasiswa.detail.UserDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.mahasiswa.detail.DetailActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity

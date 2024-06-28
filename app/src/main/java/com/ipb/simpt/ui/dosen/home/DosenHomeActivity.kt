@@ -5,17 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityDosenHomeBinding
-import com.ipb.simpt.ui.dosen.add.AddCategoryActivity
 import com.ipb.simpt.ui.auth.splash.WelcomeActivity
+import com.ipb.simpt.ui.dosen.add.AddCategoryActivity
 import com.ipb.simpt.ui.dosen.approval.ApprovalActivity
 import com.ipb.simpt.ui.dosen.library.DosenCategoryActivity
+import com.ipb.simpt.ui.mahasiswa.profile.ProfileFragment
+import com.ipb.simpt.ui.mahasiswa.profile.ProfileViewModel
 import com.ipb.simpt.utils.Extensions.toast
 
 class DosenHomeActivity : AppCompatActivity() {
@@ -23,8 +27,8 @@ class DosenHomeActivity : AppCompatActivity() {
     // view binding
     private lateinit var binding: ActivityDosenHomeBinding
 
-    // toolbar
-    private lateinit var toolbar: Toolbar
+    // ViewModel
+    private lateinit var profileViewModel: ProfileViewModel
 
     // firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
@@ -38,16 +42,13 @@ class DosenHomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDosenHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupToolbar()
 
-        // init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
-        checkUser()
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
+        checkUser()
         setupAction()
     }
-    //TODO: Bikin Profile Page
-
 
     private fun setupAction() {
         // handle button
@@ -60,6 +61,13 @@ class DosenHomeActivity : AppCompatActivity() {
         binding.cvApproval.setOnClickListener {
             startActivity(Intent(this, ApprovalActivity::class.java))
         }
+        binding.cvProfile.setOnClickListener {
+            Log.d(TAG, "setupAction: it's clicked")
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainer.id, ProfileFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     //Authentication
@@ -69,22 +77,21 @@ class DosenHomeActivity : AppCompatActivity() {
             // Not signed in, launch the Welcome activity
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
-        }
-        else {
-            // logged in, get and show user profile
+        } else {
+            // Logged in, check user type
             val db = FirebaseFirestore.getInstance()
             db.collection("Users")
                 .document(firebaseUser.uid)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        // get user info
-                        val name = document.getString("userName")
-                        val nim = document.getString("userNim")
-
-                        // set to textview
-                        binding.tvName.text = name
-                        binding.tvNim.text = nim
+                        val userType = document.getString("userType")
+                        setupUserProfile()
+                        if (userType != "dosen") {
+                            // Not a regular user, launch the Welcome activity
+                            startActivity(Intent(this, WelcomeActivity::class.java))
+                            finish()
+                        }
                     } else {
                         Log.d(TAG, "No such document")
                     }
@@ -92,37 +99,24 @@ class DosenHomeActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.d(TAG, "get failed with ", exception)
                 }
-
         }
     }
 
-    // enable setupToolbar as actionbar
-    private fun setupToolbar() {
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-    }
-
-    // inflate menu to toolbar
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_profile, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    // handle sign out button
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_logout -> {
-                signOut()
+    private fun setupUserProfile() {
+        val firebaseUser = firebaseAuth.currentUser
+        if (firebaseUser != null) {
+            profileViewModel.fetchUserDetails(firebaseUser.uid)
+            profileViewModel.user.observe(this) { user ->
+                if (user != null) {
+                    binding.tvName.text = user.userName
+                    binding.tvNim.text = user.userNim
+                    Glide.with(this)
+                        .load(user.profileImage)
+                        .placeholder(R.drawable.ic_profile) // Placeholder icon
+                        .transform(CircleCrop())
+                        .into(binding.ivProfile)
+                }
             }
         }
-        return super.onOptionsItemSelected(item)
-    }
-
-    // sign out from current user
-    private fun signOut() {
-        firebaseAuth.signOut()
-        startActivity(Intent(this, WelcomeActivity::class.java))
-        toast("signed out")
-        finish()
     }
 }

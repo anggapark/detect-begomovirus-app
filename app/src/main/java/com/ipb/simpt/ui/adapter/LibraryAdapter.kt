@@ -12,6 +12,7 @@ import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemLibraryGridBinding
 import com.ipb.simpt.databinding.ItemLibraryListBinding
 import com.ipb.simpt.model.DataModel
+import com.ipb.simpt.ui.adapter.filter.LibraryFilter
 import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
 
 class LibraryAdapter(

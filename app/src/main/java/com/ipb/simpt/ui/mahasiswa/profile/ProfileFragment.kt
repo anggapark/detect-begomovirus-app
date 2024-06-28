@@ -18,6 +18,8 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentProfileBinding
+import com.ipb.simpt.ui.auth.splash.WelcomeActivity
+import com.ipb.simpt.utils.Extensions.toast
 import com.ipb.simpt.utils.FileHelper
 
 class ProfileFragment : Fragment() {
@@ -92,6 +94,10 @@ class ProfileFragment : Fragment() {
         binding.tvPasswordChange.setOnClickListener {
             navigateToChangePassword()
         }
+
+        binding.btnLogout.setOnClickListener{
+            signOut()
+        }
     }
 
     private fun imagePickIntent() {
@@ -144,6 +150,13 @@ class ProfileFragment : Fragment() {
             putBoolean("isPasswordChange", true)
         }
         findNavController().navigate(R.id.navigation_profile_edit, bundle)
+    }
+
+    private fun signOut() {
+        firebaseAuth.signOut()
+        startActivity(Intent(requireActivity(), WelcomeActivity::class.java))
+        Toast.makeText(requireContext(), "Signed Out", Toast.LENGTH_SHORT).show()
+        requireActivity().finish()
     }
 
     override fun onDestroyView() {

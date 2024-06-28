@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_search"
-        android:name="com.ipb.simpt.ui.mahasiswa.search.SearchFragment"
-        android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
         android:id="@+id/navigation_scan"
         android:name="com.ipb.simpt.ui.mahasiswa.scan.ScanFragment"
         android:label="@string/title_scan"

@@ -1,7 +1,8 @@
-package com.ipb.simpt.ui.adapter
+package com.ipb.simpt.ui.adapter.filter
 
 import android.widget.Filter
 import com.ipb.simpt.model.CategoryModel
+import com.ipb.simpt.ui.adapter.CategoryAdapter
 
 class CategoryFilter(
     private var filterList: ArrayList<CategoryModel>,

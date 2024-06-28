@@ -21,6 +21,7 @@ class LibraryDetailActivity : AppCompatActivity() {
     private lateinit var viewModel: LibraryViewModel
     private lateinit var data: DataModel
     private lateinit var itemId: String
+    private var fromMyData: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +33,7 @@ class LibraryDetailActivity : AppCompatActivity() {
 
         // Get item ID from intent
         itemId = intent.getStringExtra("ITEM_ID") ?: ""
+        fromMyData = intent.getBooleanExtra("FROM_MY_DATA", false)
 
         // Setup toolbar
         setupToolbar()
@@ -81,13 +83,13 @@ class LibraryDetailActivity : AppCompatActivity() {
         viewModel.fetchUserDetails(uid)
         viewModel.user.observe(this, Observer { user ->
             if (user != null) {
-                binding.tvUploaderName.text = user.userName
-                binding.tvUploaderNim.text = user.userNim
+                binding.tvName.text = user.userName
+                binding.tvNim.text = user.userNim
                 Glide.with(this)
                     .load(user.profileImage)
                     .placeholder(R.drawable.ic_profile) // Placeholder icon
                     .transform(CircleCrop())
-                    .into(binding.ivUploader)
+                    .into(binding.ivProfile)
                 showLoading(false)
             } else {
                 showLoading(false)
@@ -96,10 +98,14 @@ class LibraryDetailActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
-        binding.llUploader.setOnClickListener {
-            val intent = Intent(this, LibraryUserDetailActivity::class.java)
-            intent.putExtra("USER_ID", data.uid)
-            this.startActivity(intent)
+        if (fromMyData) {
+            binding.cvProfile.isClickable = false
+        } else {
+            binding.cvProfile.setOnClickListener {
+                val intent = Intent(this, LibraryUserDetailActivity::class.java)
+                intent.putExtra("USER_ID", data.uid)
+                this.startActivity(intent)
+            }
         }
     }
 

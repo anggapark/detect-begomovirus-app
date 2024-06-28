@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ipb.simpt.R
 
-class FilterDialogFragment : DialogFragment() {
+class LibraryFilterBottomSheetFragment :  BottomSheetDialogFragment() {
 
     interface FilterListener {
         fun onFilterApplied(status: String)

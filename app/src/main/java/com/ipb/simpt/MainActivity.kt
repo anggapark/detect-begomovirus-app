@@ -38,17 +38,12 @@ class MainActivity : AppCompatActivity() {
     //TODO: REWORKING ON LAYOUT (
     // ALL FRAGMENT;
     // WELCOME AND LOGIN REGISTER;
-    // CAMERA;
-    // MY DATA
     // APPROVAL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
         // init firebase auth
         firebaseAuth = FirebaseAuth.getInstance()
@@ -61,32 +56,15 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home,
-                R.id.navigation_search,
                 R.id.navigation_scan,
                 R.id.navigation_library,
                 R.id.navigation_profile
             )
         )
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
-
-        // Navbar Visibility
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.navigation_home, R.id.navigation_scan, R.id.navigation_library -> {
-                    toolbar.visibility = View.GONE
-                }
-
-                else -> {
-                    toolbar.visibility = View.VISIBLE
-                }
-            }
-            invalidateOptionsMenu()
-        }
     }
 
-    // TODO : Lanjutkan bagian show user info ke home fragment
-    //Authentication
+    // Authentication
     private fun checkUser() {
         val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
@@ -94,25 +72,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, WelcomeActivity::class.java))
             finish()
         } else {
-            // logged in, get user info from Firestore
+            // Logged in, check user type
             val db = FirebaseFirestore.getInstance()
             db.collection("Users")
                 .document(firebaseUser.uid)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        // get user info
-                        val name = document.getString("userName")
-                        val nim = document.getString("userNim")
-
-                        // Create a bundle to pass the data
-                        val bundle = Bundle().apply {
-                            putString("userName", name)
-                            putString("userNim", nim)
+                        val userType = document.getString("userType")
+                        if (userType != "user") {
+                            // Not a regular user, launch the Welcome activity
+                            startActivity(Intent(this, WelcomeActivity::class.java))
+                            finish()
                         }
-
-                        // Pass the bundle to the HomeFragment
-                        navController.setGraph(navController.graph, bundle)
                     } else {
                         Log.d(TAG, "No such document")
                     }
@@ -121,97 +93,8 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "get failed with ", exception)
                 }
         }
-
     }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.clear()
-        // Inflate the menu based on the currently active fragment
-        when (navController.currentDestination?.id) {
-            R.id.navigation_library -> {
-                menuInflater.inflate(R.menu.menu_library, menu)
-                val layoutMenuItem = menu.findItem(R.id.action_layout)
-                // Set the icon based on the current layout
-                layoutMenuItem.icon = getLayoutIcon()
-            }
-
-            R.id.navigation_search -> {
-                menuInflater.inflate(R.menu.menu_search, menu)
-            }
-
-            R.id.navigation_profile -> {
-                menuInflater.inflate(R.menu.menu_profile, menu)
-            }
-
-            else -> {
-                // Handle else
-            }
-        }
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_layout -> {
-                // Handle layout change action in the Library fragment
-                // Toggle between grid and list layout icons
-                currentLayout = if (currentLayout == Layout.GRID) Layout.LIST else Layout.GRID
-                // Set the icon based on the current layout
-                item.icon = getLayoutIcon()
-                true
-            }
-
-            R.id.action_sort -> {
-                // Handle sorting action in the Library fragment
-                // Show sort options (ascending/descending)
-                showSortOptions()
-                true
-            }
-
-            R.id.action_filter -> {
-                // Handle filtering action in the Search fragment
-                true
-            }
-
-            R.id.action_logout -> {
-                signOut()
-                true
-            }
-
-            // Add more cases for other menu items if needed
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
-    private fun signOut() {
-        firebaseAuth.signOut()
-        startActivity(Intent(this, WelcomeActivity::class.java))
-        toast("signed out")
-        finish()
-    }
-
-    private fun getLayoutIcon(): Drawable? {
-        return ResourcesCompat.getDrawable(
-            resources,
-            if (currentLayout == Layout.GRID) R.drawable.ic_grid_view else R.drawable.ic_list_view,
-            null
-        )
-    }
-
-    private fun showSortOptions() {
-        // Show sort options (ascending/descending)
-        // You can display a dialog or any other UI to let the user choose sort options
-    }
-
-    enum class Layout {
-        GRID, LIST
-    }
-
-    private var currentLayout: Layout = Layout.GRID // Initial layout is grid
 
 }
 
-//TODO 1 = Layout Pengajuan
-//TODO 2 = Welcome/Splash Page
+//TODO = Welcome/Splash Page

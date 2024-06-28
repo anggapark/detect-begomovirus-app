@@ -6,18 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentDosenCategoryBinding
-import com.ipb.simpt.ui.dosen.approval.ApprovalDetailActivity
-import com.ipb.simpt.ui.dosen.library.DosenCategoryListActivity
 import com.ipb.simpt.ui.dosen.library.DosenCategoryViewModel
 
 class DosenCategoryFragment : Fragment() {
@@ -79,12 +73,13 @@ class DosenCategoryFragment : Fragment() {
         // Set the category name
         binding.tvCategoryName.setText(itemName)
         binding.tvCategoryName.setOnClickListener {
-            val intent = Intent(requireContext(), DosenCategoryDetailEditActivity::class.java).apply {
-                putExtra("ITEM_ID", itemId)
-                putExtra("ITEM_NAME", itemName)
-                putExtra("CATEGORY_NAME", categoryName)
-                putExtra("CATEGORY_VALUE", categoryValue)
-            }
+            val intent =
+                Intent(requireContext(), DosenCategoryDetailEditActivity::class.java).apply {
+                    putExtra("ITEM_ID", itemId)
+                    putExtra("ITEM_NAME", itemName)
+                    putExtra("CATEGORY_NAME", categoryName)
+                    putExtra("CATEGORY_VALUE", categoryValue)
+                }
             startActivity(intent)
         }
 

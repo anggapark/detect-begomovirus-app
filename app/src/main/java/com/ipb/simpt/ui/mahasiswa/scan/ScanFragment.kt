@@ -53,8 +53,18 @@ class ScanFragment : Fragment() {
     }
 
     private fun openCamera() {
-        val btnCamera: Button = binding.btnCamera
-        btnCamera.setOnClickListener {
+        binding.btnCamera.setOnClickListener {
+            if (!allPermissionsGranted()) {
+                requestPermissions(
+                    REQUIRED_PERMISSIONS,
+                    REQUEST_CODE_PERMISSIONS
+                )
+            } else {
+                startActivity(Intent(requireContext(), CameraActivity::class.java))
+            }
+        }
+
+        binding.cvIllustration.setOnClickListener {
             if (!allPermissionsGranted()) {
                 requestPermissions(
                     REQUIRED_PERMISSIONS,

@@ -10,6 +10,7 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.ipb.simpt.databinding.ItemCategoryListBinding
 import com.ipb.simpt.model.CategoryModel
+import com.ipb.simpt.ui.adapter.filter.CategoryFilter
 import com.ipb.simpt.ui.dosen.library.DosenCategoryListActivity.Companion.REQUEST_CODE
 import com.ipb.simpt.ui.dosen.library.detail.DosenCategoryDetailActivity
 

@@ -50,50 +50,83 @@
             </androidx.cardview.widget.CardView>
 
             <!-- Uploader detail  -->
-            <LinearLayout
-                android:id="@+id/ll_uploader"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cv_image"
-                android:background="@drawable/bg_button"
-                android:padding="5dp"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                app:cardCornerRadius="16dp">
 
-                <ImageView
-                    android:id="@+id/iv_uploader"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="5dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/desc_profile"
-                    android:src="@drawable/ic_profile" />
-
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:gravity="start|center_vertical"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp">
+
+                    <!-- Profile Picture -->
+                    <ImageView
+                        android:id="@+id/iv_profile"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginHorizontal="16dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/desc_profile"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_profile" />
+
+                    <!-- Name Field -->
+                    <TextView
+                        android:id="@+id/tv_name_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/iv_profile"
+                        android:text="@string/info_name"
+                        android:textColor="@color/gray2"
+                        android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_uploader_name"
+                        android:id="@+id/tv_name"
                         android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_below="@id/tv_name_title"
+                        android:layout_marginEnd="8dp"
+                        android:layout_toEndOf="@id/iv_profile"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center|start"
+                        android:padding="6dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        tools:text="Lorem Ipsum" />
+
+                    <!-- NIM Field -->
+                    <TextView
+                        android:id="@+id/tv_nim_title"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/desc_name"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_below="@id/tv_name"
+                        android:layout_marginTop="4dp"
+                        android:layout_toEndOf="@id/iv_profile"
+                        android:text="@string/info_nim"
+                        android:textColor="@color/gray2"
+                        android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_uploader_nim"
+                        android:id="@+id/tv_nim"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="@string/desc_nim"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                        android:layout_height="32dp"
+                        android:layout_below="@id/tv_nim_title"
+                        android:layout_marginEnd="8dp"
+                        android:layout_toEndOf="@id/iv_profile"
+                        android:background="@drawable/bg_text"
+                        android:gravity="center|start"
+                        android:padding="6dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        tools:text="Lorem Ipsum" />
 
-            </LinearLayout>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
 
 
             <!-- Komoditas Input -->
@@ -101,7 +134,7 @@
                 android:id="@+id/tv_komoditas_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ll_uploader"
+                android:layout_below="@id/cv_profile"
                 android:layout_marginTop="16dp"
                 android:text="@string/title_komoditas"
                 android:textSize="16sp"

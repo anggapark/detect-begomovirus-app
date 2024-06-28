@@ -22,7 +22,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -31,7 +30,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-
 
             <!-- Komoditas Input -->
             <TextView
@@ -299,7 +297,7 @@
                         android:id="@+id/iv_preview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop" />
                 </FrameLayout>
             </androidx.cardview.widget.CardView>
 
@@ -310,10 +308,23 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cv_preview"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginStart="16dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="21dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="50dp"
                 android:text="@string/btn_submit" />
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_submit"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="50dp"
+                android:text="@string/btn_save"
+                android:visibility="gone"/>
 
         </RelativeLayout>
     </ScrollView>

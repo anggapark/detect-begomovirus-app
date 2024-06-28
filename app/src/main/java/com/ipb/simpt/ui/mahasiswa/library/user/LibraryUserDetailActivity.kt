@@ -28,7 +28,9 @@ class LibraryUserDetailActivity : AppCompatActivity() {
 
         // Load the LibraryUserFragment
         supportFragmentManager.beginTransaction()
-            .replace(R.id.categoryFragmentContainer, LibraryUserFragment.newInstance(userId))
+            .replace(R.id.categoryFragmentContainer,
+                LibraryUserFragment.newInstance(userId)
+            )
             .commit()
 
         // Load the LibraryUserRecyclerViewFragment
