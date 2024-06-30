@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -18,6 +17,7 @@ import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityApprovalDetailBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.mahasiswa.add.AddDataActivity
+import com.ipb.simpt.ui.mahasiswa.add.AddDataBottomSheetFragment
 
 class ApprovalDetailActivity : AppCompatActivity() {
 
@@ -135,6 +135,13 @@ class ApprovalDetailActivity : AppCompatActivity() {
             }
             setupEditButton()
         }
+        binding.btnAddDatasetImage.setOnClickListener {
+            val nonNullItemId = itemId
+            val bottomSheetFragment =
+                AddDataBottomSheetFragment.newInstance(nonNullItemId, fromOtherActivity = true)
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+
+        }
     }
 
     private fun setupEditButton() {
@@ -169,7 +176,8 @@ class ApprovalDetailActivity : AppCompatActivity() {
             fromMyData -> "Data Detail"
             userType == "user" -> "Submission Detail"
             else -> "Approval Detail"
-        }    }
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         if (userType == "user") {
@@ -184,10 +192,12 @@ class ApprovalDetailActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
                 true
             }
+
             R.id.action_delete -> {
                 deleteItem()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -226,6 +236,7 @@ class ApprovalDetailActivity : AppCompatActivity() {
     private fun setViewsEnabled(isEnabled: Boolean) {
         binding.tvResponse.isEnabled = isEnabled
         binding.btnEdit.isEnabled = isEnabled
+        binding.btnAddDatasetImage.isEnabled = isEnabled
         binding.toolbar.menu.setGroupEnabled(0, isEnabled)
     }
 

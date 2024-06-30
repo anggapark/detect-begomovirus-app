@@ -94,8 +94,11 @@
     <string name="title_keterangan">Keterangan</string>
 
 
+    <string name="hint_dataset_response">Lihat Gambar Dataset</string>
+    <string name="hint_gambar_dataset">Tambahkan Gambar Dataset</string>
     <string name="hint_gambar">Tambahkan Gambar</string>
-    <string name="hint_ganti_gambar">Ganti Gambar</string>
+    <string name="hint_ganti_gambar">Ganti Gambar </string>
+    <string name="hint_ganti_gambar_dataset">Ganti Gambar Dataset</string>
     <string name="hint_kategori">Masukkan Kategori</string>
     <string name="hint_nama_kategori">Masukkan Nama Kategori</string>
     <string name="hint_keterangan">Masukkan Keterangan</string>
@@ -211,6 +214,5 @@
     <string name="title_status">Status:</string>
     <string name="title_response_dosen">Berikan Tanggapan</string>
     <string name="title_response_user">Lihat Tanggapan</string>
-
     <string name="title_edit_data">Edit Data</string>
 </resources>

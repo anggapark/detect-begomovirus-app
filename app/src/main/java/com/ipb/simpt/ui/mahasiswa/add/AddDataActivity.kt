@@ -9,10 +9,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -31,10 +34,10 @@ class AddDataActivity : AppCompatActivity() {
     private lateinit var categoryHandler: CategoryHandler
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var toolbar: Toolbar
+    private val viewModel: AddDataViewModel by viewModels()
 
     private var itemId: String? = null
     private var userType: String = "user"
-    private var imgUri: Uri? = null
     private var selectedKomoditasId: String? = null
     private var selectedPenyakitId: String? = null
     private var selectedPathogenId: String? = null
@@ -61,6 +64,7 @@ class AddDataActivity : AppCompatActivity() {
             setupEdit(itemId!!)
         }
 
+        setupViewModel()
         setupAction()
     }
 
@@ -68,13 +72,15 @@ class AddDataActivity : AppCompatActivity() {
         if (itemId != null) {
             // Edit mode
             supportActionBar?.setTitle(R.string.title_edit_data)
-            binding.btnGallery.text = getString(R.string.hint_ganti_gambar)
+            binding.btnAddImage.text = getString(R.string.hint_ganti_gambar)
+            binding.btnAddDatasetImage.text = getString(R.string.hint_ganti_gambar_dataset)
             binding.btnSave.visibility = View.VISIBLE
             binding.btnSubmit.visibility = View.GONE
         } else {
             // Add mode
             supportActionBar?.setTitle(R.string.home_add)
-            binding.btnGallery.text = getString(R.string.hint_gambar)
+            binding.btnAddImage.text = getString(R.string.hint_gambar)
+            binding.btnAddDatasetImage.text = getString(R.string.hint_gambar_dataset)
             binding.btnSave.visibility = View.GONE
             binding.btnSubmit.visibility = View.VISIBLE
         }
@@ -105,7 +111,6 @@ class AddDataActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
     private fun setupAction() {
@@ -151,13 +156,20 @@ class AddDataActivity : AppCompatActivity() {
                 }
             }
 
-            btnGallery.setOnClickListener {
+            btnAddImage.setOnClickListener {
                 imagePickIntent()
             }
 
+            btnAddDatasetImage.setOnClickListener {
+                val nonNullItemId = itemId ?: ""
+                val bottomSheetFragment = AddDataBottomSheetFragment.newInstance(nonNullItemId)
+                bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+            }
+
+
             btnSubmit.setOnClickListener {
                 btnSubmit.isEnabled = false // Disable the button when clicked
-                addData(
+                addOrUpdateData(
                     selectedKomoditasId ?: "",
                     selectedPenyakitId ?: "",
                     selectedPathogenId ?: "",
@@ -167,28 +179,31 @@ class AddDataActivity : AppCompatActivity() {
 
             btnSave.setOnClickListener {
                 btnSave.isEnabled = false // Disable the button when clicked
-                updateData(
+                addOrUpdateData(
                     selectedKomoditasId ?: "",
                     selectedPenyakitId ?: "",
                     selectedPathogenId ?: "",
-                    selectedGejalaId ?: ""
+                    selectedGejalaId ?: "",
+                    true
                 )
             }
         }
     }
 
-    private fun addData(
+    private fun addOrUpdateData(
         komoditasId: String,
         penyakitId: String,
         pathogenId: String,
-        gejalaId: String
+        gejalaId: String,
+        isUpdate: Boolean = false
     ) {
-        Log.d(TAG, "addData: validating data")
+        Log.d(TAG, if (isUpdate) "updateData" else "addData: validating data")
 
         val kategoriPathogen = binding.tvKategoriPathogen.text.toString().trim()
         val dataset = binding.edAddDataset.text.toString().trim()
         val deskripsi = binding.edAddDescription.text.toString().trim()
-
+        val activityImgUri = viewModel.activityImgUri.value
+        val bottomSheetImgUri = viewModel.bottomSheetImgUri.value
         when {
             komoditasId.isEmpty() -> toast("Pick Komoditas")
             penyakitId.isEmpty() -> toast("Pick Penyakit")
@@ -197,46 +212,10 @@ class AddDataActivity : AppCompatActivity() {
             gejalaId.isEmpty() -> toast("Pick Gejala Penyakit")
             dataset.isEmpty() -> toast("Enter Dataset")
             deskripsi.isEmpty() -> toast("Enter Description")
-            imgUri == null -> toast("Upload Image")
+            activityImgUri == null && !isUpdate -> toast("Upload Data Image")
+            bottomSheetImgUri == null && !isUpdate -> toast("Upload Dataset Acuan Image")
             else -> {
-                // Data validated, begin upload
-                uploadImgToStorage(
-                    komoditasId,
-                    penyakitId,
-                    kategoriPathogen,
-                    pathogenId,
-                    gejalaId,
-                    dataset,
-                    deskripsi
-                )
-            }
-        }
-
-        binding.btnSubmit.isEnabled = true
-    }
-
-    private fun updateData(
-        komoditasId: String,
-        penyakitId: String,
-        pathogenId: String,
-        gejalaId: String
-    ) {
-        Log.d(TAG, "updateData: validating data")
-
-        val kategoriPathogen = binding.tvKategoriPathogen.text.toString().trim()
-        val dataset = binding.edAddDataset.text.toString().trim()
-        val deskripsi = binding.edAddDescription.text.toString().trim()
-
-        when {
-            komoditasId.isEmpty() -> toast("Pick Komoditas")
-            penyakitId.isEmpty() -> toast("Pick Penyakit")
-            kategoriPathogen.isEmpty() -> toast("Pick Kategori Pathogen")
-            pathogenId.isEmpty() -> toast("Pick Pathogen")
-            gejalaId.isEmpty() -> toast("Pick Gejala Penyakit")
-            dataset.isEmpty() -> toast("Enter Dataset")
-            deskripsi.isEmpty() -> toast("Enter Description")
-            else -> {
-                // Data validated, begin update
+                // Data validated, begin upload or update
                 uploadImgToStorage(
                     komoditasId,
                     penyakitId,
@@ -245,12 +224,14 @@ class AddDataActivity : AppCompatActivity() {
                     gejalaId,
                     dataset,
                     deskripsi,
-                    true
+                    isUpdate
                 )
             }
         }
 
         binding.btnSave.isEnabled = true
+        binding.btnSubmit.isEnabled = true
+
     }
 
     private fun uploadImgToStorage(
@@ -263,66 +244,51 @@ class AddDataActivity : AppCompatActivity() {
         deskripsi: String,
         isUpdate: Boolean = false
     ) {
-        // Upload image to firebase storage
-        Log.d(TAG, "uploadImgToStorage: uploading to storage")
-
         showLoading(true)
-
-        // timestamp
         val timestamp = System.currentTimeMillis()
+        val imagePathAndName = "Images/$timestamp"
+        val datasetPathAndName = "Dataset/$timestamp"
+        val storageReference = FirebaseStorage.getInstance().getReference(imagePathAndName)
+        val datasetStorageReference = FirebaseStorage.getInstance().getReference(datasetPathAndName)
 
-        // path of img in firebase storage
-        val filePathAndName = "Images/$timestamp"
+        val activityImgUri = viewModel.activityImgUri.value
+        val bottomSheetImgUri = viewModel.bottomSheetImgUri.value
 
-        // storage reference
-        val storageReference = FirebaseStorage.getInstance().getReference(filePathAndName)
+        val uploadTasks = mutableListOf<Task<Uri>>()
 
-
-        if (imgUri != null) {
-            storageReference.putFile(imgUri!!)
-                .addOnSuccessListener { taskSnapshot ->
-                    val uriTask: Task<Uri> = taskSnapshot.storage.downloadUrl
-                    uriTask.addOnSuccessListener { uri ->
-                        val uploadedImgUrl = uri.toString()
-                        if (isUpdate) {
-                            uploadDataInfoToDb(
-                                uploadedImgUrl,
-                                timestamp,
-                                komoditasId,
-                                penyakitId,
-                                kategoriPathogen,
-                                pathogenId,
-                                gejalaId,
-                                dataset,
-                                deskripsi,
-                                true
-                            )
-                        } else {
-                            uploadDataInfoToDb(
-                                uploadedImgUrl,
-                                timestamp,
-                                komoditasId,
-                                penyakitId,
-                                kategoriPathogen,
-                                pathogenId,
-                                gejalaId,
-                                dataset,
-                                deskripsi
-                            )
-                        }
+        activityImgUri?.let { uri ->
+            val uploadTask = storageReference.putFile(uri)
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let { throw it }
                     }
+                    storageReference.downloadUrl
                 }
-                .addOnFailureListener { e ->
-                    showLoading(false)
-                    toast("Failed to upload due to ${e.message}")
-                    binding.btnSubmit.isEnabled = true // enable the button if upload fails
-                    binding.btnSave.isEnabled = true // enable the button if upload fails
+            uploadTasks.add(uploadTask)
+        }
+
+        bottomSheetImgUri?.let { uri ->
+            val uploadTask = datasetStorageReference.putFile(uri)
+                .continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let { throw it }
+                    }
+                    datasetStorageReference.downloadUrl
                 }
-        } else {
-            if (isUpdate) {
-                // If no image is selected but it's an update operation, keep the old image URL
+            uploadTasks.add(uploadTask)
+        }
+
+        Tasks.whenAllComplete(uploadTasks)
+            .addOnSuccessListener { tasks ->
+                val uploadedImgUrls = tasks.filter { it.isSuccessful }
+                    .mapNotNull { (it.result as? Uri)?.toString() }
+
+                val uploadedActivityImgUrl = uploadedImgUrls.getOrNull(0) ?: ""
+                val uploadedBottomSheetImgUrl = uploadedImgUrls.getOrNull(1) ?: ""
+
                 uploadDataInfoToDb(
-                    "", // Pass an empty string to indicate no new image URL
+                    uploadedActivityImgUrl,
+                    uploadedBottomSheetImgUrl,
                     timestamp,
                     komoditasId,
                     penyakitId,
@@ -331,14 +297,20 @@ class AddDataActivity : AppCompatActivity() {
                     gejalaId,
                     dataset,
                     deskripsi,
-                    true
+                    isUpdate
                 )
             }
-        }
+            .addOnFailureListener { e ->
+                showLoading(false)
+                toast("Failed to upload due to ${e.message}")
+                binding.btnSubmit.isEnabled = true
+                binding.btnSave.isEnabled = true
+            }
     }
 
     private fun uploadDataInfoToDb(
         uploadedImgUrl: String,
+        uploadedDatasetImgUrl: String,
         timestamp: Long,
         komoditasId: String,
         penyakitId: String,
@@ -349,13 +321,8 @@ class AddDataActivity : AppCompatActivity() {
         deskripsi: String,
         isUpdate: Boolean = false
     ) {
-        //Upload data ingfo to firestore
-        Log.d(TAG, "uploadDataInfoToDb: uploading to db")
-
-        // uid of current user
+        val db = FirebaseFirestore.getInstance()
         val uid = firebaseAuth.uid
-
-        // status of approval
         val status = "Pending"
 
         // setup data to upload
@@ -374,7 +341,9 @@ class AddDataActivity : AppCompatActivity() {
             hashMap["url"] = uploadedImgUrl
         }
 
-        val db = FirebaseFirestore.getInstance()
+        if (uploadedDatasetImgUrl.isNotEmpty()) {
+            hashMap["datasetUrl"] = uploadedDatasetImgUrl
+        }
 
         if (isUpdate && itemId != null) {
             db.collection("Data")
@@ -417,7 +386,7 @@ class AddDataActivity : AppCompatActivity() {
     }
 
     private fun resetForm() {
-        imgUri = null
+        viewModel.resetImgUris()
         binding.ivPreview.setImageURI(null) // reset the preview image
         binding.ivDefault.visibility = View.VISIBLE // show the default image
         binding.btnSubmit.isEnabled = true // enable the button after data is uploaded
@@ -451,25 +420,34 @@ class AddDataActivity : AppCompatActivity() {
         ActivityResultCallback { result ->
             if (result.resultCode == RESULT_OK) {
                 Log.d(TAG, "Image Picked")
-                imgUri = result.data?.data
+                val uri = result.data?.data
 
                 // Convert the image URI to a File object
-                val imgFile = FileHelper.uriToFile(imgUri!!, this)
+                val imgFile = FileHelper.uriToFile(uri!!, this)
 
                 // Reduce the size of the image file
                 val reducedImgFile = FileHelper.reduceFileImage(imgFile)
 
-                // Update imgUri to point to the reduced image file
-                imgUri = Uri.fromFile(reducedImgFile)
+                // Update uri to point to the reduced image file
+                val reducedUri = Uri.fromFile(reducedImgFile)
 
                 // Set the picked image to your ImageView
-                binding.ivPreview.setImageURI(imgUri)
+                viewModel.setActivityImgUri(reducedUri)
+                binding.ivPreview.setImageURI(reducedUri)
             } else {
                 Log.d(TAG, "Image pick cancelled")
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show()
             }
         }
     )
+
+    private fun setupViewModel() {
+        viewModel.activityImgUri.observe(this, Observer { uri ->
+            uri?.let {
+                binding.ivPreview.setImageURI(it)
+            }
+        })
+    }
 
     private fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)

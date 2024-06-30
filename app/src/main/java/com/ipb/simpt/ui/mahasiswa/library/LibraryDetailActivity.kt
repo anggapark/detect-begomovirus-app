@@ -13,6 +13,7 @@ import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityLibraryDetailBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.dosen.library.DosenCategoryListActivity
+import com.ipb.simpt.ui.mahasiswa.add.AddDataBottomSheetFragment
 import com.ipb.simpt.ui.mahasiswa.library.user.LibraryUserDetailActivity
 
 class LibraryDetailActivity : AppCompatActivity() {
@@ -107,6 +108,12 @@ class LibraryDetailActivity : AppCompatActivity() {
                 this.startActivity(intent)
             }
         }
+        binding.btnAddDatasetImage.setOnClickListener {
+            val nonNullItemId = itemId
+            val bottomSheetFragment = AddDataBottomSheetFragment.newInstance(nonNullItemId, fromOtherActivity = true)
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+
+        }
     }
 
     private fun setupToolbar() {
@@ -128,5 +135,11 @@ class LibraryDetailActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        setViewsEnabled(!isLoading)
+    }
+
+    private fun setViewsEnabled(isEnabled: Boolean) {
+        binding.btnAddDatasetImage.isEnabled = isEnabled
+        binding.toolbar.menu.setGroupEnabled(0, isEnabled)
     }
 }

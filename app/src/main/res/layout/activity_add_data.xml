@@ -219,12 +219,27 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Add Dataset Image Button -->
+            <Button
+                android:id="@+id/btn_add_dataset_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/til_dataset"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_button"
+                android:drawableLeft="@drawable/ic_add"
+                android:text="@string/hint_gambar_dataset"
+                android:textColor="@color/black" />
+
+
             <!-- Deskripsi -->
             <TextView
                 android:id="@+id/tv_desc_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/til_dataset"
+                android:layout_below="@id/btn_add_dataset_image"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/title_deskripsi"
@@ -258,7 +273,7 @@
 
             <!-- Add Image Button -->
             <Button
-                android:id="@+id/btn_gallery"
+                android:id="@+id/btn_add_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/til_desc"
@@ -275,7 +290,7 @@
                 android:id="@+id/cv_preview"
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
-                android:layout_below="@id/btn_gallery"
+                android:layout_below="@id/btn_add_image"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"

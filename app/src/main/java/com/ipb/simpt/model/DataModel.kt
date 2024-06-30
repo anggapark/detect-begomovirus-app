@@ -24,8 +24,9 @@ data class DataModel(
     var userName: String = "",
     var userNim: String = "",
 
+    var datasetUrl: String ="",
     var url: String = "",
-    var timestamp: Long = 0,
+    val timestamp: Long = 0L,
     var status: String = ""
 
 )
