@@ -22,9 +22,9 @@ class ApprovalFilter(
             // that only includes categories that contain the input
             val filteredList = dataList.filter { data ->
                 data.komoditasName.contains(charString, true) ||
-                        data.penyakitName.contains(charString, true) ?: false ||
-                        data.gejalaName.contains(charString, true) ?: false ||
-                        data.pathogenName.contains(charString, true) ?: false ||
+                        data.penyakitName.contains(charString, true) ||
+                        data.gejalaName.contains(charString, true) ||
+                        data.pathogenName.contains(charString, true) ||
                         data.kategoriPathogen.contains(charString, true) ||
                         data.dataset.contains(charString, true) ||
                         data.deskripsi.contains(charString, true) ||

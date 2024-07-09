@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -49,6 +50,20 @@ class LibraryFragment : Fragment() {
         setupSearchFilter()
 
         viewModel.fetchApprovedItems()
+
+        // Observe loading state
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            showLoading(isLoading)
+        })
+
+        // Observe error state
+        viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+            error?.let {
+                Log.e("LibraryFragment", it)
+                Toast.makeText(requireContext(), "Error: $it", Toast.LENGTH_SHORT).show()
+                viewModel.errorHandled()  // Reset the error state after handling it
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -138,6 +153,7 @@ class LibraryFragment : Fragment() {
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

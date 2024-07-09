@@ -88,18 +88,19 @@ class HomeFragment : Fragment() {
 }
 
 // TODO: (
-//  7. Filter untuk LibraryFragment dan MyData
 //  10. REDESIGN
 //  )
 
 // TODO OPSIONAL (
 //  1. Batas Authentikasi login
 //  4. Intent ke DosenCategoryDetailActivity setelah edit dari DosenCategoryDetailEditActivity
+//  7. Filter untuk LibraryFragment dan MyData
 //  8. Intent AddCategoryActivity ke DosenCategoryList
 //  12. Add UID of commentator
 //  )
 
 // TODO KELAR (
+//  0. Welcome, Login, Forgot Password
 //  2. Submission
 //  3. Intent AddDataActivity ke Submission
 //  5. Benahi layout ApprovalDetailActivity

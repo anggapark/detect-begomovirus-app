@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/light_navy" />/>
+            android:background="@color/light_navy" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -30,37 +30,15 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/status_pending" />
+            android:text="@string/tab_user" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/status_approved" />
+            android:text="@string/tab_dosen" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/status_rejected" />
 
     </com.google.android.material.tabs.TabLayout>
-
-<!--    &lt;!&ndash; Pick Category &ndash;&gt;-->
-<!--    <TextView-->
-<!--        android:id="@+id/tv_category"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/tl_category"-->
-<!--        android:layout_marginStart="10dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:background="@drawable/shape_edittext"-->
-<!--        android:drawableEnd="@drawable/ic_down_gray"-->
-<!--        android:drawablePadding="10dp"-->
-<!--        android:hint="@string/title_kategori"-->
-<!--        android:padding="13dp"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textColorHint="@color/gray2"-->
-<!--        android:textSize="16sp" />-->
 
     <!-- Recycler View -->
     <androidx.recyclerview.widget.RecyclerView
@@ -96,6 +74,5 @@
         android:layout_centerHorizontal="true"
         android:visibility="gone"
         tools:visibility="visible" />
-
 
 </RelativeLayout>

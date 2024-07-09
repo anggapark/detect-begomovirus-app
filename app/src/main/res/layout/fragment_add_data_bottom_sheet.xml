@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <!-- Add Image Button -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

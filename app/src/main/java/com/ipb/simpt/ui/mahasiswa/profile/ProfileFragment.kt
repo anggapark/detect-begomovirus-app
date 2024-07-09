@@ -92,7 +92,8 @@ class ProfileFragment : Fragment() {
         }
 
         binding.tvPasswordChange.setOnClickListener {
-            navigateToChangePassword()
+            // TODO: this operation is sensitive and requires recent authentication updating password
+             navigateToChangePassword()
         }
 
         binding.btnLogout.setOnClickListener{

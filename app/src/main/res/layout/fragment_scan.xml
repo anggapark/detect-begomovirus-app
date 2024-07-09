@@ -28,7 +28,7 @@
                 android:src="@drawable/scan_illust" />
         </androidx.cardview.widget.CardView>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_camera"
             android:layout_width="match_parent"
             android:layout_height="55dp"

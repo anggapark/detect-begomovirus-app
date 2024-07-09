@@ -27,13 +27,13 @@ class ScanFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
+            if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                // Handle permission denied here (e.g., show a message or take alternative action)
                 Toast.makeText(
                     requireContext(),
-                    "Failed getting permission",
+                    "Permission denied. Cannot open camera.",
                     Toast.LENGTH_SHORT
                 ).show()
-                requireActivity().finish()
             }
         }
     }

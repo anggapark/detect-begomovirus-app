@@ -3,6 +3,7 @@ package com.ipb.simpt.repository
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.model.UserModel
 
 class UserRepository {
@@ -20,6 +21,22 @@ class UserRepository {
             .addOnFailureListener { exception ->
                 Log.w("UserRepository", "Error getting document: ", exception)
                 callback(null)
+            }
+    }
+
+    fun fetchUserByType(userType: String, callback: (List<UserModel>) -> Unit) {
+        db.collection("Users")
+            .whereEqualTo("userType", userType)
+            .get()
+            .addOnSuccessListener { result ->
+                val userList = result.map { document ->
+                    document.toObject(UserModel::class.java)
+                }
+                callback(userList)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("UserRepository", "Error getting document: ", exception)
+                callback(emptyList())
             }
     }
 
@@ -52,5 +69,17 @@ class UserRepository {
         } ?: run {
             callback(false, "No authenticated user")
         }
+    }
+
+    fun updateUserType(userId: String, newType: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("Users")
+            .document(userId)
+            .update("userType", newType)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
     }
 }

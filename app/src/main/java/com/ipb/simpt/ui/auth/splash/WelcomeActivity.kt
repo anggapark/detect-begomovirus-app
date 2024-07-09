@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.MainActivity
 import com.ipb.simpt.databinding.ActivityWelcomeBinding
+import com.ipb.simpt.ui.admin.AdminHomeActivity
 import com.ipb.simpt.ui.dosen.home.DosenHomeActivity
 import com.ipb.simpt.ui.auth.login.LoginActivity
 import com.ipb.simpt.ui.auth.register.RegisterActivity
@@ -60,18 +61,16 @@ class WelcomeActivity : AppCompatActivity() {
                     if (document != null) {
                         // get user type eg. user, dosen, admin
                         val userType = document.getString("userType")
-                        if (userType == "user") {
-                            startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
+                        val intent = when (userType) {
+                            "user" -> Intent(this@WelcomeActivity, MainActivity::class.java)
+                            "dosen" -> Intent(this@WelcomeActivity, DosenHomeActivity::class.java)
+                            "admin" -> Intent(this@WelcomeActivity, AdminHomeActivity::class.java)
+                            else -> null
+                        }
+                        intent?.let {
+                            it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(it)
                             finish()
-
-                        } else if (userType == "dosen") {
-                            startActivity(Intent(this@WelcomeActivity, DosenHomeActivity::class.java))
-                            finish()
-
-                        } else if (userType == "admin") {
-                            startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
-                            finish()
-
                         }
                     } else {
                         toast("No such document")

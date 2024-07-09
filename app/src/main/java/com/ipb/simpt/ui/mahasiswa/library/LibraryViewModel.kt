@@ -8,6 +8,12 @@ import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.model.UserModel
 import com.ipb.simpt.repository.DataRepository
 import com.ipb.simpt.repository.UserRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 class LibraryViewModel : ViewModel() {
 
@@ -20,55 +26,124 @@ class LibraryViewModel : ViewModel() {
     private val _user = MutableLiveData<UserModel>()
     val user: LiveData<UserModel> get() = _user
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> get() = _error
+
+    private val viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+
     fun fetchApprovedItems() {
-        Log.d("LibraryViewModel", "Fetching approved items")
-        repository.fetchDataByStatus("Approved") { dataList ->
-            val updatedDataList = mutableListOf<DataModel>()
-            dataList.forEach { dataModel ->
-                repository.fetchAndCacheNames(dataModel) {
-                    repository.fetchAndCacheUserDetails(dataModel) {
-                        updatedDataList.add(dataModel)
-                        if (updatedDataList.size == dataList.size) {
-                            Log.d("LibraryViewModel", "Fetched items: $updatedDataList")
-                            _items.postValue(updatedDataList)
+        _isLoading.value = true
+        coroutineScope.launch {
+            try {
+                withTimeout(5000L) {
+                    repository.fetchDataByStatus("Approved") { dataList ->
+                        val updatedDataList = mutableListOf<DataModel>()
+                        dataList.forEach { dataModel ->
+                            repository.fetchAndCacheNames(dataModel) {
+                                repository.fetchAndCacheUserDetails(dataModel) {
+                                    updatedDataList.add(dataModel)
+                                    if (updatedDataList.size == dataList.size) {
+                                        _items.postValue(updatedDataList)
+                                        _isLoading.postValue(false)
+                                        checkEmptyState(updatedDataList)
+                                    }
+                                }
+                            }
+                        }
+                        if (dataList.isEmpty()) {
+                            _isLoading.postValue(false)
+                            checkEmptyState(dataList)
                         }
                     }
                 }
+            } catch (e: TimeoutCancellationException) {
+                _isLoading.postValue(false)
+                _error.postValue("Request timed out")
+            } catch (e: Exception) {
+                _isLoading.postValue(false)
+                _error.postValue(e.message)
             }
         }
     }
 
     fun fetchDataByStatusAndUserId(userId: String) {
-        Log.d("LibraryViewModel", "Fetching approved items for user $userId")
-        repository.fetchDataByStatusAndUserId("Approved", userId) { dataList ->
-            val updatedDataList = mutableListOf<DataModel>()
-            dataList.forEach { dataModel ->
-                repository.fetchAndCacheNames(dataModel) {
-                    repository.fetchAndCacheUserDetails(dataModel) {
-                        updatedDataList.add(dataModel)
-                        if (updatedDataList.size == dataList.size) {
-                            Log.d("LibraryViewModel", "Fetched items: $updatedDataList")
-                            _items.postValue(updatedDataList)
+        _isLoading.value = true
+        coroutineScope.launch {
+            try {
+                withTimeout(5000L) {
+                    val dataList = mutableListOf<DataModel>()
+                    repository.fetchDataByStatusAndUserId("Approved", userId) { fetchedList ->
+                        fetchedList.forEach { dataModel ->
+                            repository.fetchAndCacheNames(dataModel) {
+                                repository.fetchAndCacheUserDetails(dataModel) {
+                                    dataList.add(dataModel)
+                                    if (dataList.size == fetchedList.size) {
+                                        _items.postValue(dataList)
+                                        _isLoading.postValue(false)
+                                        checkEmptyState(dataList)
+                                    }
+                                }
+                            }
+                        }
+                        if (fetchedList.isEmpty()) {
+                            _isLoading.postValue(false)
+                            checkEmptyState(fetchedList)
                         }
                     }
                 }
+            } catch (e: TimeoutCancellationException) {
+                _isLoading.postValue(false)
+                _error.postValue("Request timed out")
+            } catch (e: Exception) {
+                _isLoading.postValue(false)
+                _error.postValue(e.message)
             }
         }
     }
 
     fun fetchItemsByUserId(userId: String) {
-        repository.fetchDataByUserId(userId) { dataList ->
-            val updatedDataList = mutableListOf<DataModel>()
-            dataList.forEach { dataModel ->
-                repository.fetchAndCacheNames(dataModel) {
-                    repository.fetchAndCacheUserDetails(dataModel) {
-                        updatedDataList.add(dataModel)
-                        if (updatedDataList.size == dataList.size) {
-                            _items.postValue(updatedDataList)
+        _isLoading.value = true
+        coroutineScope.launch {
+            try {
+                withTimeout(5000L) {
+                    repository.fetchDataByUserId(userId) { dataList ->
+                        val updatedDataList = mutableListOf<DataModel>()
+                        dataList.forEach { dataModel ->
+                            repository.fetchAndCacheNames(dataModel) {
+                                repository.fetchAndCacheUserDetails(dataModel) {
+                                    updatedDataList.add(dataModel)
+                                    if (updatedDataList.size == dataList.size) {
+                                        _items.postValue(updatedDataList)
+                                        _isLoading.postValue(false)
+                                        checkEmptyState(updatedDataList)
+                                    }
+                                }
+                            }
+                        }
+                        if (dataList.isEmpty()) {
+                            _isLoading.postValue(false)
+                            checkEmptyState(dataList)
                         }
                     }
                 }
+            } catch (e: TimeoutCancellationException) {
+                _isLoading.postValue(false)
+                _error.postValue("Request timed out")
+            } catch (e: Exception) {
+                _isLoading.postValue(false)
+                _error.postValue(e.message)
             }
+        }
+    }
+
+    private fun checkEmptyState(items: List<DataModel>) {
+        if (items.isEmpty()) {
+            _error.postValue("No items found")
         }
     }
 
@@ -108,5 +183,14 @@ class LibraryViewModel : ViewModel() {
                 Log.w("ProfileViewModel", "User not found")
             }
         }
+    }
+
+    fun errorHandled() {
+        _error.postValue(null)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel() // Cancel all coroutines when ViewModel is cleared
     }
 }

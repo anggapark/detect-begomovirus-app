@@ -62,7 +62,6 @@ class DosenHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ApprovalActivity::class.java))
         }
         binding.cvProfile.setOnClickListener {
-            Log.d(TAG, "setupAction: it's clicked")
             supportFragmentManager.beginTransaction()
                 .replace(binding.fragmentContainer.id, ProfileFragment())
                 .addToBackStack(null)

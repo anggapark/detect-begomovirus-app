@@ -179,16 +179,17 @@
 
         </androidx.cardview.widget.CardView>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="30dp"
-            android:drawableLeft="@drawable/ic_logout"
             android:padding="10dp"
             android:text="@string/logout"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:icon="@drawable/ic_logout"
+            app:iconGravity="textStart" />
 
     </LinearLayout>
 

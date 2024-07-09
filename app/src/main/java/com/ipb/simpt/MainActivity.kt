@@ -1,25 +1,17 @@
 package com.ipb.simpt
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.databinding.ActivityMainBinding
 import com.ipb.simpt.ui.auth.splash.WelcomeActivity
-import com.ipb.simpt.utils.Extensions.toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -96,5 +88,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-
-//TODO = Welcome/Splash Page

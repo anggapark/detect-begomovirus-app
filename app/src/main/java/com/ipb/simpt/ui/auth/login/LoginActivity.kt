@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ipb.simpt.MainActivity
 import com.ipb.simpt.databinding.ActivityLoginBinding
+import com.ipb.simpt.ui.admin.AdminHomeActivity
 import com.ipb.simpt.ui.dosen.home.DosenHomeActivity
 import com.ipb.simpt.utils.Extensions.toast
 import com.ipb.simpt.utils.FirebaseUtils
@@ -38,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
         signInInputsArray = arrayOf(binding.edLoginEmail, binding.edLoginPassword)
 
         signIn()
+        forgotPassword()
     }
 
     // check if there's a signed-in user
@@ -75,15 +77,6 @@ class LoginActivity : AppCompatActivity() {
                         // Hide loading progress bar
                         showLoading(false)
                     }
-//                    .addOnCompleteListener { signIn ->
-//                        if (signIn.isSuccessful) {
-//                            startActivity(Intent(this, MainActivity::class.java))
-//                            toast("signed in successfully")
-//                            finish()
-//                        } else {
-//                            toast("sign in failed")
-//                        }
-//                    }
             } else {
                 showLoading(false)
                 signInInputsArray.forEach { input ->
@@ -113,18 +106,16 @@ class LoginActivity : AppCompatActivity() {
 
                     // get user type eg. user, dosen, admin
                     val userType = document.getString("userType")
-                    if (userType == "user") {
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    val intent = when (userType) {
+                        "user" -> Intent(this@LoginActivity, MainActivity::class.java)
+                        "dosen" -> Intent(this@LoginActivity, DosenHomeActivity::class.java)
+                        "admin" -> Intent(this@LoginActivity, AdminHomeActivity::class.java)
+                        else -> null
+                    }
+                    intent?.let {
+                        it.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(it)
                         finish()
-
-                    } else if (userType == "dosen") {
-                        startActivity(Intent(this@LoginActivity, DosenHomeActivity::class.java))
-                        finish()
-
-                    } else if (userType == "admin") {
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                        finish()
-
                     }
                 } else {
                     toast("No such document")
@@ -135,6 +126,11 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    private fun forgotPassword() {
+        binding.tvForgot.setOnClickListener {
+            startActivity(Intent(this, ForgetPasswordActivity::class.java))
+        }
+    }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE

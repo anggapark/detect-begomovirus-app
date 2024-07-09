@@ -30,7 +30,10 @@ class AddDataBottomSheetFragment : BottomSheetDialogFragment() {
         const val TAG = "AddDataBottomSheetFragment"
         private const val REQUEST_PICK_IMAGE = 123
 
-        fun newInstance(itemId: String, fromOtherActivity: Boolean = false): AddDataBottomSheetFragment {
+        fun newInstance(
+            itemId: String,
+            fromOtherActivity: Boolean = false
+        ): AddDataBottomSheetFragment {
             val fragment = AddDataBottomSheetFragment()
             val args = Bundle().apply {
                 putString(ARG_ITEM_ID, itemId)
@@ -75,15 +78,15 @@ class AddDataBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         if (fromOtherActivity) {
-            binding.btnAddImage.visibility = View.GONE
-        }
+            disableInteractions()
+        } else {
+            val imageClickListener = View.OnClickListener {
+                handleImagePick()
+            }
 
-        val imageClickListener = View.OnClickListener {
-            handleImagePick()
+            binding.btnAddImage.setOnClickListener(imageClickListener)
+            binding.cvPreview.setOnClickListener(imageClickListener)
         }
-
-        binding.btnAddImage.setOnClickListener(imageClickListener)
-        binding.cvPreview.setOnClickListener(imageClickListener)
 
         viewModel.bottomSheetImgUri.observe(viewLifecycleOwner, Observer { uri ->
             uri?.let {
@@ -92,6 +95,16 @@ class AddDataBottomSheetFragment : BottomSheetDialogFragment() {
                 }
             }
         })
+    }
+
+    private fun disableInteractions() {
+        // Disable or hide interactive elements
+        binding.btnAddImage.visibility = View.GONE
+
+        // Alternatively, if you want to disable interactions but keep the views visible:
+        binding.btnAddImage.isEnabled = false
+        binding.cvPreview.isEnabled = false
+        // Add more views to disable as needed
     }
 
     private fun handleImagePick() {

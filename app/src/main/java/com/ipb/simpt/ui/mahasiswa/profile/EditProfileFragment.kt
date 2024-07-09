@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.ipb.simpt.databinding.FragmentEditProfileBinding
 
@@ -48,6 +49,7 @@ class EditProfileFragment : Fragment() {
         if (isPasswordChange) {
             binding.textTitle.text = "Change Password"
             binding.editText.visibility = View.GONE
+            binding.etCurrentPasswordLayout.visibility = View.VISIBLE
             binding.etPasswordLayout.visibility = View.VISIBLE
             binding.etConfirmLayout.visibility = View.VISIBLE
         } else {
@@ -94,27 +96,53 @@ class EditProfileFragment : Fragment() {
         val newValue = binding.editText.text.toString()
         val firebaseUser = firebaseAuth.currentUser
 
+        if (newValue.isBlank()) {
+            Toast.makeText(requireContext(), "Field must not be empty", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (firebaseUser != null && field != null) {
             profileViewModel.updateUserField(firebaseUser.uid, field, newValue) {
+                Toast.makeText(requireContext(), "User information updated successfully", Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
             }
         }
     }
 
     private fun changePassword() {
+        val currentPassword = binding.etCurrentPassword.text.toString()
         val newPassword = binding.etPassword.text.toString()
         val confirmPassword = binding.etConfirm.text.toString()
 
-        if (newPassword == confirmPassword) {
-            profileViewModel.changePassword(newPassword) { isSuccess, errorMessage ->
-                if (isSuccess) {
-                    findNavController().navigateUp()
-                } else {
-                    Toast.makeText(requireContext(), "Error updating password: $errorMessage", Toast.LENGTH_SHORT).show()
-                }
-            }
-        } else {
+        if (currentPassword.isBlank() || newPassword.isBlank() || confirmPassword.isBlank()) {
+            Toast.makeText(requireContext(), "Passwords must not be empty", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (newPassword != confirmPassword) {
             Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val firebaseUser = firebaseAuth.currentUser
+        if (firebaseUser != null) {
+            val credential = EmailAuthProvider.getCredential(firebaseUser.email!!, currentPassword)
+            firebaseUser.reauthenticate(credential)
+                .addOnSuccessListener {
+                    firebaseUser.updatePassword(newPassword)
+                        .addOnSuccessListener {
+                            Toast.makeText(requireContext(), "Password updated successfully", Toast.LENGTH_SHORT).show()
+                            findNavController().navigateUp()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(requireContext(), "Error updating password: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Authentication failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
         }
     }
 
