@@ -116,6 +116,7 @@ class DosenCategoryListActivity : AppCompatActivity() {
     private fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "Daftar Kategori"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

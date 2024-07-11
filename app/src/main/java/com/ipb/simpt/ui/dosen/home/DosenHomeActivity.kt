@@ -2,12 +2,18 @@ package com.ipb.simpt.ui.dosen.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.firebase.auth.FirebaseAuth
@@ -24,14 +30,11 @@ import com.ipb.simpt.utils.Extensions.toast
 
 class DosenHomeActivity : AppCompatActivity() {
 
-    // view binding
     private lateinit var binding: ActivityDosenHomeBinding
-
-    // ViewModel
     private lateinit var profileViewModel: ProfileViewModel
-
-    // firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var navController: NavController
+    private var doubleBackToExitPressedOnce = false
 
     //TAG
     companion object {
@@ -46,8 +49,30 @@ class DosenHomeActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
+        setupNavController()
         checkUser()
         setupAction()
+    }
+
+    private fun setupNavController() {
+        // Check if the NavHostFragment is already added
+        var navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragment_container) as? NavHostFragment
+
+        if (navHostFragment == null) {
+            // Create NavHostFragment programmatically
+            navHostFragment = NavHostFragment.create(R.navigation.dosen_navigation)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, navHostFragment)
+                .setPrimaryNavigationFragment(navHostFragment)
+                .commitNow()
+
+
+            // Hide the fragment container initially
+            binding.fragmentContainer.visibility = View.GONE
+        }
+
+        navController = navHostFragment.navController
     }
 
     private fun setupAction() {
@@ -62,11 +87,12 @@ class DosenHomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ApprovalActivity::class.java))
         }
         binding.cvProfile.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainer.id, ProfileFragment())
-                .addToBackStack(null)
-                .commit()
-        }
+            if (!::navController.isInitialized) {
+                setupNavController()
+            }
+            // Toggle visibility of fragment_container
+            binding.fragmentContainer.visibility = View.VISIBLE
+            navController.navigate(R.id.profileFragment)        }
     }
 
     //Authentication
@@ -116,6 +142,27 @@ class DosenHomeActivity : AppCompatActivity() {
                         .into(binding.ivProfile)
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        // Check if there's a fragment in the container
+        if (binding.fragmentContainer.visibility == View.VISIBLE) {
+            // Hide fragment container and navigate up in navController
+            binding.fragmentContainer.visibility = View.GONE
+            navController.navigateUp()
+        } else {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed()
+                return
+            }
+
+            doubleBackToExitPressedOnce = true
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                doubleBackToExitPressedOnce = false
+            }, 2000)
         }
     }
 }

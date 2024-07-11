@@ -59,13 +59,9 @@ class DosenCategoryDetailActivity : AppCompatActivity() {
     private fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "Category Detail"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.default_menu, menu)
-//        return true
-//    }
 
     // handle back button
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

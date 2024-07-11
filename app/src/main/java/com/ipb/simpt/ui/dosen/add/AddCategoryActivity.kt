@@ -62,10 +62,6 @@ class AddCategoryActivity : AppCompatActivity() {
     }
 
     private fun showCategoryDialog() {
-        // create and show a dialog for category selection
-        // when a category is selected, update the TextViews based on the selected category
-        // if the selected category is "Kategori Pathogen", show the prerequisite category and name TextViews
-        // otherwise, hide them
         val categories = arrayOf("Komoditas", "Penyakit", "Gejala Penyakit", "Kategori Pathogen")
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Choose a category")
@@ -118,6 +114,9 @@ class AddCategoryActivity : AppCompatActivity() {
     private fun uploadCategory() {
         Log.d(TAG, "uploadCategory: uploading category to db")
 
+        // Disable the submit button to prevent multiple clicks
+        binding.btnSubmit.isEnabled = false
+
         // Show loading progress bar
         showLoading(true)
 
@@ -131,7 +130,6 @@ class AddCategoryActivity : AppCompatActivity() {
         hashMap["timestamp"] = timestamp
         hashMap["uid"] = "${firebaseAuth.uid}"
 
-
         // TODO: After uploading, intent to Dosen Show
         val db = FirebaseFirestore.getInstance()
         if (category == "Kategori Pathogen") {
@@ -144,12 +142,13 @@ class AddCategoryActivity : AppCompatActivity() {
                     // added successfully
                     showLoading(false)
                     toast("Added successfully !")
-
+                    resetForm()
                 }
                 .addOnFailureListener { e ->
                     // failed to add
                     showLoading(false)
                     toast("Failed saving user info due to ${e.message}")
+                    binding.btnSubmit.isEnabled = true
                 }
         } else {
             db.collection("Categories")
@@ -161,20 +160,35 @@ class AddCategoryActivity : AppCompatActivity() {
                     // added successfully
                     showLoading(false)
                     toast("Added successfully !")
-
+                    resetForm()
                 }
                 .addOnFailureListener { e ->
                     // failed to add
                     showLoading(false)
                     toast("Failed saving user info due to ${e.message}")
+                    binding.btnSubmit.isEnabled = true
                 }
         }
     }
+
+    private fun resetForm() {
+        // Reset the form fields
+        binding.tvCategory.text = ""
+        binding.tvPathogen.text = ""
+        binding.edAddName.text.clear()
+        binding.tvPathogenTitle.visibility = View.GONE
+        binding.tvPathogen.visibility = View.GONE
+
+        // Re-enable the submit button
+        binding.btnSubmit.isEnabled = true
+    }
+
 
     // enable setupToolbar as actionbar
     private fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "Add Category"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

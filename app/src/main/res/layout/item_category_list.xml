@@ -27,12 +27,12 @@
             android:layout_weight="1"
             tools:text="Category Title" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/ib_delete"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/bg_button03"
-            android:src="@drawable/ic_delete" />
+            android:padding="5dp"
+            android:src="@drawable/ic_right" />
 
     </LinearLayout>
 

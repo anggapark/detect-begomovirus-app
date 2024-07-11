@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +30,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var navController: NavController
 
     private var imgUri: Uri? = null
 
@@ -50,6 +52,7 @@ class ProfileFragment : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        navController = findNavController()
 
         setupUserProfile()
         setupAction()
@@ -92,7 +95,6 @@ class ProfileFragment : Fragment() {
         }
 
         binding.tvPasswordChange.setOnClickListener {
-            // TODO: this operation is sensitive and requires recent authentication updating password
              navigateToChangePassword()
         }
 
@@ -143,14 +145,14 @@ class ProfileFragment : Fragment() {
         val bundle = Bundle().apply {
             putString("field", field)
         }
-        findNavController().navigate(R.id.navigation_profile_edit, bundle)
+        navController.navigate(R.id.navigation_profile_edit, bundle)
     }
 
     private fun navigateToChangePassword() {
         val bundle = Bundle().apply {
             putBoolean("isPasswordChange", true)
         }
-        findNavController().navigate(R.id.navigation_profile_edit, bundle)
+        navController.navigate(R.id.navigation_profile_edit, bundle)
     }
 
     private fun signOut() {
