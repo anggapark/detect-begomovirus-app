@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +25,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     // firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
+    private var backPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,5 +100,16 @@ class WelcomeActivity : AppCompatActivity() {
 //        binding.skipButton.setOnClickListener {
 //
 //        }
+    }
+
+    override fun onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed()
+            return
+        } else {
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+        }
+
+        backPressedTime = System.currentTimeMillis()
     }
 }

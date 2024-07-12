@@ -3,6 +3,7 @@ package com.ipb.simpt
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     // firebase auth
     private lateinit var firebaseAuth: FirebaseAuth
+    private var backPressedTime: Long = 0
 
     //TAG
     companion object {
@@ -87,4 +89,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        // Check if the current destination is the start destination (home fragment)
+        if (navController.currentDestination?.id == R.id.navigation_home) {
+            if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                super.onBackPressed()
+            } else {
+                Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            }
+            backPressedTime = System.currentTimeMillis()
+        } else {
+            // Navigate back to the previous fragment
+            super.onBackPressed()
+        }
+    }
 }

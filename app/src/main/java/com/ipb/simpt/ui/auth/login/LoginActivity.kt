@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
 
         signIn()
         forgotPassword()
+        setupInstantLogin()
     }
 
     // check if there's a signed-in user
@@ -134,5 +135,42 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    // USED ONLY FOR DEVELOPMENT PROCESS
+    private fun setupInstantLogin() {
+        binding.btnUser.setOnClickListener {
+            signInEmail = "user@example.com"
+            signInPassword = "user123"
+            instantSignIn()
+        }
+
+        binding.btnDosen.setOnClickListener {
+            signInEmail = "dosen@example.com"
+            signInPassword = "dosen123"
+            instantSignIn()
+        }
+
+        binding.btnAdmin.setOnClickListener {
+            signInEmail = "admin@example.com"
+            signInPassword = "admin123"
+            instantSignIn()
+        }
+    }
+
+    private fun instantSignIn() {
+        showLoading(true)
+
+        firebaseAuth.signInWithEmailAndPassword(signInEmail, signInPassword)
+            .addOnSuccessListener {
+                // login success
+                checkUser()
+            }
+            .addOnFailureListener { e ->
+                // login failed
+                toast("Failed to sign in due to ${e.message}")
+                // Hide loading progress bar
+                showLoading(false)
+            }
     }
 }
