@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import java.io.*
+import java.text.DateFormat
 import java.util.*
 
 object FileHelper {
@@ -44,5 +45,12 @@ object FileHelper {
         } while (streamLength > 1000000)
         bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
         return file
+    }
+
+    fun formatTimeStamp (timestamp: Long) : String{
+        val cal = Calendar.getInstance(Locale.ENGLISH)
+        cal.timeInMillis = timestamp
+        // dd/MM/yyyy
+        return android.text.format.DateFormat.format("dd/MM/yyyy", cal).toString()
     }
 }

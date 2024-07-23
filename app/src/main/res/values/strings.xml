@@ -122,6 +122,7 @@
     <string name="status_pending">Pending</string>
 
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada porta felis. Nunc semper efficitur euismod. Sed ut quam urna. Suspendisse egestas quis nisl id aliquam. Cras scelerisque orci aliquam, convallis dolor eget, pellentesque urna. Etiam vel justo ut velit tristique tempor. Morbi sit amet finibus tellus, sed fringilla massa. Pellentesque lacinia pulvinar eros malesuada commodo. Nulla vel mattis eros. Donec ornare volutpat diam nec blandit.</string>
+    <string name="date">31/12/2024</string>
 
 
     <string name="skip">Continue Without Login</string>
@@ -167,4 +168,6 @@
     <string name="title_response_dosen">Berikan Tanggapan</string>
     <string name="title_response_user">Lihat Tanggapan</string>
     <string name="title_edit_data">Edit Data</string>
+    <string name="btn_prev"><![CDATA[<<]]></string>
+    <string name="btn_next"><![CDATA[>>]]></string>
 </resources>

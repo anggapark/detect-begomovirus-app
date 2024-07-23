@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ActivityLibraryDetailBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.dosen.library.DosenCategoryListActivity
 import com.ipb.simpt.ui.mahasiswa.add.AddDataBottomSheetFragment
 import com.ipb.simpt.ui.mahasiswa.library.user.LibraryUserDetailActivity
 
@@ -23,6 +22,7 @@ class LibraryDetailActivity : AppCompatActivity() {
     private lateinit var data: DataModel
     private lateinit var itemId: String
     private var fromMyData: Boolean = false
+    private var isActivityActive = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,17 +49,30 @@ class LibraryDetailActivity : AppCompatActivity() {
         setupAction()
     }
 
+    override fun onResume() {
+        super.onResume()
+        isActivityActive = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isActivityActive = false
+    }
+
     private fun loadItemDetails() {
         viewModel.fetchItemDetails(itemId) { dataModel ->
             viewModel.fetchAndCacheNames(dataModel) {
                 data = dataModel
-                updateUI(dataModel)
+                if (isActivityActive) {
+                    updateUI(dataModel)
+                }
             }
         }
     }
 
     private fun updateUI(data: DataModel) {
         // Update UI elements with cached names
+        if (!isActivityActive) return
 
         binding.tvKomoditas.text = data.komoditasName
         binding.tvPenyakit.text = data.penyakitName
@@ -110,7 +123,8 @@ class LibraryDetailActivity : AppCompatActivity() {
         }
         binding.btnAddDatasetImage.setOnClickListener {
             val nonNullItemId = itemId
-            val bottomSheetFragment = AddDataBottomSheetFragment.newInstance(nonNullItemId, fromOtherActivity = true)
+            val bottomSheetFragment =
+                AddDataBottomSheetFragment.newInstance(nonNullItemId, fromOtherActivity = true)
             bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
 
         }

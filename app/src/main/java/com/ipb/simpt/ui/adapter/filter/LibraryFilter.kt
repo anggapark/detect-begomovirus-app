@@ -27,7 +27,6 @@ class LibraryFilter(
                         data.pathogenName.contains(charString, true) ||
                         data.kategoriPathogen.contains(charString, true) ||
                         data.dataset.contains(charString, true) ||
-                        data.deskripsi.contains(charString, true) ||
                         data.userName.contains(charString, true) ||
                         data.userNim.contains(charString, true)
             }.toMutableList()

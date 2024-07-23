@@ -14,12 +14,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentLibraryBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.adapter.LibraryAdapter
-import com.ipb.simpt.ui.adapter.LibraryFilterBottomSheetFragment
-import com.ipb.simpt.ui.dosen.approval.ApprovalBottomSheetFragment
 
 class LibraryFragment : Fragment() {
 
@@ -29,7 +28,8 @@ class LibraryFragment : Fragment() {
     private lateinit var dataList: ArrayList<DataModel>
     private lateinit var viewModel: LibraryViewModel
     private lateinit var adapter: LibraryAdapter
-    private var isGridLayout : Boolean = false
+    private var isGridLayout: Boolean = false
+    private var isLoadingMore = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,11 +45,75 @@ class LibraryFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(LibraryViewModel::class.java)
 
+//        setupLayoutSwitcher()
         setupRecyclerView()
-        setupLayoutSwitcher()
         setupSearchFilter()
+        setupObservers()
 
-        viewModel.fetchApprovedItems()
+        viewModel.fetchInitialApprovedItems()
+    }
+
+    private fun setupRecyclerView() {
+        showLoading(true)
+        dataList = ArrayList()
+
+        adapter = LibraryAdapter(requireContext(), dataList, viewModel) { dataModel ->
+            val intent = Intent(requireContext(), LibraryDetailActivity::class.java).apply {
+                putExtra("ITEM_ID", dataModel.id)
+            }
+            startActivity(intent)
+        }
+
+        binding.rvLibrary.adapter = adapter
+        binding.rvLibrary.layoutManager =
+            LinearLayoutManager(requireContext()) // Default to list layout
+
+        binding.rvLibrary.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager ?: return
+
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = when (layoutManager) {
+                    is LinearLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+                    is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+                    else -> return
+                }
+
+                if (!isLoadingMore && !viewModel.isLoading.value!! &&
+                    (visibleItemCount + firstVisibleItemPosition >= totalItemCount) &&
+                    firstVisibleItemPosition >= 0 && totalItemCount >= viewModel.pageSize) {
+
+                    isLoadingMore = true
+                    viewModel.fetchMoreApprovedItems()
+                }
+            }
+        })
+
+
+        // Observe loading more state
+        viewModel.isLoadingMore.observe(viewLifecycleOwner, Observer { isLoadingMore ->
+            this.isLoadingMore = isLoadingMore
+            showLoading(isLoadingMore)
+        })
+    }
+
+    private fun setupObservers() {
+        // Observe data changes
+        viewModel.items.observe(viewLifecycleOwner, Observer { items ->
+            if (items != null) {
+                Log.d("LibraryFragment", "Items found: $items")
+                dataList.clear()
+                dataList.addAll(items)
+                adapter.updateData(dataList)
+                showLoading(false)
+            } else {
+                Log.d("LibraryFragment", "No items found")
+                showLoading(false)
+            }
+        })
 
         // Observe loading state
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
@@ -66,60 +130,31 @@ class LibraryFragment : Fragment() {
         })
     }
 
-    private fun setupRecyclerView() {
-        showLoading(true)
-        dataList = ArrayList()
+//    private fun setupLayoutSwitcher() {
+//        binding.btnList.setOnClickListener {
+//            isGridLayout = false
+//            applyLayoutManager()
+//            adapter.setLayoutType(isGridLayout)
+//            updateLayoutSwitcherBackground()
+//        }
+//
+//        binding.btnGrid.setOnClickListener {
+//            isGridLayout = true
+//            applyLayoutManager()
+//            adapter.setLayoutType(isGridLayout)
+//            updateLayoutSwitcherBackground()
+//        }
+//    }
 
-        adapter = LibraryAdapter(requireContext(), dataList, viewModel) { dataModel ->
-            val intent = Intent(requireContext(), LibraryDetailActivity::class.java).apply {
-                putExtra("ITEM_ID", dataModel.id)
-            }
-            startActivity(intent)
-        }
-
-        binding.rvLibrary.adapter = adapter
-        binding.rvLibrary.layoutManager = LinearLayoutManager(requireContext()) // Default to list layout
-
-        // Observe data changes
-        viewModel.items.observe(viewLifecycleOwner, Observer { items ->
-            if (items != null) {
-                Log.d("LibraryFragment", "Items found: $items")
-                dataList.clear()
-                dataList.addAll(items)
-                adapter.updateData(dataList)
-                showLoading(false)
-            } else {
-                Log.d("LibraryFragment", "No items found")
-                showLoading(false)
-            }
-        })
-    }
-
-    private fun setupLayoutSwitcher() {
-        binding.btnList.setOnClickListener {
-            isGridLayout = false
-            applyLayoutManager()
-            adapter.setLayoutType(isGridLayout)
-            updateLayoutSwitcherBackground()
-        }
-
-        binding.btnGrid.setOnClickListener {
-            isGridLayout = true
-            applyLayoutManager()
-            adapter.setLayoutType(isGridLayout)
-            updateLayoutSwitcherBackground()
-        }
-    }
-
-    private fun updateLayoutSwitcherBackground() {
-        if (isGridLayout) {
-            binding.btnList.setBackgroundResource(R.drawable.bg_text)
-            binding.btnGrid.setBackgroundResource(R.drawable.bg_text_selected)
-        } else {
-            binding.btnList.setBackgroundResource(R.drawable.bg_text_selected)
-            binding.btnGrid.setBackgroundResource(R.drawable.bg_text)
-        }
-    }
+//    private fun updateLayoutSwitcherBackground() {
+//        if (isGridLayout) {
+//            binding.btnList.setBackgroundResource(R.drawable.bg_text)
+//            binding.btnGrid.setBackgroundResource(R.drawable.bg_text_selected)
+//        } else {
+//            binding.btnList.setBackgroundResource(R.drawable.bg_text_selected)
+//            binding.btnGrid.setBackgroundResource(R.drawable.bg_text)
+//        }
+//    }
 
     private fun applyLayoutManager() {
         binding.rvLibrary.layoutManager = if (isGridLayout) {

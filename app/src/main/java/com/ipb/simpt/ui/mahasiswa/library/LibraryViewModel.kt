@@ -4,16 +4,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.model.UserModel
 import com.ipb.simpt.repository.DataRepository
 import com.ipb.simpt.repository.UserRepository
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
+import java.util.concurrent.atomic.AtomicInteger
 
 class LibraryViewModel : ViewModel() {
 
@@ -29,12 +31,91 @@ class LibraryViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _isLoadingMore = MutableLiveData<Boolean>()
+    val isLoadingMore: LiveData<Boolean> get() = _isLoadingMore
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> get() = _error
 
     private val viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    private var lastVisibleItemTimestamp: Long? = null
+    var allDataFetched = false
+    val pageSize = 8
+
+    fun fetchInitialApprovedItems() {
+        _isLoading.value = true
+        allDataFetched = false
+        repository.fetchInitialApprovedItems(
+            pageSize,
+            { items, lastTimestamp ->
+                fetchAndCacheAdditionalData(items) {
+                    _items.postValue(items)
+                    lastVisibleItemTimestamp = lastTimestamp
+                    _isLoading.postValue(false)
+                    if (items.size < pageSize) {
+                        allDataFetched = true
+                    }
+                }
+            },
+            { errorMessage ->
+                _error.postValue(errorMessage)
+                _isLoading.postValue(false)
+            }
+        )
+    }
+
+    fun fetchMoreApprovedItems() {
+        if (_isLoadingMore.value == true || allDataFetched || lastVisibleItemTimestamp == null) return
+
+        _isLoadingMore.value = true
+        repository.fetchMoreApprovedItems(
+            lastVisibleItemTimestamp!!,
+            pageSize,
+            { items, lastTimestamp ->
+                if (items.isNotEmpty()) {
+                    fetchAndCacheAdditionalData(items) {
+                        _items.postValue(_items.value.orEmpty() + items)
+                        lastVisibleItemTimestamp = lastTimestamp
+                    }
+                } else {
+                    allDataFetched = true
+                }
+                _isLoadingMore.postValue(false)
+            },
+            { errorMessage ->
+                _error.postValue(errorMessage)
+                _isLoadingMore.postValue(false)
+            }
+        )
+    }
+
+    private fun fetchAndCacheAdditionalData(items: List<DataModel>, onComplete: () -> Unit) {
+        val updatedDataList = mutableListOf<DataModel>()
+        val remainingItemsCount = items.size
+        val itemsProcessed = AtomicInteger(0)
+
+        items.forEach { dataModel ->
+            viewModelScope.launch {
+                repository.fetchAndCacheNames(dataModel) {
+                    repository.fetchAndCacheUserDetails(dataModel) {
+                        updatedDataList.add(dataModel)
+                        if (itemsProcessed.incrementAndGet() == remainingItemsCount) {
+                            _items.postValue(updatedDataList)
+                            onComplete()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Handle case when no items are available
+        if (items.isEmpty()) {
+            _items.postValue(emptyList())
+            onComplete()
+        }
+    }
 
     fun fetchApprovedItems() {
         _isLoading.value = true

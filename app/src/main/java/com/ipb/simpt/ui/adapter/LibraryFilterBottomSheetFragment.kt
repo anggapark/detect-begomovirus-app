@@ -26,14 +26,14 @@ class LibraryFilterBottomSheetFragment :  BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.dialog_filter, container, false)
-        val btnPending = view.findViewById<Button>(R.id.btn_pending)
-        val btnApproved = view.findViewById<Button>(R.id.btn_approved)
-        val btnRejected = view.findViewById<Button>(R.id.btn_rejected)
-
-        btnPending.setOnClickListener { listener?.onFilterApplied("pending") }
-        btnApproved.setOnClickListener { listener?.onFilterApplied("approved") }
-        btnRejected.setOnClickListener { listener?.onFilterApplied("rejected") }
+//        val view = inflater.inflate(R.layout.dialog_filter, container, false)
+//        val btnPending = view.findViewById<Button>(R.id.btn_pending)
+//        val btnApproved = view.findViewById<Button>(R.id.btn_approved)
+//        val btnRejected = view.findViewById<Button>(R.id.btn_rejected)
+//
+//        btnPending.setOnClickListener { listener?.onFilterApplied("pending") }
+//        btnApproved.setOnClickListener { listener?.onFilterApplied("approved") }
+//        btnRejected.setOnClickListener { listener?.onFilterApplied("rejected") }
 
         return view
     }

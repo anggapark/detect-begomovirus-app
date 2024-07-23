@@ -81,6 +81,7 @@ dependencies {
     implementation("com.google.guava:guava:31.1-jre")
     implementation("androidx.activity:activity:1.8.0")
     implementation("androidx.fragment:fragment-ktx:1.5.6")
+    implementation("androidx.paging:paging-runtime:3.1.1")
 
     testImplementation("junit:junit:4.13.2")
 

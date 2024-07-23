@@ -14,6 +14,7 @@ import com.ipb.simpt.databinding.ItemLibraryListBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.adapter.filter.LibraryFilter
 import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
+import com.ipb.simpt.utils.FileHelper
 
 class LibraryAdapter(
     private val context: Context,
@@ -63,7 +64,9 @@ class LibraryAdapter(
             binding.tvPenyakit.text = data.penyakitName
             binding.tvPathogen.text = data.pathogenName
             binding.tvGejala.text = data.gejalaName
-            binding.tvDeskripsi.text = data.deskripsi
+            binding.tvUser.text = data.userName
+            binding.tvDate.text = FileHelper.formatTimeStamp(data.timestamp)
+//            binding.tvDeskripsi.text = data.deskripsi
 
             Glide.with(context)
                 .load(data.url)
@@ -91,7 +94,6 @@ class LibraryAdapter(
     }
 
     fun updateData(newData: ArrayList<DataModel>) {
-        Log.d("LibraryAdapter", "Updating data with new items: $newData")
         dataList = newData
         filterList = ArrayList(newData)
         notifyDataSetChanged()

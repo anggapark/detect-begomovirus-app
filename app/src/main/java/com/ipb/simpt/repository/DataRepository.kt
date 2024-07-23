@@ -18,6 +18,48 @@ class DataRepository {
     private val userNameCache = mutableMapOf<String, String>()
     private val userNimCache = mutableMapOf<String, String>()
 
+    fun fetchInitialApprovedItems(
+        pageSize: Int,
+        onComplete: (List<DataModel>, Long) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        db.collection("Data")
+            .whereEqualTo("status", "Approved")
+            .orderBy("timestamp")
+            .limit(pageSize.toLong())
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val items = snapshot.toObjects(DataModel::class.java)
+                val lastVisibleItemTimestamp = items.lastOrNull()?.timestamp ?: 0L
+                onComplete(items, lastVisibleItemTimestamp)
+            }
+            .addOnFailureListener { exception ->
+                onError(exception.message ?: "Error fetching items")
+            }
+    }
+
+    fun fetchMoreApprovedItems(
+        lastTimestamp: Long,
+        pageSize: Int,
+        onComplete: (List<DataModel>, Long) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        db.collection("Data")
+            .whereEqualTo("status", "Approved")
+            .orderBy("timestamp")
+            .startAfter(lastTimestamp)
+            .limit(pageSize.toLong())
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val items = snapshot.toObjects(DataModel::class.java)
+                val lastVisibleItemTimestamp = items.lastOrNull()?.timestamp ?: 0L
+                onComplete(items, lastVisibleItemTimestamp)
+            }
+            .addOnFailureListener { exception ->
+                onError(exception.message ?: "Error fetching items")
+            }
+    }
+
     fun fetchDataByCategory(
         categoryName: String,
         itemId: String,
