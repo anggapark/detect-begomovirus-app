@@ -42,7 +42,77 @@ class LibraryViewModel : ViewModel() {
 
     private var lastVisibleItemTimestamp: Long? = null
     var allDataFetched = false
-    val pageSize = 8
+
+    private var itemsCache = mutableListOf<DataModel>()
+    private val pageSize = 2
+    var currentPage = 1
+    var canLoadMore = true
+
+    fun fetchApprovedItemsByPage(page: Int) {
+        if (_isLoading.value == true) return
+
+        _isLoading.value = true
+        val lastItem = getLastItemForPage(page - 1)
+
+        repository.fetchApprovedItemsByPage(pageSize, lastItem, { items ->
+            if (items.size < pageSize) {
+                canLoadMore = false
+            } else {
+                canLoadMore = true
+            }
+
+            // Cache fetched items
+            if (page == 1) {
+                itemsCache.clear()
+                itemsCache.addAll(items)
+            } else {
+                val startIndex = (page - 1) * pageSize
+                val endIndex = startIndex + items.size
+                if (endIndex <= itemsCache.size) {
+                    itemsCache.subList(startIndex, endIndex).clear()
+                }
+                itemsCache.addAll(startIndex, items)
+            }
+
+            // Fetch and cache additional data
+            fetchAndCacheAdditionalData(items) {
+                if (page > 0) {
+                    _items.postValue(itemsCache.subList(getStartIndex(page), getEndIndex(page)))
+                }
+                _isLoading.postValue(false)
+            }
+        }, { errorMessage ->
+            _error.postValue(errorMessage)
+            _isLoading.postValue(false)
+        })
+    }
+
+    fun goToPage(page: Int) {
+        if (page <= 0 || page == currentPage || (!canLoadMore && page > currentPage)) return
+        currentPage = page
+        fetchApprovedItemsByPage(page)
+    }
+
+    private fun getLastItemForPage(page: Int): DataModel? {
+        if (page <= 0) return null
+
+        val startIndex = (page - 1) * pageSize
+        val endIndex = (startIndex + pageSize).coerceAtMost(itemsCache.size)
+
+        return if (startIndex in 0 until endIndex) {
+            itemsCache.subList(startIndex, endIndex).lastOrNull()
+        } else {
+            null
+        }
+    }
+
+    private fun getStartIndex(page: Int): Int {
+        return (page - 1) * pageSize
+    }
+
+    private fun getEndIndex(page: Int): Int {
+        return (getStartIndex(page) + pageSize).coerceAtMost(itemsCache.size)
+    }
 
     fun fetchInitialApprovedItems() {
         _isLoading.value = true

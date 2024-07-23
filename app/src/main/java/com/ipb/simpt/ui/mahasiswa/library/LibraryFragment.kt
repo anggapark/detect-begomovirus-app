@@ -49,8 +49,9 @@ class LibraryFragment : Fragment() {
         setupRecyclerView()
         setupSearchFilter()
         setupObservers()
+        setupPagination()
 
-        viewModel.fetchInitialApprovedItems()
+        viewModel.fetchApprovedItemsByPage(viewModel.currentPage)
     }
 
     private fun setupRecyclerView() {
@@ -68,49 +69,78 @@ class LibraryFragment : Fragment() {
         binding.rvLibrary.layoutManager =
             LinearLayoutManager(requireContext()) // Default to list layout
 
-        binding.rvLibrary.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
+//        binding.rvLibrary.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//
+//                val layoutManager = recyclerView.layoutManager ?: return
+//
+//                val visibleItemCount = layoutManager.childCount
+//                val totalItemCount = layoutManager.itemCount
+//                val firstVisibleItemPosition = when (layoutManager) {
+//                    is LinearLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+//                    is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+//                    else -> return
+//                }
+//
+//                if (!isLoadingMore && !viewModel.isLoading.value!! &&
+//                    (visibleItemCount + firstVisibleItemPosition >= totalItemCount) &&
+//                    firstVisibleItemPosition >= 0 && totalItemCount >= viewModel.pageSize) {
+//
+//                    isLoadingMore = true
+//                    viewModel.fetchMoreApprovedItems()
+//                }
+//            }
+//        })
+//
+//
+//        // Observe loading more state
+//        viewModel.isLoadingMore.observe(viewLifecycleOwner, Observer { isLoadingMore ->
+//            this.isLoadingMore = isLoadingMore
+//            showLoading(isLoadingMore)
+//        })
+    }
 
-                val layoutManager = recyclerView.layoutManager ?: return
 
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisibleItemPosition = when (layoutManager) {
-                    is LinearLayoutManager -> layoutManager.findFirstVisibleItemPosition()
-                    is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
-                    else -> return
-                }
-
-                if (!isLoadingMore && !viewModel.isLoading.value!! &&
-                    (visibleItemCount + firstVisibleItemPosition >= totalItemCount) &&
-                    firstVisibleItemPosition >= 0 && totalItemCount >= viewModel.pageSize) {
-
-                    isLoadingMore = true
-                    viewModel.fetchMoreApprovedItems()
-                }
+    private fun setupPagination() {
+        binding.btnPrevious.setOnClickListener {
+            if (viewModel.currentPage > 1 && !viewModel.isLoading.value!!) {
+                viewModel.goToPage(viewModel.currentPage - 1)
+                updateButtonStates()
+                scrollToFirstItem() // Scroll to first item on page change
             }
-        })
+        }
 
+        binding.btnNext.setOnClickListener {
+            if (viewModel.canLoadMore && !viewModel.isLoading.value!!) {
+                viewModel.goToPage(viewModel.currentPage + 1)
+                updateButtonStates()
+                scrollToFirstItem() // Scroll to first item on page change
+            }
+        }
+    }
 
-        // Observe loading more state
-        viewModel.isLoadingMore.observe(viewLifecycleOwner, Observer { isLoadingMore ->
-            this.isLoadingMore = isLoadingMore
-            showLoading(isLoadingMore)
-        })
+    private fun updateButtonStates() {
+        binding.btnPrevious.isEnabled = viewModel.currentPage > 1
+        binding.btnNext.isEnabled = viewModel.canLoadMore
+        binding.tvPageNumber.text = "${viewModel.currentPage}"
+
+    }
+
+    private fun scrollToFirstItem() {
+        (binding.rvLibrary.layoutManager as? LinearLayoutManager)?.scrollToPosition(0)
     }
 
     private fun setupObservers() {
         // Observe data changes
         viewModel.items.observe(viewLifecycleOwner, Observer { items ->
             if (items != null) {
-                Log.d("LibraryFragment", "Items found: $items")
                 dataList.clear()
                 dataList.addAll(items)
-                adapter.updateData(dataList)
+                adapter.notifyDataSetChanged()
                 showLoading(false)
+                updateButtonStates()
             } else {
-                Log.d("LibraryFragment", "No items found")
                 showLoading(false)
             }
         })

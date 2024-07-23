@@ -18,6 +18,31 @@ class DataRepository {
     private val userNameCache = mutableMapOf<String, String>()
     private val userNimCache = mutableMapOf<String, String>()
 
+    fun fetchApprovedItemsByPage(
+        pageSize: Int, lastItem: DataModel?, onComplete: (List<DataModel>) -> Unit, onError: (String) -> Unit
+    ) {
+        val query = db.collection("Data")
+            .whereEqualTo("status", "Approved")
+            .orderBy("timestamp")
+            .limit(pageSize.toLong())
+
+        val finalQuery = if (lastItem != null) {
+            query.startAfter(lastItem.timestamp)
+        } else {
+            query
+        }
+
+        finalQuery.get()
+            .addOnSuccessListener { snapshot ->
+                val items = snapshot.toObjects(DataModel::class.java)
+                onComplete(items)
+            }
+            .addOnFailureListener { exception ->
+                onError(exception.message ?: "Error fetching items")
+            }
+    }
+
+
     fun fetchInitialApprovedItems(
         pageSize: Int,
         onComplete: (List<DataModel>, Long) -> Unit,
