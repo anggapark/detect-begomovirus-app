@@ -8,8 +8,8 @@
     <string name="title_profile">Profile</string>
     <string name="title_profile_edit">Edit Profile</string>
 
-    <string name="desc_name">Name</string>
-    <string name="desc_profile">Profile Picture</string>
+    <string name="desc_name">Nama</string>
+    <string name="desc_profile">Foto Profil</string>
     <string name="desc_nim">NIM/NIP</string>
 
     <string name="home_add">Tambahkan Data</string>
@@ -22,14 +22,14 @@
 
     <string name="menu_filter">Filter</string>
     <string name="menu_layout">Layout</string>
-    <string name="menu_sort">Sort</string>
-    <string name="menu_search">Search</string>
+    <string name="menu_sort">Urutkan</string>
+    <string name="menu_search">Cari</string>
     <string name="menu_ascending">Ascending</string>
     <string name="menu_descending">Descending</string>
-    <string name="menu_back">Back</string>
+    <string name="menu_back">Kembali</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_logout">Log out</string>
-    <string name="menu_delete">Delete</string>
+    <string name="menu_delete">Hapus</string>
 
     <string name="tab_komoditas">Komoditas</string>
     <string name="tab_penyakit">Penyakit</string>
@@ -37,22 +37,22 @@
     <string name="tab_user">User</string>
     <string name="tab_dosen">Dosen</string>
 
-    <string name="personal_info">Info Profil</string>
-    <string name="account_info">Info Akun</string>
-    <string name="user_info">User Information</string>
+    <string name="personal_info">Informasi Profil</string>
+    <string name="account_info">Informasi Akun</string>
+    <string name="user_info">Informasi User</string>
 
     <string name="info_name">Nama</string>
     <string name="info_nim">NIM</string>
-    <string name="info_about">About Me</string>
+    <string name="info_about">Tentang Saya</string>
 
-    <string name="hint_name">Enter your name</string>
-    <string name="hint_nim">Enter NIM</string>
-    <string name="hint_about">Enter description</string>
-    <string name="hint_phone">Enter phone number</string>
-    <string name="hint_email">Enter email address</string>
+    <string name="hint_name">Masukkan Nama</string>
+    <string name="hint_nim">Masukkan NIM</string>
+    <string name="hint_about">Masukkan Deskripsi</string>
+    <string name="hint_phone">Masukkan Nomor Telepon</string>
+    <string name="hint_email">Masukkan Email</string>
 
 
-    <string name="info_phone">Phone Number</string>
+    <string name="info_phone">Nomor Telepon</string>
     <string name="info_email">Email</string>
     <string name="scan_desc">Scan penyakit kuning untuk tanaman:</string>
 
@@ -91,7 +91,7 @@
     <string name="hint_dataset">Masukkan Dataset Acuan</string>
 
 
-    <string name="title_sort">Sort</string>
+    <string name="title_sort">Urutkan</string>
     <string name="title_kategori">Kategori</string>
     <string name="title_keterangan">Keterangan</string>
 
@@ -105,37 +105,36 @@
     <string name="hint_nama_kategori">Masukkan Nama Kategori</string>
     <string name="hint_keterangan">Masukkan Keterangan</string>
     <string name="hint_nama">Masukkan Nama</string>
+    <string name="hint_date">Masukkan Tanggal</string>
     <string name="hint_search">Cari Data</string>
 
 
-    <string name="btn_apply">Apply</string>
-    <string name="btn_save">Save</string>
+    <string name="btn_apply">Gunakan Filter</string>
+    <string name="btn_reset">Reset Filter</string>
+    <string name="btn_save">Simpan</string>
     <string name="btn_submit">Submit</string>
     <string name="btn_kategori">Tambahkan Kategori</string>
-    <string name="btn_camera">Open Camera</string>
-    <string name="btn_gallery">Choose from Gallery</string>
+    <string name="btn_camera">Buka Kamera</string>
+    <string name="btn_gallery">Pilih dari Galeri</string>
     <string name="btn_edit">Edit</string>
-    <string name="btn_filter">Open Filter</string>
+    <string name="btn_filter">Buka Filter</string>
 
-    <string name="status_rejected">Rejected</string>
-    <string name="status_approved">Approved</string>
-    <string name="status_pending">Pending</string>
+    <string name="status_rejected">Ditolak</string>
+    <string name="status_approved">Disetujui</string>
+    <string name="status_pending">Menunggu</string>
 
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum malesuada porta felis. Nunc semper efficitur euismod. Sed ut quam urna. Suspendisse egestas quis nisl id aliquam. Cras scelerisque orci aliquam, convallis dolor eget, pellentesque urna. Etiam vel justo ut velit tristique tempor. Morbi sit amet finibus tellus, sed fringilla massa. Pellentesque lacinia pulvinar eros malesuada commodo. Nulla vel mattis eros. Donec ornare volutpat diam nec blandit.</string>
     <string name="date">31/12/2024</string>
 
 
-    <string name="skip">Continue Without Login</string>
-    <string name="register">Register</string>
+    <string name="skip">Lanjutkan Tanpa Login</string>
+    <string name="register">Daftar</string>
     <string name="login">Login</string>
-    <string name="message_welcome_page">Want to share stories about your learning and amazing experiences in Dicoding? Start here!</string>
-    <string name="title_welcome_page">Welcome to Sistem Informasi Manajemen Proteksi Tanaman!</string>
-    <string name="title_signup_page">Complete your personal details below</string>
+    <string name="title_welcome_page">Selamat Datang di Sistem Informasi Manajemen Proteksi Tanaman!</string>
+    <string name="title_signup_page">Mohon isi detail informasi anda di bawah</string>
     <string name="email">Email</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="password">Password</string>
-    <string name="message_login_page">Fill your details first</string>
-    <string name="title_login_page">Ready to share your amazing story?</string>
     <string name="name">Name</string>
     <string name="logout">Logout</string>
     <string name="username">Username</string>
@@ -144,23 +143,23 @@
     <string name="password_warning">Password should be at least 8 characters long</string>
     <string name="forgot_password">Forgot Password</string>
 
-    <string name="hint_reject">Reject</string>
-    <string name="hint_approve">Approve</string>
+    <string name="hint_reject">Tolak</string>
+    <string name="hint_approve">Setujui</string>
     <string name="all_categories">All Categories</string>
     <string name="hint_empty">No data available</string>
     <string name="title_nama_kategori">Nama Kategori</string>
-    <string name="btn_delete">Delete</string>
-    <string name="profile_image">Change Profile Picture</string>
+    <string name="btn_delete">Hapus</string>
+    <string name="profile_image">Ganti Foto Profil</string>
     <string name="profile_password">Change Password</string>
     <string name="profile_user_type">Change User Type</string>
-    <string name="hint_password">Enter New Password</string>
-    <string name="hint_current_password">Enter Current Password</string>
+    <string name="hint_password">Masukkan Password Baru</string>
+    <string name="hint_current_password">Masukkan Password Saat ini</string>
     <string name="hint_profile">Enter New Value</string>
-    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="hint_confirm_password">Konfirmasi Password</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_edit_category">Edit Nama Kategori</string>
     <string name="title_comment">Beri komentar?</string>
+    <string name="title_date">Tanggal</string>
     <string name="title_usertype">Ganti Tipe User?</string>
     <string name="hint_comment">Berikan tanggapan anda</string>
     <string name="hint_response">Tanggapan</string>

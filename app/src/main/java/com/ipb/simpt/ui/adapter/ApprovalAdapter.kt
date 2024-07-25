@@ -12,7 +12,7 @@ import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemApprovalGridBinding
 import com.ipb.simpt.databinding.ItemApprovalListBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.adapter.filter.ApprovalFilter
+import com.ipb.simpt.ui.filter.ApprovalFilter
 import com.ipb.simpt.ui.dosen.approval.ApprovalViewModel
 
 class ApprovalAdapter(

@@ -4,6 +4,8 @@ import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.ipb.simpt.model.DataModel
+import com.ipb.simpt.model.FilterModel
+import com.ipb.simpt.utils.FileHelper
 import kotlinx.coroutines.tasks.await
 
 class DataRepository {
@@ -42,47 +44,42 @@ class DataRepository {
             }
     }
 
+    fun fetchFilteredItems(filterModel: FilterModel, callback: (List<DataModel>) -> Unit) {
+        var query: Query = db.collection("Data").orderBy("timestamp")
 
-    fun fetchInitialApprovedItems(
-        pageSize: Int,
-        onComplete: (List<DataModel>, Long) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        db.collection("Data")
-            .whereEqualTo("status", "Approved")
-            .orderBy("timestamp")
-            .limit(pageSize.toLong())
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val items = snapshot.toObjects(DataModel::class.java)
-                val lastVisibleItemTimestamp = items.lastOrNull()?.timestamp ?: 0L
-                onComplete(items, lastVisibleItemTimestamp)
-            }
-            .addOnFailureListener { exception ->
-                onError(exception.message ?: "Error fetching items")
-            }
-    }
+        if (filterModel.komoditasId != null) {
+            query = query.whereEqualTo("komoditasId", filterModel.komoditasId)
+        }
+        if (filterModel.penyakitId != null) {
+            query = query.whereEqualTo("penyakitId", filterModel.penyakitId)
+        }
+        if (filterModel.gejalaId != null) {
+            query = query.whereEqualTo("gejalaId", filterModel.gejalaId)
+        }
+        if (filterModel.pathogenId != null) {
+            query = query.whereEqualTo("pathogenId", filterModel.pathogenId)
+        }
+        if (filterModel.kategoriPathogen != null) {
+            query = query.whereEqualTo("kategoriPathogen", filterModel.kategoriPathogen)
+        }
+        if (!filterModel.date.isNullOrEmpty()) {
+            val startOfDay = FileHelper.getStartOfDayInMillis(filterModel.date)
+            val endOfDay = FileHelper.getEndOfDayInMillis(filterModel.date)
+            query = query.whereGreaterThanOrEqualTo("timestamp", startOfDay)
+                .whereLessThanOrEqualTo("timestamp", endOfDay)
+        }
 
-    fun fetchMoreApprovedItems(
-        lastTimestamp: Long,
-        pageSize: Int,
-        onComplete: (List<DataModel>, Long) -> Unit,
-        onError: (String) -> Unit
-    ) {
-        db.collection("Data")
-            .whereEqualTo("status", "Approved")
-            .orderBy("timestamp")
-            .startAfter(lastTimestamp)
-            .limit(pageSize.toLong())
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val items = snapshot.toObjects(DataModel::class.java)
-                val lastVisibleItemTimestamp = items.lastOrNull()?.timestamp ?: 0L
-                onComplete(items, lastVisibleItemTimestamp)
+        query.get().addOnSuccessListener { documents ->
+            val items = mutableListOf<DataModel>()
+            for (document in documents) {
+                val item = document.toObject(DataModel::class.java)
+                items.add(item)
             }
-            .addOnFailureListener { exception ->
-                onError(exception.message ?: "Error fetching items")
-            }
+            callback(items)
+        }.addOnFailureListener { exception ->
+            Log.w("DataRepository", "Error getting documents: ", exception)
+            callback(emptyList())
+        }
     }
 
     fun fetchDataByCategory(

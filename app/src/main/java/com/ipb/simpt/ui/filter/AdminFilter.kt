@@ -1,4 +1,4 @@
-package com.ipb.simpt.ui.adapter.filter
+package com.ipb.simpt.ui.filter
 
 import android.widget.Filter
 import com.ipb.simpt.model.UserModel

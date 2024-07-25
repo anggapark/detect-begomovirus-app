@@ -12,7 +12,7 @@ import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemApprovalGridBinding
 import com.ipb.simpt.databinding.ItemMydataListBinding
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.adapter.filter.MyDataFilter
+import com.ipb.simpt.ui.filter.MyDataFilter
 import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
 
 class MyDataAdapter(

@@ -55,7 +55,7 @@ class AddDataActivity : AppCompatActivity() {
         setupToolbar()
 
         firebaseAuth = FirebaseAuth.getInstance()
-        categoryHandler = CategoryHandler(this)
+        categoryHandler = CategoryHandler(this, binding.progressBar)
         itemId = intent.getStringExtra("ITEM_ID")
         userType = intent.getStringExtra("USER_TYPE") ?: userType
         setupUI()

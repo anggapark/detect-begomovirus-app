@@ -2,31 +2,44 @@ package com.ipb.simpt.utils
 
 import android.app.AlertDialog
 import android.content.Context
+import android.view.View
+import android.widget.ProgressBar
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 
-class CategoryHandler(private val context: Context) {
+class CategoryHandler(private val context: Context, private val progressBar: ProgressBar) {
 
     private val db = FirebaseFirestore.getInstance()
 
 
     // load each categories
     fun loadKomoditasCategory(): Task<QuerySnapshot> {
-        return db.collection("Categories").document("Komoditas").collection("Items").get()
+        showLoading(true)
+        return db.collection("Categories").document("Komoditas").collection("Items").get().addOnCompleteListener {
+            showLoading(false)
+        }
     }
 
     fun loadPenyakitCategory(): Task<QuerySnapshot> {
-        return db.collection("Categories").document("Penyakit").collection("Items").get()
+        showLoading(true)
+        return db.collection("Categories").document("Penyakit").collection("Items").get().addOnCompleteListener {
+            showLoading(false)
+        }
     }
 
     fun loadGejalaCategory(): Task<QuerySnapshot> {
-        return db.collection("Categories").document("Gejala Penyakit").collection("Items").get()
+        showLoading(true)
+        return db.collection("Categories").document("Gejala Penyakit").collection("Items").get().addOnCompleteListener {
+            showLoading(false)
+        }
     }
 
     fun loadPathogenCategory(pathogen: String): Task<QuerySnapshot> {
-        return db.collection("Categories").document("Kategori Pathogen").collection(pathogen).get()
+        showLoading(true)
+        return db.collection("Categories").document("Kategori Pathogen").collection(pathogen).get().addOnCompleteListener {
+            showLoading(false)
+        }
     }
 
 
@@ -95,5 +108,9 @@ class CategoryHandler(private val context: Context) {
                 items[which]?.let { onItemSelected(it) }
             }
             .show()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

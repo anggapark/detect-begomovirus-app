@@ -1,12 +1,12 @@
-package com.ipb.simpt.ui.adapter.filter
+package com.ipb.simpt.ui.filter
 
 import android.widget.Filter
 import com.ipb.simpt.model.DataModel
-import com.ipb.simpt.ui.adapter.LibraryAdapter
+import com.ipb.simpt.ui.adapter.ApprovalAdapter
 
-class LibraryFilter(
+class ApprovalFilter(
     private var dataList: ArrayList<DataModel>,
-    private var adapter: LibraryAdapter
+    private var adapter: ApprovalAdapter
 ) : Filter() {
 
     override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -27,6 +27,8 @@ class LibraryFilter(
                         data.pathogenName.contains(charString, true) ||
                         data.kategoriPathogen.contains(charString, true) ||
                         data.dataset.contains(charString, true) ||
+                        data.deskripsi.contains(charString, true) ||
+                        data.status.contains(charString, true) ||
                         data.userName.contains(charString, true) ||
                         data.userNim.contains(charString, true)
             }.toMutableList()

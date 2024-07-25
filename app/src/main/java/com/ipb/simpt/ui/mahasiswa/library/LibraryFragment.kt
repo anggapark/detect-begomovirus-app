@@ -19,6 +19,8 @@ import com.ipb.simpt.R
 import com.ipb.simpt.databinding.FragmentLibraryBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.adapter.LibraryAdapter
+import com.ipb.simpt.ui.filter.FilterFragment
+import com.ipb.simpt.ui.filter.FilterViewModel
 
 class LibraryFragment : Fragment() {
 
@@ -27,6 +29,7 @@ class LibraryFragment : Fragment() {
 
     private lateinit var dataList: ArrayList<DataModel>
     private lateinit var viewModel: LibraryViewModel
+    private lateinit var filterViewModel: FilterViewModel
     private lateinit var adapter: LibraryAdapter
     private var isGridLayout: Boolean = false
     private var isLoadingMore = false
@@ -43,6 +46,7 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        filterViewModel = ViewModelProvider(requireActivity()).get(FilterViewModel::class.java)
         viewModel = ViewModelProvider(this).get(LibraryViewModel::class.java)
 
 //        setupLayoutSwitcher()
@@ -118,6 +122,22 @@ class LibraryFragment : Fragment() {
                 scrollToFirstItem() // Scroll to first item on page change
             }
         }
+
+        binding.ivFilter.setOnClickListener {
+            showFilterFragment()
+        }
+    }
+
+    private fun showFilterFragment() {
+        val filterFragment = FilterFragment()
+
+        // Create a bundle with the current filter data
+        val args = Bundle()
+        val currentFilters = filterViewModel.filters.value
+        args.putParcelable("currentFilters", currentFilters)
+        filterFragment.arguments = args
+
+        filterFragment.show(parentFragmentManager, "FilterFragment")
     }
 
     private fun updateButtonStates() {
@@ -132,6 +152,11 @@ class LibraryFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        // Observe filter
+        filterViewModel.filters.observe(viewLifecycleOwner, Observer { filters ->
+            filters?.let { viewModel.applyFilters(it) }
+        })
+
         // Observe data changes
         viewModel.items.observe(viewLifecycleOwner, Observer { items ->
             if (items != null) {

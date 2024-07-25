@@ -47,7 +47,7 @@ class EditProfileFragment : Fragment() {
 
     private fun fieldCheck() {
         if (isPasswordChange) {
-            binding.textTitle.text = "Change Password"
+            binding.textTitle.text = "Ganti Password"
             binding.editText.visibility = View.GONE
             binding.etCurrentPasswordLayout.visibility = View.VISIBLE
             binding.etPasswordLayout.visibility = View.VISIBLE

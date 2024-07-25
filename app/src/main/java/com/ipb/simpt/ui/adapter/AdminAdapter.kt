@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemApprovalListBinding
 import com.ipb.simpt.model.UserModel
-import com.ipb.simpt.ui.adapter.filter.AdminFilter
+import com.ipb.simpt.ui.filter.AdminFilter
 
 class AdminAdapter(
     private val context: Context,
