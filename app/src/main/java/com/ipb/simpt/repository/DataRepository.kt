@@ -176,35 +176,6 @@ class DataRepository {
     }
 
 
-    fun fetchDataWithFilters(
-        status: String,
-        komoditas: String?,
-        penyakit: String?,
-        callback: (List<DataModel>) -> Unit
-    ) {
-        var query: Query = db.collection("Data").whereEqualTo("status", status)
-
-        if (komoditas != null) {
-            query = query.whereEqualTo("komoditasId", komoditas)
-        }
-
-        if (penyakit != null) {
-            query = query.whereEqualTo("penyakitId", penyakit)
-        }
-
-        query.get()
-            .addOnSuccessListener { result ->
-                val dataList = result.map { document ->
-                    document.toObject(DataModel::class.java)
-                }
-                callback(dataList)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("DataRepository", "Error getting documents: ", exception)
-                callback(emptyList())
-            }
-    }
-
     fun fetchDataResponse(itemId: String, callback: (String) -> Unit) {
         db.collection("Data")
             .document(itemId)

@@ -305,4 +305,9 @@ class LibraryViewModel : BaseFilterableViewModel() {
             _items.value = fetchedItems
         }
     }
+
+    fun resetPagination() {
+        currentPage = 1
+        canLoadMore = true
+    }
 }

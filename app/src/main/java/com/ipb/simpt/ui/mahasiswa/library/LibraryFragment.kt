@@ -153,9 +153,13 @@ class LibraryFragment : Fragment() {
 
     private fun setupObservers() {
         // Observe filter
-        filterViewModel.filters.observe(viewLifecycleOwner, Observer { filters ->
-            filters?.let { viewModel.applyFilters(it) }
-        })
+//        filterViewModel.filters.observe(viewLifecycleOwner, Observer { filters ->
+//            filters?.let {
+//                dataList.clear()
+//                viewModel.resetPagination()
+//                viewModel.applyFilters(it)
+//            }
+//        })
 
         // Observe data changes
         viewModel.items.observe(viewLifecycleOwner, Observer { items ->
