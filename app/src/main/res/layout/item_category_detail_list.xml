@@ -33,7 +33,7 @@
             tools:text="Tanaman Cabai" />
 
         <TextView
-            android:id="@+id/tv_description"
+            android:id="@+id/tv_user"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
@@ -43,11 +43,20 @@
             android:textSize="14sp"
             tools:text="Lorem Ipsum" />
 
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:id="@+id/guideline"
+            android:layout_toEndOf="@id/iv_image"
+            android:layout_below="@id/tv_user"/>
+
         <TextView
-            android:id="@+id/tv_user"
+            android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_description"
+            android:layout_below="@id/guideline"
+            android:layout_alignParentEnd="true"
+            android:gravity="end"
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/iv_image"
             android:textColor="@color/gray2"

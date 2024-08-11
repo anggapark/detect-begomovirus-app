@@ -46,6 +46,7 @@ class LibraryUserDetailActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setTitle(R.string.data_info)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

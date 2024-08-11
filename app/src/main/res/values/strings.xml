@@ -40,9 +40,11 @@
     <string name="personal_info">Informasi Profil</string>
     <string name="account_info">Informasi Akun</string>
     <string name="user_info">Informasi User</string>
+    <string name="data_info">Data User</string>
 
     <string name="info_name">Nama</string>
     <string name="info_nim">NIM</string>
+    <string name="info_nip">NIP</string>
     <string name="info_about">Tentang Saya</string>
 
     <string name="hint_name">Masukkan Nama</string>
@@ -150,7 +152,7 @@
     <string name="title_nama_kategori">Nama Kategori</string>
     <string name="btn_delete">Hapus</string>
     <string name="profile_image">Ganti Foto Profil</string>
-    <string name="profile_password">Change Password</string>
+    <string name="profile_password">Ganti Password</string>
     <string name="profile_user_type">Change User Type</string>
     <string name="hint_password">Masukkan Password Baru</string>
     <string name="hint_current_password">Masukkan Password Saat ini</string>

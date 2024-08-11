@@ -71,6 +71,13 @@ class ProfileFragment : Fragment() {
                         .load(user.profileImage)
                         .placeholder(R.drawable.ic_profile) // Placeholder icon
                         .into(binding.ivProfile)
+
+                    // Check user type and update NIM/NIP title
+                    if (user.userType == "dosen") {
+                        binding.tvNimTitle.setText(R.string.info_nip)
+                    } else {
+                        binding.tvNimTitle.setText(R.string.info_nim)
+                    }
                 }
             }
         }

@@ -100,7 +100,7 @@ class ApprovalActivity : AppCompatActivity() {
         binding.tlCategory.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    val selectedStatus = it.text.toString()
+                    val selectedStatus = mapStatus(it.text.toString())
                     dataArrayList.clear() // Clear existing data
                     fetchDataBasedOnUserType(selectedStatus)
                 }
@@ -111,6 +111,14 @@ class ApprovalActivity : AppCompatActivity() {
         })
     }
 
+    private fun mapStatus(status: String): String {
+        return when (status) {
+            "Menunggu" -> "Pending"
+            "Ditolak" -> "Rejected"
+            "Disetujui" -> "Approved"
+            else -> status // Return the original status if not mapped
+        }
+    }
 
     private fun setupRecyclerView() {
         dataArrayList = ArrayList()

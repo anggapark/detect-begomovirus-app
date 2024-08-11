@@ -46,16 +46,17 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        filterViewModel = ViewModelProvider(requireActivity()).get(FilterViewModel::class.java)
+//        filterViewModel = ViewModelProvider(requireActivity()).get(FilterViewModel::class.java)
         viewModel = ViewModelProvider(this).get(LibraryViewModel::class.java)
 
-//        setupLayoutSwitcher()
+        setupLayoutSwitcher()
         setupRecyclerView()
         setupSearchFilter()
         setupObservers()
-        setupPagination()
+//        setupPagination()
 
-        viewModel.fetchApprovedItemsByPage(viewModel.currentPage)
+//        viewModel.fetchApprovedItemsByPage(viewModel.currentPage)
+        viewModel.fetchInitialApprovedItems()
     }
 
     private fun setupRecyclerView() {
@@ -73,60 +74,60 @@ class LibraryFragment : Fragment() {
         binding.rvLibrary.layoutManager =
             LinearLayoutManager(requireContext()) // Default to list layout
 
-//        binding.rvLibrary.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//
-//                val layoutManager = recyclerView.layoutManager ?: return
-//
-//                val visibleItemCount = layoutManager.childCount
-//                val totalItemCount = layoutManager.itemCount
-//                val firstVisibleItemPosition = when (layoutManager) {
-//                    is LinearLayoutManager -> layoutManager.findFirstVisibleItemPosition()
-//                    is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
-//                    else -> return
-//                }
-//
-//                if (!isLoadingMore && !viewModel.isLoading.value!! &&
-//                    (visibleItemCount + firstVisibleItemPosition >= totalItemCount) &&
-//                    firstVisibleItemPosition >= 0 && totalItemCount >= viewModel.pageSize) {
-//
-//                    isLoadingMore = true
-//                    viewModel.fetchMoreApprovedItems()
-//                }
+        binding.rvLibrary.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager ?: return
+
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = when (layoutManager) {
+                    is LinearLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+                    is GridLayoutManager -> layoutManager.findFirstVisibleItemPosition()
+                    else -> return
+                }
+
+                if (!isLoadingMore && !viewModel.isLoading.value!! &&
+                    (visibleItemCount + firstVisibleItemPosition >= totalItemCount) &&
+                    firstVisibleItemPosition >= 0 && totalItemCount >= viewModel.pageSize) {
+
+                    isLoadingMore = true
+                    viewModel.fetchMoreApprovedItems()
+                }
+            }
+        })
+
+
+        // Observe loading more state
+        viewModel.isLoadingMore.observe(viewLifecycleOwner, Observer { isLoadingMore ->
+            this.isLoadingMore = isLoadingMore
+            showLoading(isLoadingMore)
+        })
+    }
+
+
+//    private fun setupPagination() {
+//        binding.btnPrevious.setOnClickListener {
+//            if (viewModel.currentPage > 1 && !viewModel.isLoading.value!!) {
+//                viewModel.goToPage(viewModel.currentPage - 1)
+//                updateButtonStates()
+//                scrollToFirstItem() // Scroll to first item on page change
 //            }
-//        })
+//        }
 //
+//        binding.btnNext.setOnClickListener {
+//            if (viewModel.canLoadMore && !viewModel.isLoading.value!!) {
+//                viewModel.goToPage(viewModel.currentPage + 1)
+//                updateButtonStates()
+//                scrollToFirstItem() // Scroll to first item on page change
+//            }
+//        }
 //
-//        // Observe loading more state
-//        viewModel.isLoadingMore.observe(viewLifecycleOwner, Observer { isLoadingMore ->
-//            this.isLoadingMore = isLoadingMore
-//            showLoading(isLoadingMore)
-//        })
-    }
-
-
-    private fun setupPagination() {
-        binding.btnPrevious.setOnClickListener {
-            if (viewModel.currentPage > 1 && !viewModel.isLoading.value!!) {
-                viewModel.goToPage(viewModel.currentPage - 1)
-                updateButtonStates()
-                scrollToFirstItem() // Scroll to first item on page change
-            }
-        }
-
-        binding.btnNext.setOnClickListener {
-            if (viewModel.canLoadMore && !viewModel.isLoading.value!!) {
-                viewModel.goToPage(viewModel.currentPage + 1)
-                updateButtonStates()
-                scrollToFirstItem() // Scroll to first item on page change
-            }
-        }
-
-        binding.ivFilter.setOnClickListener {
-            showFilterFragment()
-        }
-    }
+//        binding.ivFilter.setOnClickListener {
+//            showFilterFragment()
+//        }
+//    }
 
     private fun showFilterFragment() {
         val filterFragment = FilterFragment()
@@ -140,12 +141,12 @@ class LibraryFragment : Fragment() {
         filterFragment.show(parentFragmentManager, "FilterFragment")
     }
 
-    private fun updateButtonStates() {
-        binding.btnPrevious.isEnabled = viewModel.currentPage > 1
-        binding.btnNext.isEnabled = viewModel.canLoadMore
-        binding.tvPageNumber.text = "${viewModel.currentPage}"
-
-    }
+//    private fun updateButtonStates() {
+//        binding.btnPrevious.isEnabled = viewModel.currentPage > 1
+//        binding.btnNext.isEnabled = viewModel.canLoadMore
+//        binding.tvPageNumber.text = "${viewModel.currentPage}"
+//
+//    }
 
     private fun scrollToFirstItem() {
         (binding.rvLibrary.layoutManager as? LinearLayoutManager)?.scrollToPosition(0)
@@ -168,7 +169,7 @@ class LibraryFragment : Fragment() {
                 dataList.addAll(items)
                 adapter.notifyDataSetChanged()
                 showLoading(false)
-                updateButtonStates()
+//                updateButtonStates()
             } else {
                 showLoading(false)
             }
@@ -189,7 +190,7 @@ class LibraryFragment : Fragment() {
         })
     }
 
-//    private fun setupLayoutSwitcher() {
+    private fun setupLayoutSwitcher() {
 //        binding.btnList.setOnClickListener {
 //            isGridLayout = false
 //            applyLayoutManager()
@@ -203,7 +204,23 @@ class LibraryFragment : Fragment() {
 //            adapter.setLayoutType(isGridLayout)
 //            updateLayoutSwitcherBackground()
 //        }
-//    }
+
+        binding.ivLayout.setOnClickListener {
+            isGridLayout = !isGridLayout
+            applyLayoutManager()
+            adapter.setLayoutType(isGridLayout)
+            updateLayoutSwitcherIcon()
+        }
+        updateLayoutSwitcherIcon()  // Initialize icon based on current layout
+    }
+
+    private fun updateLayoutSwitcherIcon() {
+        if (isGridLayout) {
+            binding.ivLayout.setImageResource(R.drawable.ic_grid_view)
+        } else {
+            binding.ivLayout.setImageResource(R.drawable.ic_list_view)
+        }
+    }
 
 //    private fun updateLayoutSwitcherBackground() {
 //        if (isGridLayout) {
@@ -248,9 +265,14 @@ class LibraryFragment : Fragment() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
+    override fun onPause() {
+        super.onPause()
+        binding.etSearch.text.clear()  // Clear the search text when fragment is paused
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.etSearch.text.clear()
         _binding = null
     }
 }

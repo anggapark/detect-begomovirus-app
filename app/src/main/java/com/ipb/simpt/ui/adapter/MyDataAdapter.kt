@@ -14,6 +14,7 @@ import com.ipb.simpt.databinding.ItemMydataListBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.filter.MyDataFilter
 import com.ipb.simpt.ui.mahasiswa.library.LibraryViewModel
+import com.ipb.simpt.utils.FileHelper
 
 class MyDataAdapter(
     private val context: Context,
@@ -64,7 +65,8 @@ class MyDataAdapter(
             binding.tvPenyakit.text = data.penyakitName
             binding.tvPathogen.text = data.pathogenName
             binding.tvGejala.text = data.gejalaName
-            binding.tvDeskripsi.text = data.deskripsi
+            binding.tvUser.text = data.userName
+            binding.tvDate.text = FileHelper.formatTimeStamp(data.timestamp)
             binding.tvStatus.text = data.status
             when (data.status) {
                 "Pending" -> binding.tvStatus.background =
@@ -88,11 +90,10 @@ class MyDataAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: DataModel) {
             binding.tvTitle.text = data.komoditasName
-
-            viewModel.fetchUserName(data.uid) { userName ->
-                binding.tvUser.text = userName
-            }
-            binding.tvDescription.text = data.deskripsi
+            binding.tvPenyakit.text = data.penyakitName
+            binding.tvPathogen.text = data.pathogenName
+            binding.tvGejala.text = data.gejalaName
+            binding.tvUser.text = data.userName
             binding.tvStatus.text = data.status
             when (data.status) {
                 "Pending" -> binding.tvStatus.background =

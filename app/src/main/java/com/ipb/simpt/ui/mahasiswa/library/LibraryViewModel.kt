@@ -3,7 +3,6 @@ package com.ipb.simpt.ui.mahasiswa.library
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.model.FilterModel
@@ -46,9 +45,57 @@ class LibraryViewModel : BaseFilterableViewModel() {
     var allDataFetched = false
 
     private var itemsCache = mutableListOf<DataModel>()
-    private val pageSize = 2
+    val pageSize = 10
     var currentPage = 1
     var canLoadMore = true
+
+    fun fetchInitialApprovedItems() {
+        _isLoading.value = true
+        allDataFetched = false
+        repository.fetchInitialApprovedItems(
+            pageSize,
+            { items, lastTimestamp ->
+                fetchAndCacheAdditionalData(items) {
+                    _items.postValue(items)
+                    lastVisibleItemTimestamp = lastTimestamp
+                    _isLoading.postValue(false)
+                    if (items.size < pageSize) {
+                        allDataFetched = true
+                    }
+                }
+            },
+            { errorMessage ->
+                _error.postValue(errorMessage)
+                _isLoading.postValue(false)
+            }
+        )
+    }
+
+    fun fetchMoreApprovedItems() {
+        if (_isLoadingMore.value == true || allDataFetched || lastVisibleItemTimestamp == null) return
+
+        _isLoadingMore.value = true
+        repository.fetchMoreApprovedItems(
+            lastVisibleItemTimestamp!!,
+            pageSize,
+            { items, lastTimestamp ->
+                if (items.isNotEmpty()) {
+                    fetchAndCacheAdditionalData(items) {
+                        _items.postValue(_items.value.orEmpty() + items)
+                        lastVisibleItemTimestamp = lastTimestamp
+                    }
+                } else {
+                    allDataFetched = true
+                }
+                _isLoadingMore.postValue(false)
+            },
+            { errorMessage ->
+                _error.postValue(errorMessage)
+                _isLoadingMore.postValue(false)
+            }
+        )
+    }
+
 
     fun fetchApprovedItemsByPage(page: Int) {
         if (_isLoading.value == true) return

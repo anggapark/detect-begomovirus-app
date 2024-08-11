@@ -18,7 +18,7 @@
         android:id="@+id/et_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/iv_filter"
+        android:layout_toStartOf="@id/iv_layout"
         android:layout_marginEnd="10dp"
         android:background="@color/white"
         android:drawableStart="@drawable/ic_search"
@@ -26,15 +26,25 @@
         android:padding="10dp"
         android:textColorHint="@color/gray1" />
 
+<!--        <ImageView-->
+<!--            android:id="@+id/iv_filter"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:background="@drawable/bg_text_selected_navy"-->
+<!--            android:padding="10dp"-->
+<!--            android:src="@drawable/ic_filter" />-->
+
         <ImageView
-            android:id="@+id/iv_filter"
+            android:id="@+id/iv_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:background="@drawable/bg_text_selected_navy"
             android:padding="10dp"
-            android:src="@drawable/ic_filter" />
+            android:src="@drawable/ic_list_view" />
 
     </RelativeLayout>
 
@@ -113,73 +123,38 @@
 
     <!-- Pagination Controls -->
 <!--    <LinearLayout-->
-<!--        android:id="@+id/paginationControls"-->
-<!--        android:layout_width="wrap_content"-->
+<!--        android:id="@+id/paginationLayout"-->
+<!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:gravity="center"-->
 <!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:orientation="horizontal">-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginBottom="8dp">-->
 
 <!--        &lt;!&ndash; Previous Button &ndash;&gt;-->
 <!--        <Button-->
-<!--            android:id="@+id/btn_previous"-->
+<!--            android:id="@+id/btnPrevious"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:text="@string/btn_prev" />-->
 
 <!--        &lt;!&ndash; Page Numbers &ndash;&gt;-->
-<!--        <HorizontalScrollView-->
+<!--        <TextView-->
+<!--            android:id="@+id/tvPageNumber"-->
 <!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content">-->
-
-<!--            <LinearLayout-->
-<!--                android:id="@+id/pageNumbers"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal">-->
-
-<!--                &lt;!&ndash; Page Number Buttons will be added dynamically here &ndash;&gt;-->
-<!--            </LinearLayout>-->
-<!--        </HorizontalScrollView>-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:text="1"-->
+<!--            android:textSize="18sp" />-->
 
 <!--        &lt;!&ndash; Next Button &ndash;&gt;-->
 <!--        <Button-->
-<!--            android:id="@+id/btn_next"-->
+<!--            android:id="@+id/btnNext"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:text="@string/btn_next" />-->
 <!--    </LinearLayout>-->
-
-    <LinearLayout
-        android:id="@+id/paginationLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
-
-        <Button
-            android:id="@+id/btnPrevious"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_prev" />
-
-        <TextView
-            android:id="@+id/tvPageNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="1"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_next" />
-    </LinearLayout>
 
 </RelativeLayout>

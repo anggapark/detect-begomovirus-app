@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ipb.simpt.databinding.ItemCategoryDetailListBinding
+import com.ipb.simpt.databinding.ItemLibraryListBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.dosen.library.DosenCategoryViewModel
+import com.ipb.simpt.utils.FileHelper
 
 class DataCategoryAdapter(
     private val context: Context,
@@ -26,41 +28,52 @@ class DataCategoryAdapter(
                         binding.tvTitle.text = name
                     }
                 }
-
                 "Penyakit" -> {
                     viewModel.fetchCategoryName("Penyakit", data.penyakitId) { name ->
                         binding.tvTitle.text = name
                     }
                 }
-
                 "Gejala Penyakit" -> {
                     viewModel.fetchCategoryName("Gejala Penyakit", data.gejalaId) { name ->
                         binding.tvTitle.text = name
                     }
                 }
-
                 "Kategori Pathogen" -> {
                     viewModel.fetchPathogenName(categoryValue, data.pathogenId) { name ->
                         binding.tvTitle.text = name
                     }
                 }
-
                 else -> {
                     binding.tvTitle.text = "Unknown Category"
                 }
             }
-
             viewModel.fetchUserName(data.uid) { userName ->
                 binding.tvUser.text = userName
             }
-
-            binding.tvDescription.text = data.deskripsi
-
+            binding.tvDate.text = FileHelper.formatTimeStamp(data.timestamp)
             Glide.with(context)
                 .load(data.url)
                 .into(binding.ivImage)
         }
     }
+
+
+//    inner class ViewHolder(private val binding: ItemLibraryListBinding) :
+//        RecyclerView.ViewHolder(binding.root) {
+//        fun bind(data: DataModel) {
+//            binding.tvKomoditas.text = data.komoditasName
+//            binding.tvPenyakit.text = data.penyakitName
+//            binding.tvPathogen.text = data.pathogenName
+//            binding.tvGejala.text = data.gejalaName
+//            binding.tvUser.text = data.userName
+//            binding.tvDate.text = FileHelper.formatTimeStamp(data.timestamp)
+//
+//            Glide.with(context)
+//                .load(data.url)
+//                .into(binding.ivImage)
+//
+//        }
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemCategoryDetailListBinding.inflate(

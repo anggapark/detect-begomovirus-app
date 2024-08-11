@@ -80,11 +80,10 @@ class LibraryAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: DataModel) {
             binding.tvTitle.text = data.komoditasName
-
-            viewModel.fetchUserName(data.uid) { userName ->
-                binding.tvUser.text = userName
-            }
-
+            binding.tvPenyakit.text = data.penyakitName
+            binding.tvPathogen.text = data.pathogenName
+            binding.tvGejala.text = data.gejalaName
+            binding.tvUser.text = data.userName
             Glide.with(context)
                 .load(data.url)
                 .into(binding.ivImage)

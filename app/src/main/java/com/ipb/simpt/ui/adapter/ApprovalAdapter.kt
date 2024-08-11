@@ -10,10 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ipb.simpt.R
 import com.ipb.simpt.databinding.ItemApprovalGridBinding
-import com.ipb.simpt.databinding.ItemApprovalListBinding
+import com.ipb.simpt.databinding.ItemMydataListBinding
 import com.ipb.simpt.model.DataModel
 import com.ipb.simpt.ui.filter.ApprovalFilter
 import com.ipb.simpt.ui.dosen.approval.ApprovalViewModel
+import com.ipb.simpt.utils.FileHelper
 
 class ApprovalAdapter(
     private val context: Context,
@@ -46,7 +47,7 @@ class ApprovalAdapter(
             GridViewHolder(binding)
         } else {
             val binding =
-                ItemApprovalListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ItemMydataListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             ListViewHolder(binding)
         }
     }
@@ -62,18 +63,15 @@ class ApprovalAdapter(
         }
     }
 
-    inner class ListViewHolder(private val binding: ItemApprovalListBinding) :
+    inner class ListViewHolder(private val binding: ItemMydataListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: DataModel) {
-            viewModel.fetchCategoryName("Komoditas", data.komoditasId) { name ->
-                binding.tvTitle.text = name
-            }
-
-            viewModel.fetchUserName(data.uid) { userName ->
-                binding.tvUser.text = userName
-            }
-
-            binding.tvDescription.text = data.deskripsi
+            binding.tvKomoditas.text = data.komoditasName
+            binding.tvPenyakit.text = data.penyakitName
+            binding.tvPathogen.text = data.pathogenName
+            binding.tvGejala.text = data.gejalaName
+            binding.tvUser.text = data.userName
+            binding.tvDate.text = FileHelper.formatTimeStamp(data.timestamp)
             binding.tvStatus.text = data.status
             when (data.status) {
                 "Pending" -> binding.tvStatus.background =
@@ -98,15 +96,11 @@ class ApprovalAdapter(
     inner class GridViewHolder(private val binding: ItemApprovalGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: DataModel) {
-            viewModel.fetchCategoryName("Komoditas", data.komoditasId) { name ->
-                binding.tvTitle.text = name
-            }
-
-            viewModel.fetchUserName(data.uid) { userName ->
-                binding.tvUser.text = userName
-            }
-
-            binding.tvDescription.text = data.deskripsi
+            binding.tvTitle.text = data.komoditasName
+            binding.tvPenyakit.text = data.penyakitName
+            binding.tvPathogen.text = data.pathogenName
+            binding.tvGejala.text = data.gejalaName
+            binding.tvUser.text = data.userName
             binding.tvStatus.text = data.status
             when (data.status) {
                 "Pending" -> binding.tvStatus.background =

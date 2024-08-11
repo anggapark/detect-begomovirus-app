@@ -134,7 +134,7 @@ class DosenHomeActivity : AppCompatActivity() {
             profileViewModel.user.observe(this) { user ->
                 if (user != null) {
                     binding.tvName.text = user.userName
-                    binding.tvNim.text = user.userNim
+                    binding.tvNip.text = user.userNim
                     Glide.with(this)
                         .load(user.profileImage)
                         .placeholder(R.drawable.ic_profile) // Placeholder icon

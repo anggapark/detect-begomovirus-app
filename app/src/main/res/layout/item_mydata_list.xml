@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="6dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp"
     app:contentPadding="10dp">
@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/iv_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="16dp"
             android:adjustViewBounds="true"
@@ -27,8 +27,8 @@
             android:id="@+id/tv_komoditas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/iv_image"
             android:layout_toStartOf="@id/tv_status"
+            android:layout_toEndOf="@id/iv_image"
             android:maxLines="1"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -41,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_komoditas"
             android:layout_marginTop="4dp"
-            android:layout_toEndOf="@id/iv_image"
             android:layout_toStartOf="@id/tv_status"
+            android:layout_toEndOf="@id/iv_image"
             android:maxLines="1"
             android:textColor="@color/gray2"
             android:textSize="14sp"
@@ -72,19 +72,32 @@
             android:textSize="14sp"
             tools:text="@string/lorem" />
 
-
         <TextView
-            android:id="@+id/tv_deskripsi"
+            android:id="@+id/tv_user"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_below="@id/iv_image"
-            android:layout_marginTop="5dp"
-            android:gravity="top|start"
-            android:lineSpacingMultiplier="1.1"
-            android:maxLines="2"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_gejala"
+            android:layout_marginTop="4dp"
+            android:layout_toStartOf="@id/tv_date"
+            android:layout_toEndOf="@id/iv_image"
+            android:maxLines="1"
             android:textColor="@color/gray2"
             android:textSize="14sp"
             tools:text="@string/lorem" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_gejala"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="4dp"
+            android:gravity="end"
+            android:maxLines="1"
+            android:textColor="@color/gray2"
+            android:textSize="14sp"
+            tools:text="@string/date" />
+
 
         <TextView
             android:id="@+id/tv_status"
@@ -99,7 +112,6 @@
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="Pending" />
-
 
     </RelativeLayout>
 

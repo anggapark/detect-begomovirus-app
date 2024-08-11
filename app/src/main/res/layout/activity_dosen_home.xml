@@ -75,21 +75,21 @@
 
                         <!-- NIM Field -->
                         <TextView
-                            android:id="@+id/tv_nim_title"
+                            android:id="@+id/tv_nip_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_name"
                             android:layout_marginTop="4dp"
                             android:layout_toEndOf="@id/iv_profile"
-                            android:text="@string/info_nim"
+                            android:text="@string/info_nip"
                             android:textColor="@color/gray2"
                             android:textSize="12sp" />
 
                         <TextView
-                            android:id="@+id/tv_nim"
+                            android:id="@+id/tv_nip"
                             android:layout_width="match_parent"
                             android:layout_height="32dp"
-                            android:layout_below="@id/tv_nim_title"
+                            android:layout_below="@id/tv_nip_title"
                             android:layout_marginEnd="8dp"
                             android:layout_toEndOf="@id/iv_profile"
                             android:background="@drawable/bg_text"
